@@ -1,0 +1,20 @@
+"use client";
+
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Download, RefreshCw } from "lucide-react";
+import { localDate } from "@/lib/date";
+import { adminService } from "@/services/admin-service";
+import { Button, Card, CurrencyText, ErrorState, Field, Input, PageHeader, Select, Skeleton } from "@/components/ui";
+import { useToast } from "@/components/ui/toast";
+
+type ReportName = "vendas" | "produtos" | "adicionais" | "pagamentos";
+export function ReportsPage() {
+  const { toast } = useToast(); const [start, setStart] = useState(localDate(-30)); const [end, setEnd] = useState(localDate()); const [name, setName] = useState<ReportName>("vendas");
+  const report = useQuery({ queryKey: ["report", name, start, end], queryFn: () => adminService.report(name, start, end) });
+  const rows = Array.isArray(report.data) ? report.data as Array<Record<string, unknown>> : report.data && typeof report.data === "object" && Array.isArray((report.data as Record<string, unknown>).items) ? (report.data as Record<string, unknown>).items as Array<Record<string, unknown>> : [];
+  async function download() { try { const response = await adminService.salesCsv(start, end); const blob = await response.blob(); const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = "vendas.csv"; anchor.click(); URL.revokeObjectURL(url); } catch { toast({ tone: "error", title: "Não foi possível exportar o CSV" }); } }
+  const max = Math.max(...rows.map((row) => Number(row.quantidade || row.pedidos || row.total || 0)), 1);
+  return <div><PageHeader eyebrow="Decisões com dados" title="Relatórios" description="Cancelados ficam fora do faturamento. Venda realizada exige pedido entregue e pagamento pago." actions={<Button variant="secondary" onClick={download}><Download aria-hidden /> Exportar vendas CSV</Button>} /><Card className="report-filters"><Field label="Relatório" htmlFor="report-name"><Select id="report-name" value={name} onChange={(event) => setName(event.target.value as ReportName)}><option value="vendas">Vendas</option><option value="produtos">Produtos</option><option value="adicionais">Adicionais</option><option value="pagamentos">Pagamentos</option></Select></Field><Field label="Início" htmlFor="report-start"><Input id="report-start" type="date" value={start} onChange={(event) => setStart(event.target.value)} /></Field><Field label="Fim" htmlFor="report-end"><Input id="report-end" type="date" value={end} onChange={(event) => setEnd(event.target.value)} /></Field><Button variant="ghost" onClick={() => void report.refetch()}><RefreshCw aria-hidden /> Atualizar</Button></Card>{report.isLoading ? <Skeleton className="skeleton--hero" /> : report.isError ? <ErrorState title="Relatório indisponível" description="Revise o período e tente novamente." action={<Button onClick={() => void report.refetch()}>Tentar novamente</Button>} /> : <div className="report-layout"><Card className="admin-card"><h2>Resumo visual</h2>{rows.length ? <div className="chart-bars">{rows.slice(0, 10).map((row, index) => { const label = String(row.produto || row.adicional || row.metodo || row.id || `Item ${index + 1}`); const amount = Number(row.quantidade || row.pedidos || row.total || 0); return <div className="chart-bar" key={`${label}-${index}`}><span>{label}</span><div className="chart-bar__track"><div className="chart-bar__fill" style={{ width: `${amount / max * 100}%` }} /></div><strong>{amount}</strong></div>; })}</div> : <p className="muted">Sem dados para este período.</p>}</Card><Card className="admin-card"><h2>Dados detalhados</h2><div className="report-table-wrap"><table><thead><tr><th>Descrição</th><th>Quantidade</th><th>Valor</th></tr></thead><tbody>{rows.map((row, index) => <tr key={index}><td>{String(row.produto || row.adicional || row.metodo || row.status || row.id || "—")}</td><td>{String(row.quantidade || row.pedidos || 1)}</td><td><CurrencyText value={String(row.valor || row.total || row.faturamento_realizado || "0.00")} /></td></tr>)}</tbody></table></div></Card></div>}</div>;
+}
+
