@@ -1,6 +1,43 @@
 # Handoff para análise
 
-Data: 28/10/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`; alterações atuais ainda não foram commitadas nem enviadas.
+Data: 30/10/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`; alterações atuais ainda não foram commitadas nem enviadas.
+
+## Etapa 9 — handoff prioritário
+
+**Código implementado; banco e hardware pendentes.** Leia primeiro `docs/40_ARQUITETURA_IMPRESSAO_AUTOMATICA_ANDROID.md` a `45_MIGRATIONS_PENDENTES_IMPRESSAO.md` no backend irmão.
+
+- Backend: migration 040 apenas versionada; `dispositivos_impressao`, pareamento hash-only/uso único, bearer exclusivo, heartbeat, SSE como sinal, reserva com lease, `envio_iniciado_em`, retry apenas antes do envio e `RESULTADO_INDETERMINADO` terminal.
+- Frontend: painel de aparelhos/fila/alertas, código/deep link, revogação, teste e 2ª via; configuração separa Android, legado e pedidos PAINEL.
+- Android: projeto irmão Kotlin/Compose, token no Keystore, HTTPS obrigatório, foreground service `connectedDevice`, reconciliação de 15 s, SPP/RFCOMM, CP860/CP850, 58/80 mm e corte opcional.
+- Gates: frontend lint/typecheck/35 testes/build aprovados; backend lint e unitários aprovados. Android não compilado por ausência de toolchain. Integração/banco e impressora física não testados.
+- Proibições respeitadas: nenhuma migration executada, nenhum seed, `.env`, Neon, APK instalado, deploy, commit ou push.
+
+Próximo passo seguro: autorizar e aplicar 040 primeiro em TEST isolado, executar integração, configurar backend HTTPS, compilar no Android Studio e seguir a matriz física do documento 44. Só depois avaliar desenvolvimento/produção.
+
+## Etapa 8 — handoff prioritário
+
+**Resultado: IMPLEMENTADO E APROVADO NO ESCOPO LOCAL.** Leia primeiro os documentos 32–37 do backend irmão.
+
+- Frontend: `/admin/relatorios` consome o catálogo; `/admin/relatorios/[codigo]` monta filtros e colunas por metadados, apresenta prévia em tabela desktop/cartões mobile e baixa PDF por `Blob` autenticado. Alterar filtro invalida a prévia; o corpo enviado a `gerar` e `pdf` é o mesmo.
+- Backend: tabela de catálogo na migration 027, 12 funções `SECURITY INVOKER` nas migrations 028–039, seed idempotente 010, registro fixo de SQL, validação Zod, auditoria sem conteúdo e PDFKit server-side.
+- Pedidos: salto somente para estado posterior coerente; cancelamento separado com motivo; pagamento sem motivo; estorno com motivo.
+- Gates locais: backend lint + 81 unitários; frontend lint/TypeScript + 35 unitários + build; Playwright 29/29 e Axe aprovados. PDFs falsos foram inspecionados em 1 página retrato e 4 páginas paisagem.
+- Banco: nenhuma migration/seed foi executada. Integração foi corretamente omitida porque `RUN_DB_INTEGRATION` não estava habilitado e `DATABASE_TEST_URL` não estava presente no processo. Não aplicar 027–039/010 sem validação do destino e autorização explícita.
+
+Arquivos centrais: `src/services/reportRegistry.js`, `src/services/reportPdfService.js`, `src/config/reportCatalog.js` no backend; `src/features/admin/reports-page.tsx`, `src/services/admin-service.ts` e `src/features/orders/order-detail-page.tsx` no frontend.
+
+## Etapa 7C — handoff prioritário
+
+**Resultado: APROVADO NO ESCOPO LOCAL.** Leia primeiro `32_AJUSTES_VISUAIS_DASHBOARD.md` e `IMAGENS_PRODUTOS.md`.
+
+- Dashboard: faixa de status efetivo aberto/fechado/erro, separada do controle manual; atalho “Configurar loja”; sidebar cinza-areia; cabeçalhos de tabela neutros com contraste; pedido manual dividido em grupos semânticos e resumo de erro focável.
+- Catálogo demo: 14 WebP 900 × 900 em `public/images/produtos/`. `src/lib/product-images.ts` exige marcador `DEMO-SHIRLEY-V1` e nome conhecido; `imagem_url` da API vence sempre. Produto comercial homônimo permanece sem fallback demo.
+- `src/components/shared/product-image.tsx` usa `next/image` nos ativos locais, preserva URLs remotas existentes sem ampliar hosts permitidos e cai para “Imagem em breve” em falha.
+- X-Salada: `x-salada.webp` foi rejeitado e não é referenciado; `x-salada-corrigido.webp` é o ativo aprovado.
+- Evidências antes/depois usam o prefixo `docs/screenshots/ajustes-dashboard-*`; a evidência pública atualizada mostra X-Bacon e refrigerante carregados.
+- Gates: `npm.cmd run check` aprovado (lint, TypeScript, 31 unitários e build de 30 rotas); Playwright 27/27 aprovado.
+
+Pendência: substituir imagens de IA por fotos reais autorizadas, com produto, marca e sabor efetivamente vendidos, antes de divulgação comercial. A referência visual de dashboard citada pelo pacote não foi fornecida; isso não bloqueou a implementação textual. Nenhuma `.env`, API de escrita, migration, seed, Neon, deploy, commit ou push foi tocado.
 
 ## Etapa 7B — handoff prioritário
 

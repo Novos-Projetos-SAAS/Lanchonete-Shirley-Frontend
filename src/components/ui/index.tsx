@@ -3,7 +3,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { AlertTriangle, Check, ChevronRight, CircleOff, LoaderCircle, Minus, MoreHorizontal, Plus, RefreshCw, X } from "lucide-react";
+import { AlertTriangle, Check, ChevronLeft, ChevronRight, CircleOff, LoaderCircle, Minus, MoreHorizontal, Plus, RefreshCw, X } from "lucide-react";
 import {
   forwardRef,
   cloneElement,
@@ -211,6 +211,13 @@ interface ResponsiveTableProps<T> {
 
 export function ResponsiveTable<T>({ items, columns, getKey, caption }: ResponsiveTableProps<T>) {
   return <div className="responsive-table"><div className="responsive-table__desktop"><table><caption className="sr-only">{caption}</caption><thead><tr>{columns.map((column) => <th className={column.className} scope="col" key={column.key}>{column.header}</th>)}</tr></thead><tbody>{items.map((item) => <tr key={getKey(item)}>{columns.map((column) => <td className={column.className} key={column.key}>{column.render(item)}</td>)}</tr>)}</tbody></table></div><div className="responsive-table__mobile">{items.map((item) => <article className="data-card" key={getKey(item)}>{columns.filter((column) => !column.hideOnMobile).map((column) => <div className="data-card__field" key={column.key}><span>{column.header}</span><div>{column.render(item)}</div></div>)}</article>)}</div></div>;
+}
+
+interface PaginationProps { page: number; totalPages: number; totalItems: number; onPageChange: (page: number) => void; label?: string }
+export function Pagination({ page, totalPages, totalItems, onPageChange, label = "Paginação da listagem" }: PaginationProps) {
+  if (totalItems === 0) return null;
+  const pages = Math.max(totalPages, 1);
+  return <nav className="pagination" aria-label={label}><Button variant="ghost" disabled={page <= 1} onClick={() => onPageChange(page - 1)}><ChevronLeft aria-hidden /> Anterior</Button><span>Página {page} de {pages} · {totalItems} {totalItems === 1 ? "registro" : "registros"}</span><Button variant="ghost" disabled={page >= pages} onClick={() => onPageChange(page + 1)}>Próxima <ChevronRight aria-hidden /></Button></nav>;
 }
 
 export function RowActions({ label = "Ações do registro", children }: { label?: string; children: ReactNode }) {

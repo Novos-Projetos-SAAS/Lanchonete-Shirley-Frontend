@@ -1,6 +1,34 @@
 # Status atual
 
-Atualizado em 28/10/2026.
+Atualizado em 30/10/2026.
+
+## Etapa 9 — impressão automática Android Bluetooth
+
+**IMPLEMENTADA NO CÓDIGO; MIGRATION E HOMOLOGAÇÃO FÍSICA PENDENTES.** O painel `/admin/impressoes` agora apresenta método ativo, fila, alertas de resultado indeterminado, aparelhos/turno, pareamento temporário, revogação, impressão de teste e 2ª via confirmada. A loja permite escolher Android Bluetooth, agente legado ou desabilitado e controlar separadamente pedidos criados no painel.
+
+O backend irmão recebeu a migration versionada 040, credencial hash-only por aparelho, pareamento de uso único, heartbeat/SSE, lease atômica, backoff e fronteira conservadora de envio. Foi criado o projeto irmão Kotlin/Compose `Lanchonete-Shirley-Android-Print`, com Android Keystore, foreground service e adaptador SPP/ESC-POS 58/80 mm.
+
+Gates web: frontend lint, TypeScript, 13 arquivos/35 testes e build de 30 rotas aprovados; backend lint e unitários aprovados. Android não foi compilado porque Gradle, SDK e ADB não existem neste host. A migration 040 não foi executada, a Neon não foi acessada, testes de integração não rodaram e nenhuma `.env`, seed ou dado foi alterado. Leia os documentos backend 40–45.
+
+## Etapa 8 — relatórios PDF e regras de pedidos
+
+**IMPLEMENTADO E APROVADO NO ESCOPO LOCAL.** O painel recebeu catálogo dinâmico com 12 relatórios gerenciais/cadastrais, formulário orientado por metadados, prévia paginada responsiva, totais e exportação PDF autenticada usando os mesmos filtros confirmados. O CSV legado foi preservado.
+
+Pedidos agora permitem salto direto apenas para estados posteriores válidos da modalidade; cancelamento continua separado e exige motivo. `PENDENTE -> PAGO` não pede justificativa e `PAGO -> ESTORNADO` continua exigindo motivo e confirmação destrutiva.
+
+Gates: frontend `npm.cmd run check` aprovado (lint, TypeScript, 13 arquivos/35 testes e build de 30 rotas); Playwright 29/29 e Axe WCAG A/AA aprovados. Backend irmão: lint e 14 arquivos/81 testes unitários aprovados; PDFs fictícios inspecionados em retrato e paisagem. Integração real não foi executada porque o processo não tinha opt-in nem `DATABASE_TEST_URL`. Nenhuma variável de ambiente, migration, seed ou banco foi alterado/executado.
+
+Documentos técnicos: backend `docs/32_ANALISE_ETAPA_8.md` a `docs/37_PENDENCIAS_MIGRATIONS_ETAPA_8.md`. Evidências frontend: `etapa-8-relatorio-preview-390.png` e `etapa-8-pedido-salto-430.png`.
+
+## Etapa 7C — dashboard e imagens demonstrativas
+
+**APROVADO NO ESCOPO LOCAL.** O painel administrativo agora separa o status efetivo da loja dos controles manuais, agrupa semanticamente cliente e recebimento no pedido manual, reforça o cabeçalho das tabelas e usa sidebar cinza-areia com faixa terracota ativa. Há evidências antes/depois em 360, 390, 1024 e 1440 px.
+
+Foram geradas e integradas imagens WebP 900 × 900 para os 14 produtos do catálogo `DEMO-SHIRLEY-V1`, com URL cadastrada sempre prioritária e associação local limitada por marcador + nome conhecido. A primeira versão do X-Salada foi rejeitada por sugerir molho; o código usa somente a versão corrigida. Bebidas são representações genéricas sem rótulos ou marcas. Todas são demonstrações de IA e devem ser substituídas por fotos reais antes de divulgação comercial.
+
+Gates finais: `npm.cmd run check` aprovado (lint, TypeScript, 12 arquivos/31 testes unitários e build Next 16 de 30 rotas); Playwright 27/27 aprovado, incluindo Axe WCAG A/AA, fluxos existentes, imagens carregadas e responsividade. Nenhuma variável de ambiente, API de escrita, backend, migration, seed, banco, deploy, commit ou push foi alterado/executado.
+
+Documentos: `32_AJUSTES_VISUAIS_DASHBOARD.md` e `IMAGENS_PRODUTOS.md`.
 
 ## Etapa 7B — redesign do frontend público
 

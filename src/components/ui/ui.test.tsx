@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { CurrencyText, Field, Input, OfflineState, QuantityStepper } from ".";
+import { CurrencyText, Field, Input, OfflineState, Pagination, QuantityStepper } from ".";
 
 describe("componentes críticos", () => {
   it("formata dinheiro brasileiro a partir de string decimal", () => { render(<CurrencyText value="28.50" />); expect(screen.getByText(/28,50/)).toBeInTheDocument(); });
@@ -12,6 +12,13 @@ describe("componentes críticos", () => {
     expect(input).toHaveAttribute("aria-describedby", "name-hint name-error");
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAttribute("aria-required", "true");
+  });
+  it("pagina listagens em blocos acessíveis", () => {
+    const change = vi.fn();
+    render(<Pagination page={2} totalPages={4} totalItems={37} onPageChange={change} />);
+    expect(screen.getByRole("navigation", { name: /paginação da listagem/i })).toHaveTextContent("Página 2 de 4 · 37 registros");
+    fireEvent.click(screen.getByRole("button", { name: /anterior/i }));
+    expect(change).toHaveBeenCalledWith(1);
   });
 });
 

@@ -82,7 +82,7 @@ export function MenuPage() {
             <h1 id="menu-title">Escolha seu pedido</h1>
             <p>Confira o cardápio, personalize cada item e acompanhe tudo pelo site.</p>
           </div>
-          <Card className="store-summary" aria-label="Informações da loja">
+          <Card className="store-summary" role="region" aria-label="Informações da loja">
             {status.isLoading ? <><Skeleton className="counter-skeleton" /><Skeleton className="counter-skeleton" /></> : status.isError ? (
               <ErrorState compact title="Status indisponível" description="O cardápio continua disponível. Confirme o atendimento antes de finalizar." action={<Button size="sm" variant="ghost" onClick={() => void status.refetch()}><RefreshCw aria-hidden /> Tentar novamente</Button>} />
             ) : (

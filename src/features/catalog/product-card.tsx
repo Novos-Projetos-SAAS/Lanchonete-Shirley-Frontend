@@ -1,20 +1,17 @@
-/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { ArrowRight, ImageOff } from "lucide-react";
-import { Badge, CurrencyText } from "@/components/ui";
+import { ArrowRight } from "lucide-react";
+import { ProductImage } from "@/components/shared/product-image";
+import { CurrencyText } from "@/components/ui";
 import { buildProductHref, saveMenuPosition } from "@/lib/menu-context";
 import type { Product } from "@/types/domain";
 
 export function ProductCard({ product, menuReturnPath }: { product: Product; menuReturnPath: string }) {
   const href = buildProductHref(product.id, menuReturnPath);
-  const actionLabel = product.tipo === "LANCHE" ? "Personalizar" : "Ver item";
+  const actionLabel = product.tipo === "LANCHE" ? "Ver opções" : "Ver item";
   return (
     <article className="card product-card">
       <div className="product-card__image">
-        {product.imagem_url
-          ? <img src={product.imagem_url} alt="" width={640} height={420} loading="lazy" />
-          : <div className="product-placeholder"><ImageOff aria-hidden /><span style={{ color: "#535b66" }}>Imagem em breve</span></div>}
-        <Badge>{product.tipo === "LANCHE" ? "Personalizável" : product.tipo.toLocaleLowerCase("pt-BR")}</Badge>
+        <ProductImage product={product} sizes="(min-width: 64rem) 12vw, (min-width: 36rem) 7.5rem, 7.75rem" />
       </div>
       <div className="product-card__body">
         <div><h4>{product.nome}</h4>{product.descricao && <p>{product.descricao}</p>}</div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, ClipboardList, PlusCircle, RefreshCw, Store } from "lucide-react";
+import { ArrowRight, CircleCheckBig, CirclePause, ClipboardList, PlusCircle, RefreshCw, Store, TriangleAlert } from "lucide-react";
 import { PermissionGate } from "@/components/shared/permission-gate";
 import { Button, Card, CurrencyText, ErrorState, PageHeader, Skeleton } from "@/components/ui";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -33,6 +33,15 @@ export function DashboardPage() {
         <Button asChild><Link href="/admin/pedidos/novo"><PlusCircle aria-hidden /> Novo pedido</Link></Button>
       </PermissionGate>}
     />
+    {store.isLoading ? <Skeleton className="dashboard-store-status dashboard-store-status--loading" /> : store.isError ? <section className="dashboard-store-status dashboard-store-status--warning" aria-labelledby="dashboard-store-title">
+      <span className="dashboard-store-status__icon"><TriangleAlert aria-hidden /></span>
+      <div><p className="eyebrow">Status efetivo da loja</p><h2 id="dashboard-store-title">Status indisponível</h2><p>Não foi possível confirmar agora se o canal público está aceitando pedidos.</p></div>
+      <Button variant="ghost" size="sm" onClick={() => void store.refetch()}><RefreshCw aria-hidden /> Tentar novamente</Button>
+    </section> : <section className={`dashboard-store-status ${store.data?.aberta ? "dashboard-store-status--open" : "dashboard-store-status--closed"}`} role="status" aria-atomic="true" aria-labelledby="dashboard-store-title">
+      <span className="dashboard-store-status__icon">{store.data?.aberta ? <CircleCheckBig aria-hidden /> : <CirclePause aria-hidden />}</span>
+      <div><p className="eyebrow">Status efetivo da loja</p><h2 id="dashboard-store-title">{store.data?.aberta ? "Loja aberta para pedidos" : "Loja fechada para pedidos"}</h2><p>{store.data?.mensagem || "Status calculado pela API."} O resultado combina controle manual, horários e configuração mínima.</p></div>
+      <PermissionGate permission="loja.visualizar"><Button asChild variant="ghost" size="sm"><Link href="/admin/loja">Ver controles <ArrowRight aria-hidden /></Link></Button></PermissionGate>
+    </section>}
     {dashboard.isLoading ? <div className="metric-grid">
       <Skeleton className="skeleton--card" />
       <Skeleton className="skeleton--card" />
@@ -54,7 +63,7 @@ export function DashboardPage() {
           <div className="section-heading"><div><p className="eyebrow">Acesso rápido</p><h2>Operação</h2></div></div>
           <div className="quick-actions">
             <PermissionGate permission="pedidos.listar"><Link href="/admin/pedidos"><ClipboardList aria-hidden /><span><strong>Ver pedidos</strong><small>Fila e andamento</small></span><ArrowRight aria-hidden /></Link></PermissionGate>
-            <PermissionGate permission="loja.visualizar"><Link href="/admin/loja"><Store aria-hidden /><span><strong>{store.data?.aberta ? "Loja aberta" : "Loja fechada"}</strong><small>{store.data?.mensagem || "Consultar status"}</small></span><ArrowRight aria-hidden /></Link></PermissionGate>
+            <PermissionGate permission="loja.visualizar"><Link href="/admin/loja"><Store aria-hidden /><span><strong>Configurar loja</strong><small>Controle manual e horários</small></span><ArrowRight aria-hidden /></Link></PermissionGate>
             <PermissionGate permission="produtos.listar"><Link href="/admin/produtos"><PlusCircle aria-hidden /><span><strong>Catálogo</strong><small>Produtos e disponibilidade</small></span><ArrowRight aria-hidden /></Link></PermissionGate>
           </div>
         </Card>

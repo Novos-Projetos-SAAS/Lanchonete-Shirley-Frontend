@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock3, Save, Store } from "lucide-react";
 import { PermissionGate } from "@/components/shared/permission-gate";
-import { Button, Card, Checkbox, ErrorState, Field, Input, PageHeader } from "@/components/ui";
+import { Button, Card, Checkbox, ErrorState, Field, Input, PageHeader, Select } from "@/components/ui";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ApiError } from "@/lib/api-client";
@@ -56,6 +56,8 @@ export function StorePage() {
       aceitar_pedidos: Boolean(config.data.aceitar_pedidos),
       imprimir_automaticamente: Boolean(config.data.imprimir_automaticamente),
       nome_impressora: String(config.data.nome_impressora || ""),
+      metodo_impressao: String(config.data.metodo_impressao || (config.data.imprimir_automaticamente ? "AGENTE_LEGADO" : "DESABILITADA")),
+      imprimir_pedidos_painel: Boolean(config.data.imprimir_pedidos_painel),
     });
   }, [config.data]);
 
@@ -207,10 +209,19 @@ export function StorePage() {
       <Card className="admin-card">
         <h2>Impressão automática</h2>
         <fieldset className="settings-fieldset" disabled={!canConfigure}>
-          <Checkbox checked={Boolean(values.imprimir_automaticamente)} onChange={(event) => set("imprimir_automaticamente", event.target.checked)}>Solicitar comanda automaticamente</Checkbox>
-          <Field label="Nome da impressora no agente" htmlFor="printer-name" hint="Use exatamente o nome configurado no agente externo. No Android, a impressão física depende desse agente.">
-            <Input id="printer-name" maxLength={120} value={String(values.nome_impressora || "")} onChange={(event) => set("nome_impressora", event.target.value)} />
+          <Field label="Método de impressão" htmlFor="print-method" hint="Android Bluetooth usa o app Shirley Impressão; o agente legado mantém a integração anterior.">
+            <Select id="print-method" value={String(values.metodo_impressao || "DESABILITADA")} onChange={(event) => set("metodo_impressao", event.target.value)}>
+              <option value="DESABILITADA">Desabilitada</option>
+              <option value="ANDROID_BLUETOOTH">Android Bluetooth</option>
+              <option value="AGENTE_LEGADO">Agente legado</option>
+            </Select>
           </Field>
+          <Checkbox checked={Boolean(values.imprimir_automaticamente)} onChange={(event) => set("imprimir_automaticamente", event.target.checked)}>Solicitar comanda automaticamente</Checkbox>
+          <Checkbox checked={Boolean(values.imprimir_pedidos_painel)} onChange={(event) => set("imprimir_pedidos_painel", event.target.checked)}>Também imprimir pedidos criados no painel</Checkbox>
+          {values.metodo_impressao === "AGENTE_LEGADO" && <Field label="Nome da impressora no agente" htmlFor="printer-name" hint="Use exatamente o nome configurado no agente legado.">
+            <Input id="printer-name" maxLength={120} value={String(values.nome_impressora || "")} onChange={(event) => set("nome_impressora", event.target.value)} />
+          </Field>}
+          {values.metodo_impressao === "ANDROID_BLUETOOTH" && <p className="muted">Pareie e monitore o telefone na página Impressões. A fila continua no servidor mesmo quando o aparelho estiver offline.</p>}
           <PermissionGate permission="loja.configurar">
             <Button loading={saveConfig.isPending} onClick={() => saveConfig.mutate()}><Save aria-hidden /> Salvar impressão</Button>
           </PermissionGate>

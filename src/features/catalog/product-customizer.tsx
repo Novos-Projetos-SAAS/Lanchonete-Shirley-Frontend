@@ -1,14 +1,15 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Check, ImageOff, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Check, ShoppingBag } from "lucide-react";
+import { ProductImage } from "@/components/shared/product-image";
 import { Button, Card, CurrencyText, ErrorState, QuantityStepper, Radio, Skeleton, Textarea } from "@/components/ui";
 import { moneyToCents, centsToMoney } from "@/lib/money";
 import { sanitizeMenuReturnPath } from "@/lib/menu-context";
+import { resolveProductImage } from "@/lib/product-images";
 import { queryKeys } from "@/lib/query-keys";
 import { validateProductSelection } from "@/lib/order-rules";
 import { publicService } from "@/services/public-service";
@@ -74,7 +75,7 @@ export function ProductCustomizer() {
     router.replace(returnPath);
   }
 
-  return <main className="container section product-page" id="conteudo-principal"><Link className="back-link" href={returnPath}><ArrowLeft aria-hidden /> Voltar ao cardápio</Link><div className="product-detail"><div className="product-detail__visual">{data.imagem_url ? <><img src={data.imagem_url} alt={data.nome} width={900} height={700} /><div className="product-detail__label">FEITO NA HORA</div></> : <div className="product-placeholder product-placeholder--large"><ImageOff aria-hidden /><span style={{ color: "#535b66" }}>Imagem em breve</span></div>}</div><div className="product-detail__content"><p className="eyebrow">Personalize seu pedido</p><h1>{data.nome}</h1>{data.descricao && <p className="product-description">{data.descricao}</p>}<div className="base-price"><span>A partir de</span><CurrencyText value={data.preco_base} /></div>
+  return <main className="container section product-page" id="conteudo-principal"><Link className="back-link" href={returnPath}><ArrowLeft aria-hidden /> Voltar ao cardápio</Link><div className="product-detail"><div className="product-detail__visual"><ProductImage product={data} sizes="(min-width: 48rem) 50vw, 100vw" priority largePlaceholder fill={false} />{resolveProductImage(data) && <div className="product-detail__label">FEITO NA HORA</div>}</div><div className="product-detail__content"><p className="eyebrow">Personalize seu pedido</p><h1>{data.nome}</h1>{data.descricao && <p className="product-description">{data.descricao}</p>}<div className="base-price"><span>A partir de</span><CurrencyText value={data.preco_base} /></div>
     {data.tipo === "LANCHE" && <fieldset className="option-group"><legend>1. Escolha o pão <span>obrigatório</span></legend>{breads.length ? breads.map((bread) => <Radio key={bread.id} name="bread" value={bread.id} checked={breadId === bread.id} onChange={() => { setBreadId(bread.id); setErrors([]); }}>{bread.nome}<small>{moneyToCents(bread.acrescimo) ? `+ ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(moneyToCents(bread.acrescimo) / 100)}` : "sem acréscimo"}</small></Radio>) : <p className="field__error">Nenhum pão disponível para este lanche.</p>}</fieldset>}
     {!!data.adicionais?.length && <fieldset className="option-group"><legend>{data.tipo === "LANCHE" ? "2" : "1"}. Quer caprichar?</legend>{data.adicionais.map((item) => { const value = additionals[item.id] || 0; const max = item.max_quantidade_por_item || 20; return <div className="additional-row" key={item.id}><div><strong>{item.nome}</strong>{item.descricao && <small>{item.descricao}</small>}<CurrencyText value={item.preco} /></div><QuantityStepper label={`Quantidade de ${item.nome}`} min={0} max={max} value={value} onChange={(next) => setAdditionals((current) => ({ ...current, [item.id]: next }))} /></div>; })}</fieldset>}
     <div className="option-group"><label className="field-label" htmlFor="item-notes">Observações</label><Textarea id="item-notes" maxLength={300} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Ex.: sem cebola, molho à parte" /><small className="field__hint">Não use este campo para pedir itens que não aparecem nas opções.</small></div>

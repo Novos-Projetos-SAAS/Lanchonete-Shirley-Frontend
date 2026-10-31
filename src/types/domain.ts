@@ -11,6 +11,35 @@ export type OrderStatus =
   | "CANCELADO";
 export type PaymentStatus = "PENDENTE" | "PAGO" | "ESTORNADO";
 export type InvitationStatus = "PENDENTE" | "ACEITO" | "EXPIRADO" | "REVOGADO";
+export type PrintJobStatus = "PENDENTE" | "EM_PROCESSAMENTO" | "CONCLUIDA" | "FALHOU" | "RESULTADO_INDETERMINADO";
+
+export interface PrintDevice {
+  id: BigIntId;
+  nome: string;
+  status: "ATIVO" | "REVOGADO";
+  turno_ativo: boolean;
+  app_version?: string | null;
+  android_version?: string | null;
+  impressora_nome?: string | null;
+  bobina_mm: 58 | 80;
+  codificacao: "CP860" | "CP850";
+  ultimo_status: string;
+  ultimo_erro?: string | null;
+  ultimo_contato_em?: string | null;
+  pareado_em: string;
+}
+
+export interface AndroidPrintStatus {
+  configuracao: { metodo_impressao: "DESABILITADA" | "ANDROID_BLUETOOTH" | "AGENTE_LEGADO"; imprimir_automaticamente: boolean; imprimir_pedidos_painel: boolean };
+  dispositivos: PrintDevice[];
+  fila: Partial<Record<PrintJobStatus, number>>;
+}
+
+export interface PrintPairing {
+  codigo: string;
+  expira_em: string;
+  pareamento_uri: string;
+}
 
 export interface Invitation {
   id: BigIntId;
@@ -169,6 +198,52 @@ export interface SessionUser {
   nivel_acesso?: string;
   permissoes: string[];
   [key: string]: unknown;
+}
+
+export type ReportFilterType = "date" | "select" | "number" | "text" | "boolean";
+export type ReportColumnType = "text" | "integer" | "money" | "date" | "datetime" | "percent" | "boolean";
+
+export interface ReportFilterConfig {
+  chave: string;
+  rotulo: string;
+  tipo: ReportFilterType;
+  obrigatorio?: boolean;
+  padrao?: string | number | boolean;
+  opcoes?: string;
+  fonte?: string;
+  minimo?: number;
+  maximo?: number;
+  maximo_caracteres?: number;
+}
+
+export interface ReportColumnConfig {
+  chave: string;
+  rotulo: string;
+  tipo: ReportColumnType;
+  totalizar?: boolean;
+}
+
+export interface ReportMetadata {
+  codigo: string;
+  nome: string;
+  descricao: string;
+  grupo: "GERENCIAL" | "CADASTRAL";
+  filtros_config: ReportFilterConfig[];
+  colunas_config: ReportColumnConfig[];
+  ordem_exibicao: number;
+  limite_linhas: number;
+  filtros_padrao: Record<string, string | number | boolean>;
+}
+
+export interface ReportPreview {
+  relatorio: Pick<ReportMetadata, "codigo" | "nome" | "descricao" | "grupo">;
+  colunas: ReportColumnConfig[];
+  dados: Array<Record<string, unknown>>;
+  totais: Record<string, string | number>;
+  filtros_aplicados: Array<{ chave: string; rotulo: string; valor: string | number | boolean }>;
+  paginacao: Pagination;
+  gerado_em: string;
+  mensagem?: string;
 }
 
 export interface Pagination {
