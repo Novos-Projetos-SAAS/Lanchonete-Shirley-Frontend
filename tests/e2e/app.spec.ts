@@ -8,6 +8,8 @@ const menu = [{ id: "1", nome: "Lanches", slug: "lanches", ativo: true, produtos
 const session = { id: "1", nome: "Shirley", email: "admin@shirley.local", nivel: "ADMIN", permissoes: [] };
 const invitationToken = "v".repeat(43);
 const invitation = { id: "31", email: "colaborador@example.invalid", nivel_acesso_id: "2", nivel: "atendente", status: "PENDENTE", expira_em: "2026-10-30T20:00:00.000Z", aceito_em: null, revogado_em: null, criado_em: "2026-10-28T20:00:00.000Z", atualizado_em: "2026-10-28T20:00:00.000Z", criado_por_usuario_id: "1", criado_por_nome: "Shirley" };
+const acceptedInvitation = { ...invitation, id: "30", email: "aceito@example.invalid", status: "ACEITO", aceito_em: "2026-10-29T20:00:00.000Z" };
+const team = Array.from({ length: 12 }, (_, index) => ({ id: String(index + 1), nome: index === 11 ? "Bruna Inativa" : `Colaborador ${String(index + 1).padStart(2, "0")}`, email: index === 11 ? "bruna.inativa@example.invalid" : `pessoa${index + 1}@example.invalid`, nivel: index % 2 ? "atendente" : "entregador", nivel_acesso_id: index % 2 ? "2" : "3", ativo: index !== 11, criado_em: "2026-10-20T20:00:00.000Z", atualizado_em: "2026-10-20T20:00:00.000Z" }));
 const orders = [{ id: "101", cliente_nome: "Ana", cliente_telefone: "18999999999", tipo_entrega: "RETIRADA", status: "PENDENTE", status_pagamento: "PENDENTE", total: "28.50", versao: 1, criado_em: "2026-10-27T20:00:00.000Z", itens: [{ id: "1", quantidade: 1, produto_nome_snapshot: "X-Salada da Shirley", tipo_pao_nome_snapshot: "Pão francês", subtotal: "28.50", adicionais: [{ id: "1", nome_snapshot: "Bacon", quantidade_por_unidade: 1 }] }] }];
 const reportMetadata = { codigo: "faturamento_periodo", nome: "Faturamento por período", descricao: "Acompanha pedidos válidos, vendas realizadas, faturamento efetivo e ticket médio por dia.", grupo: "GERENCIAL", ordem_exibicao: 10, limite_linhas: 2000, filtros_padrao: { data_inicio: "2026-10-01", data_fim: "2026-10-30" }, filtros_config: [{ chave: "data_inicio", rotulo: "Data inicial", tipo: "date", obrigatorio: true }, { chave: "data_fim", rotulo: "Data final", tipo: "date", obrigatorio: true }, { chave: "status", rotulo: "Status do pedido", tipo: "select", opcoes: "status_pedido" }], colunas_config: [{ chave: "data", rotulo: "Data", tipo: "date" }, { chave: "pedidos_validos", rotulo: "Pedidos válidos", tipo: "integer", totalizar: true }, { chave: "faturamento_realizado", rotulo: "Faturamento efetivo", tipo: "money", totalizar: true }] };
 const reportCatalog = [reportMetadata, { ...reportMetadata, codigo: "listagem_produtos", nome: "Listagem de produtos", descricao: "Inventário do catálogo.", grupo: "CADASTRAL", ordem_exibicao: 110, filtros_padrao: {}, filtros_config: [{ chave: "busca", rotulo: "Buscar", tipo: "text" }], colunas_config: [{ chave: "produto", rotulo: "Produto", tipo: "text" }] }];
@@ -33,21 +35,27 @@ async function mockApi(page: Page, options: { closed?: boolean; networkError?: b
     if (path.endsWith("/convites/aceitar")) return reply({ aceito: true, login_necessario: true }, 201);
     if (path.endsWith("/admin/convites/niveis-acesso")) return reply([{ id: "2", nome: "atendente", ativo: true }, { id: "3", nome: "entregador", ativo: true }]);
     if (path.endsWith("/admin/convites") && route.request().method() === "POST") return reply({ convite: invitation, token: invitationToken }, 201);
-    if (path.endsWith("/admin/convites")) return reply({ items: [invitation], pagination: { page: 1, limit: 20, total: 1, total_pages: 1 } });
+    if (path.endsWith("/admin/convites")) return reply({ items: [invitation, acceptedInvitation], pagination: { page: 1, limit: 10, total: 2, total_pages: 1 } });
+    if (path.endsWith("/admin/usuarios")) {
+      const active = url.searchParams.get("ativo"); const query = (url.searchParams.get("busca") || "").toLocaleLowerCase("pt-BR");
+      const pageNumber = Number(url.searchParams.get("page") || 1); const limit = Number(url.searchParams.get("limit") || 10);
+      const filtered = team.filter((person) => (active == null || person.ativo === (active === "true")) && (!query || `${person.nome} ${person.email}`.toLocaleLowerCase("pt-BR").includes(query)));
+      return reply({ items: filtered.slice((pageNumber - 1) * limit, pageNumber * limit), pagination: { page: pageNumber, limit, total: filtered.length, total_pages: Math.ceil(filtered.length / limit) } });
+    }
     if (path.endsWith("/admin/dashboard")) return reply({ pedidos_validos: 12, faturamento_realizado: "350.00", ticket_medio_realizado: "29.17", por_status: [{ status: "PENDENTE", total: "2" }, { status: "ENTREGUE", total: "10" }] });
     if (path.endsWith("/admin/relatorios/faturamento_periodo/pdf")) return route.fulfill({ status: 200, body: Buffer.from("%PDF-1.4\n% mock pdf\n%%EOF"), headers: { ...cors, "content-type": "application/pdf", "content-disposition": "attachment; filename=\"relatorio-faturamento.pdf\"" } });
-    if (path.endsWith("/admin/relatorios/faturamento_periodo/gerar")) return reply({ relatorio: { codigo: reportMetadata.codigo, nome: reportMetadata.nome, descricao: reportMetadata.descricao, grupo: reportMetadata.grupo }, colunas: reportMetadata.colunas_config, dados: [{ data: "2026-10-30", pedidos_validos: 3, faturamento_realizado: "84.50" }], totais: { pedidos_validos: 3, faturamento_realizado: "84.50" }, filtros_aplicados: [{ chave: "data_inicio", rotulo: "Data inicial", valor: "2026-10-01" }, { chave: "data_fim", rotulo: "Data final", valor: "2026-10-30" }], paginacao: { page: 1, limit: 50, total: 1, total_pages: 1 }, gerado_em: "2026-10-30T15:00:00.000-03:00" });
+    if (path.endsWith("/admin/relatorios/faturamento_periodo/gerar")) return reply({ relatorio: { codigo: reportMetadata.codigo, nome: reportMetadata.nome, descricao: reportMetadata.descricao, grupo: reportMetadata.grupo }, colunas: reportMetadata.colunas_config, dados: [{ data: "2026-10-30", pedidos_validos: 3, faturamento_realizado: "84.50" }], totais: { pedidos_validos: 3, faturamento_realizado: "84.50" }, filtros_aplicados: [{ chave: "data_inicio", rotulo: "Data inicial", valor: "2026-10-01" }, { chave: "data_fim", rotulo: "Data final", valor: "2026-10-30" }], paginacao: { page: 1, limit: 10, total: 1, total_pages: 1 }, gerado_em: "2026-10-30T15:00:00.000-03:00" });
     if (path.endsWith("/admin/relatorios/faturamento_periodo")) return reply(reportMetadata);
     if (path.endsWith("/admin/relatorios")) return reply(reportCatalog);
     if (path.includes("/admin/relatorios/opcoes/")) return reply([{ id: "1", nome: "Lanches" }]);
-    if (path.endsWith("/admin/pedidos")) return reply({ items: orders, pagination: { page: 1, limit: 20, total: 1, total_pages: 1 } });
+    if (path.endsWith("/admin/pedidos")) return reply({ items: orders, pagination: { page: 1, limit: 10, total: 1, total_pages: 1 } });
     if (path.endsWith("/admin/pedidos/101")) return reply(orders[0]);
     if (path.endsWith("/admin/push/configuracao")) return reply({ habilitado: false, public_key: null });
-    if (options.adminCatalog && path.endsWith("/admin/produtos")) return reply({ items: [burger], pagination: { page: 1, limit: 20, total: 1, total_pages: 1 } });
+    if (options.adminCatalog && path.endsWith("/admin/produtos")) return reply({ items: [burger], pagination: { page: 1, limit: 10, total: 1, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/tipos-pao")) return reply({ items: burger.tipos_pao, pagination: { page: 1, limit: 100, total: 2, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/adicionais")) return reply({ items: burger.adicionais, pagination: { page: 1, limit: 100, total: 1, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/produtos/10/vinculos")) return reply({ produto_id: "10", tipos_pao: [{ tipo_pao_id: "1", ativo: false, codigo: "HAMBURGUER", nome: "Pão de hambúrguer", acrescimo: "0.00" }, { tipo_pao_id: "2", ativo: true, codigo: "FRANCES", nome: "Pão francês", acrescimo: "2.50" }], adicionais: [{ adicional_id: "7", max_quantidade_por_item: 2, ativo: true, nome: "Queijo extra", preco: "4.00", disponivel_hoje: true, deletado_em: null }] });
-    return reply({ items: [], pagination: { page: 1, limit: 20, total: 0, total_pages: 0 } });
+    return reply({ items: [], pagination: { page: 1, limit: 10, total: 0, total_pages: 0 } });
   });
 }
 
@@ -272,12 +280,55 @@ test("convites administrativos usam tabela no desktop e cartão no mobile", asyn
   await page.goto("/admin/convites");
   await expect(page.getByRole("heading", { name: "Convites" })).toBeVisible();
   await expect(page.locator(".responsive-table__desktop").getByText(invitation.email)).toBeVisible();
+  await expect(page.locator(".responsive-table__desktop").getByText("Sem ações")).toBeVisible();
+  await page.locator(".responsive-table__desktop").getByRole("button", { name: `Ações do convite para ${invitation.email}` }).click();
+  await expect(page.getByRole("button", { name: /Reemitir/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Revogar/ })).toBeVisible();
+  await capture(page, "docs/screenshots/etapa-10-convites-acoes-1440.png");
+  await page.keyboard.press("Escape");
   await capture(page, "docs/screenshots/convites-admin-1440.png");
   await capture(page, "docs/screenshots/redesign-publico-regressao-admin-1440.png");
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator(".responsive-table__mobile").getByText(invitation.email)).toBeVisible();
   await capture(page, "docs/screenshots/convites-admin-390.png");
   expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
+});
+
+test("Equipe combina busca, ativos/inativos e paginação de 10", async ({ page }) => {
+  await mockApi(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/admin/usuarios");
+  await expect(page.locator(".responsive-table__desktop tbody tr")).toHaveCount(10);
+  await page.getByRole("button", { name: /Próxima/ }).click();
+  await expect(page.locator(".responsive-table__desktop").getByText("Bruna Inativa")).toBeVisible();
+  await page.getByLabel("Estado").selectOption("false");
+  await expect(page.locator(".responsive-table__desktop tbody tr")).toHaveCount(1);
+  await page.getByPlaceholder("Buscar por nome ou e-mail").fill("bruna.inativa@example.invalid");
+  await expect(page.locator(".responsive-table__desktop").getByText("Bruna Inativa")).toBeVisible();
+  await expect(page.getByText("Página 1 de 1 · 1 registro")).toBeVisible();
+  await capture(page, "docs/screenshots/etapa-10-equipe-filtros-1440.png");
+});
+
+test("Mais abre módulos permitidos e só navega após a escolha", async ({ page }) => {
+  await mockApi(page);
+  for (const width of [320, 360, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/admin");
+    await page.getByRole("button", { name: "Mais" }).click();
+    await expect(page.getByRole("heading", { name: "Mais opções" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Produtos" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Meu perfil" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
+    await page.keyboard.press("Escape");
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Mais" }).click();
+  const accessibility = await new AxeBuilder({ page }).include('[role="dialog"]').withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(accessibility.violations).toEqual([]);
+  await capture(page, "docs/screenshots/etapa-10-mais-390.png");
+  await page.getByRole("link", { name: "Equipe" }).click();
+  await expect(page).toHaveURL(/\/admin\/usuarios$/);
+  await expect(page.getByRole("heading", { name: "Equipe" })).toBeVisible();
 });
 
 test("aceite de convite limpa o fragmento antes de exibir o formulário", async ({ page }) => {

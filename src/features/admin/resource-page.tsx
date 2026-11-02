@@ -28,7 +28,7 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
     if (config.resource === "produtos" && !editing && body.tipo === "LANCHE") body.ativo = false;
     return editing ? adminService.updateResource(config.resource, editing.id, body) : adminService.createResource(config.resource, body);
   }, onSuccess: async () => { toast({ tone: "success", title: editing ? "Cadastro atualizado" : "Cadastro criado" }); setOpen(false); await client.invalidateQueries({ queryKey: ["resource", config.resource] }); }, onError: (error) => setFormError(error instanceof ApiError ? error.message : "Não foi possível salvar.") });
-  const remove = useMutation({ mutationFn: (id: string) => adminService.deleteResource(config.resource, id), onSuccess: async () => { toast({ tone: "success", title: "Cadastro desativado" }); await client.invalidateQueries({ queryKey: ["resource", config.resource] }); }, onError: (error) => toast({ tone: "error", title: "Não foi possível desativar", description: error instanceof ApiError ? error.message : undefined }) });
+  const remove = useMutation({ mutationFn: (id: string) => adminService.deleteResource(config.resource, id), onSuccess: async () => { toast({ tone: "success", title: "Cadastro desativado" }); if (page > 1 && result.data?.items.length === 1) setPage((current) => current - 1); await client.invalidateQueries({ queryKey: ["resource", config.resource] }); }, onError: (error) => toast({ tone: "error", title: "Não foi possível desativar", description: error instanceof ApiError ? error.message : undefined }) });
   function edit(record: AdminRecord) { setEditing(record); setValues(recordValues(config, record)); setOpen(true); }
   const nameField = config.primaryField || "nome";
   const columns = [

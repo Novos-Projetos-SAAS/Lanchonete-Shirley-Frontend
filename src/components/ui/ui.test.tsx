@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { CurrencyText, Field, Input, OfflineState, Pagination, QuantityStepper } from ".";
+import { CurrencyText, Field, Input, OfflineState, Pagination, QuantityStepper, RowActions } from ".";
 
 describe("componentes críticos", () => {
   it("formata dinheiro brasileiro a partir de string decimal", () => { render(<CurrencyText value="28.50" />); expect(screen.getByText(/28,50/)).toBeInTheDocument(); });
@@ -19,6 +19,17 @@ describe("componentes críticos", () => {
     expect(screen.getByRole("navigation", { name: /paginação da listagem/i })).toHaveTextContent("Página 2 de 4 · 37 registros");
     fireEvent.click(screen.getByRole("button", { name: /anterior/i }));
     expect(change).toHaveBeenCalledWith(1);
+  });
+  it("não abre menu vazio e fecha ações com Escape", () => {
+    const { rerender } = render(<RowActions>{false}</RowActions>);
+    expect(screen.getByText("Sem ações")).toBeInTheDocument();
+    rerender(<RowActions label="Ações do convite"><button type="button">Reemitir</button></RowActions>);
+    const summary = screen.getByRole("button", { name: "Ações do convite" });
+    fireEvent.click(summary);
+    const details = summary.closest("details");
+    expect(details).toHaveAttribute("open");
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(details).not.toHaveAttribute("open");
   });
 });
 

@@ -1,6 +1,20 @@
 # Handoff para análise
 
-Data: 30/10/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`; alterações atuais ainda não foram commitadas nem enviadas.
+Data: 31/10/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`; alterações atuais ainda não foram commitadas nem enviadas.
+
+## Etapa 10 — handoff prioritário
+
+**Web local aprovado; integração Android e migration 040 pendentes.** Leia `docs/46_DIAGNOSTICO_CODIGO_REAL_ETAPA_10.md` a `49_RELATORIO_FINAL_ETAPA_10.md`, além dos documentos 46–47 nos projetos irmãos.
+
+- Equipe: backend lista soft-deletados somente na listagem administrativa; `ativo=false`, busca e paginação 10 foram cobertos por unidades e Playwright mockado.
+- Convites: menu só existe com ação aplicável; `RowActions` fecha por Escape/clique externo; aceite público continua isolado.
+- Mobile: atalhos por `href`; `Mais` abre Drawer RBAC com módulos restantes e Meu perfil como opção. Testado em 320/360/390/430 px e por fixtures de admin/atendente/entregador.
+- Paginação: 10 no frontend/backend; seletores de referência continuam 100; ordenações ganharam desempate por ID.
+- Impressão: painel mostra `ultimo_status`/erro persistente; backend e Android reconciliam ACK sem reimpressão automática.
+- Gates: lint, TypeScript, 15 arquivos/43 testes, build 30 rotas e Playwright 31/31 aprovados. Backend lint e 15 arquivos/88 testes aprovados. Evidências usam prefixo `etapa-10-`.
+- Não executado: Neon, migration 040, seeds, integração real, build/APK Android, dispositivo/impressora, deploy, commit ou push.
+
+Próximo passo seguro: instalar toolchain Android/gerar wrapper e compilar; depois testar a 040 exclusivamente em TEST isolado com autorização e executar a matriz física antes de considerar development.
 
 ## Etapa 9 — handoff prioritário
 

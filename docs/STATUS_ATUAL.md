@@ -1,6 +1,14 @@
 # Status atual
 
-Atualizado em 30/10/2026.
+Atualizado em 31/10/2026.
+
+## Etapa 10 — auditoria real e confiabilidade operacional
+
+**IMPLEMENTADA E APROVADA NOS GATES WEB LOCAIS; ANDROID/BANCO/HARDWARE PENDENTES.** Equipe agora lista corretamente ativos e inativos, combina busca/filtro e pagina 10 registros; Convites não abre menu sem ação; a navegação móvel `Mais` abre todos os módulos autorizados; todas as tabelas administrativas usam paginação de servidor em 10, preservando seletores internos maiores.
+
+O backend recebeu defaults 10, ordenação determinística, ACK idempotente e reconciliação somente de estado, além de auto-revogação do dispositivo. O Android passou a persistir ACK pendente com lease cifrado, bloquear duplicidade, manter alerta indeterminado até conferência, distinguir serviço vivo, aplicar backoff, desvincular/reparear, atualizar Bluetooth e testar localmente com confirmação.
+
+Gates executados: frontend lint, TypeScript, 43 unitários, build de 30 rotas e 31 Playwright/Axe aprovados; backend lint e 88 unitários aprovados. A migration 040 não foi executada, nenhuma conexão Neon foi aberta e Android não pôde ser compilado porque Gradle/wrapper, SDK, Android Studio, ADB e Kotlinc não estão disponíveis. Leia `46_DIAGNOSTICO_CODIGO_REAL_ETAPA_10.md` a `49_RELATORIO_FINAL_ETAPA_10.md`.
 
 ## Etapa 9 — impressão automática Android Bluetooth
 

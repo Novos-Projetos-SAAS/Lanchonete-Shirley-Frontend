@@ -9,6 +9,8 @@ import {
   cloneElement,
   Children,
   isValidElement,
+  useEffect,
+  useRef,
   type ButtonHTMLAttributes,
   type FieldsetHTMLAttributes,
   type HTMLAttributes,
@@ -221,6 +223,27 @@ export function Pagination({ page, totalPages, totalItems, onPageChange, label =
 }
 
 export function RowActions({ label = "Ações do registro", children }: { label?: string; children: ReactNode }) {
-  return <details className="row-actions"><summary aria-label={label} title={label}><MoreHorizontal aria-hidden /></summary><div className="row-actions__menu">{children}</div></details>;
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const actions = Children.toArray(children).filter(Boolean);
+  useEffect(() => {
+    function closeFromOutside(event: PointerEvent) {
+      const details = detailsRef.current;
+      if (details?.open && event.target instanceof Node && !details.contains(event.target)) details.open = false;
+    }
+    function closeFromKeyboard(event: KeyboardEvent) {
+      const details = detailsRef.current;
+      if (event.key !== "Escape" || !details?.open) return;
+      details.open = false;
+      details.querySelector<HTMLElement>("summary")?.focus();
+    }
+    document.addEventListener("pointerdown", closeFromOutside);
+    document.addEventListener("keydown", closeFromKeyboard);
+    return () => {
+      document.removeEventListener("pointerdown", closeFromOutside);
+      document.removeEventListener("keydown", closeFromKeyboard);
+    };
+  }, []);
+  if (!actions.length) return <span className="muted">Sem ações</span>;
+  return <details className="row-actions" ref={detailsRef}><summary role="button" aria-label={label} title={label}><MoreHorizontal aria-hidden /></summary><div className="row-actions__menu">{actions}</div></details>;
 }
 
