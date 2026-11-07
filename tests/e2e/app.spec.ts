@@ -18,7 +18,7 @@ const ok = (data: unknown) => ({ status: "success", data });
 async function mockApi(page: Page, options: { closed?: boolean; networkError?: boolean; adminCatalog?: boolean } = {}) {
   await page.route("**/api/v1/**", async (route: Route) => {
     const url = new URL(route.request().url()); const path = url.pathname;
-    const cors = { "access-control-allow-origin": "http://127.0.0.1:3000", "access-control-allow-credentials": "true", "access-control-allow-headers": "content-type,idempotency-key,x-csrf-token", "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS", "access-control-expose-headers": "content-disposition" };
+    const cors = { "access-control-allow-origin": "http://127.0.0.1:3100", "access-control-allow-credentials": "true", "access-control-allow-headers": "content-type,idempotency-key,x-csrf-token", "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS", "access-control-expose-headers": "content-disposition" };
     const reply = (data: unknown, status = 200) => route.fulfill({ status, json: ok(data), headers: cors });
     if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
     if (options.networkError && path.endsWith("/cardapio")) return route.abort("failed");

@@ -1,6 +1,14 @@
 # Handoff para análise
 
-Data: 31/10/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`; alterações atuais ainda não foram commitadas nem enviadas.
+Data: 06/11/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`.
+
+## Etapa 11 — handoff prioritário
+
+- Frontend verde: lint, TypeScript, 43 testes, build de 30 rotas e 31 E2E/Axe.
+- O E2E usa servidor de produção isolado na porta 3100 e não reutiliza instâncias locais.
+- Backend development e TEST: 40 migrations/10 seeds; integração real 52/52 e baseline TEST limpa.
+- Relatórios técnicos estão nos documentos 50/52 do backend e 51/53 do Android.
+- Pendente externo: sincronizar/compilar no Android Studio e executar homologação com impressora real.
 
 ## Etapa 10 — handoff prioritário
 

@@ -1,6 +1,12 @@
 # Status atual
 
-Atualizado em 31/10/2026.
+Atualizado em 06/11/2026.
+
+## Etapa 11 — regressão final
+
+Frontend aprovado. O Playwright deixou de reutilizar servidores locais e agora inicia um build de produção isolado em `127.0.0.1:3100`, eliminando interferência de processos na porta 3000 e os 404 intermitentes do modo dev.
+
+Gates finais: lint, TypeScript, 15 arquivos/43 testes, build de 30 rotas e 31/31 Playwright/Axe. O backend irmão terminou em 40 migrations/10 seeds tanto em development quanto no TEST isolado, com 110 unitários e 52 integrações. Android físico/build permanece com o usuário por ausência do toolchain neste computador.
 
 ## Etapa 10 — auditoria real e confiabilidade operacional
 
