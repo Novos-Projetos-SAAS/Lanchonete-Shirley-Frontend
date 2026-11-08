@@ -1,6 +1,15 @@
 # Handoff para análise
 
-Data: 06/11/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`.
+Data: 08/11/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`.
+
+## Padronização de erros — handoff prioritário
+
+- Reutilizar `src/lib/api-errors.ts`, `FormErrorSummary` e `Field error`; não voltar a consumir apenas `error.message` em formulários.
+- O editor de produto mantém o modal/dados e direciona `PRODUCT_PRICE_REQUIRED` para `preco_base`.
+- Checkout e pedido manual continuam sem repetição automática; o identificador idempotente do checkout foi preservado.
+- Gate: lint, TypeScript, 58 unitários, build e 32 E2E/Axe.
+- O script de build usa Webpack por panic reproduzível do Turbopack no ambiente Windows atual.
+- Relatório: `50_PADRONIZACAO_ERROS_FEEDBACK.md`.
 
 ## Etapa 11 — handoff prioritário
 

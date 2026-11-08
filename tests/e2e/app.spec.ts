@@ -15,7 +15,8 @@ const reportMetadata = { codigo: "faturamento_periodo", nome: "Faturamento por p
 const reportCatalog = [reportMetadata, { ...reportMetadata, codigo: "listagem_produtos", nome: "Listagem de produtos", descricao: "Inventário do catálogo.", grupo: "CADASTRAL", ordem_exibicao: 110, filtros_padrao: {}, filtros_config: [{ chave: "busca", rotulo: "Buscar", tipo: "text" }], colunas_config: [{ chave: "produto", rotulo: "Produto", tipo: "text" }] }];
 const ok = (data: unknown) => ({ status: "success", data });
 
-async function mockApi(page: Page, options: { closed?: boolean; networkError?: boolean; adminCatalog?: boolean } = {}) {
+async function mockApi(page: Page, options: { closed?: boolean; networkError?: boolean; adminCatalog?: boolean; productActivationError?: boolean } = {}) {
+  let productUpdateAttempts = 0;
   await page.route("**/api/v1/**", async (route: Route) => {
     const url = new URL(route.request().url()); const path = url.pathname;
     const cors = { "access-control-allow-origin": "http://127.0.0.1:3100", "access-control-allow-credentials": "true", "access-control-allow-headers": "content-type,idempotency-key,x-csrf-token", "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS", "access-control-expose-headers": "content-disposition" };
@@ -51,6 +52,9 @@ async function mockApi(page: Page, options: { closed?: boolean; networkError?: b
     if (path.endsWith("/admin/pedidos")) return reply({ items: orders, pagination: { page: 1, limit: 10, total: 1, total_pages: 1 } });
     if (path.endsWith("/admin/pedidos/101")) return reply(orders[0]);
     if (path.endsWith("/admin/push/configuracao")) return reply({ habilitado: false, public_key: null });
+    if (options.productActivationError && path.endsWith("/admin/produtos/10") && route.request().method() === "PATCH" && productUpdateAttempts++ === 0) {
+      return route.fulfill({ status: 422, headers: cors, json: { status: "fail", code: "PRODUCT_PRICE_REQUIRED", message: "Informe o preço base antes de ativar o produto.", request_id: "123e4567-e89b-42d3-a456-426614174000", details: [{ path: "preco_base", message: "Informe o preço base antes de ativar o produto." }] } });
+    }
     if (options.adminCatalog && path.endsWith("/admin/produtos")) return reply({ items: [burger], pagination: { page: 1, limit: 10, total: 1, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/tipos-pao")) return reply({ items: burger.tipos_pao, pagination: { page: 1, limit: 100, total: 2, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/adicionais")) return reply({ items: burger.adicionais, pagination: { page: 1, limit: 100, total: 1, total_pages: 1 } });
@@ -237,6 +241,31 @@ test("editor de produto carrega vínculos atuais antes de permitir substituiçã
   await expect(page.getByRole("checkbox", { name: "Queijo extra" })).toBeChecked();
   await expect(page.locator(".association-row").filter({ hasText: "Queijo extra" }).getByRole("spinbutton")).toHaveValue("2");
   await expect(page.getByRole("button", { name: "Salvar vínculos" })).toBeEnabled();
+});
+
+test("ativação de produto sem preço preserva o formulário e direciona a correção", async ({ page }) => {
+  await mockApi(page, { adminCatalog: true, productActivationError: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/admin/produtos");
+  const mobileTable = page.locator(".responsive-table__mobile");
+  await mobileTable.getByLabel("Ações de X-Bacon").click();
+  await mobileTable.getByRole("button", { name: "Editar" }).click();
+  const price = page.getByLabel("Preço base");
+  await price.fill("");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "Não foi possível ativar o produto" })).toContainText("Informe o preço base antes de ativar o produto");
+  await expect(price).toBeFocused();
+  await expect(page.getByLabel("Nome")).toHaveValue("X-Bacon");
+  await expect(page.getByLabel("Produto ativo")).toBeChecked();
+  await price.fill(" ");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByText("Referência do atendimento: 123e4567-e89b-42d3-a456-426614174000")).toBeVisible();
+  await expect(page.getByText("Cadastro atualizado")).toHaveCount(0);
+  await price.fill("24.00");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.getByText("Cadastro atualizado")).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
 test("ajustes administrativos distinguem grupos, tabelas e status efetivo", async ({ page }) => {

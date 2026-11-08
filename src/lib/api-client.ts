@@ -40,12 +40,24 @@ async function parseError(response: Response): Promise<ApiError> {
   } catch {
     // Respostas de infraestrutura podem não ser JSON.
   }
+  const fallbackByStatus: Record<number, string> = {
+    400: "Não foi possível processar os dados enviados.", 401: "Sua sessão expirou. Entre novamente.",
+    403: "Você não tem permissão para realizar esta ação.", 404: "O registro solicitado não foi encontrado.",
+    409: "A operação conflita com o estado atual do registro.", 413: "O conteúdo enviado excede o limite permitido.",
+    422: "Revise os campos informados.", 429: "Muitas tentativas. Aguarde um momento e tente novamente.",
+    500: "Ocorreu uma falha no servidor. Tente novamente.", 502: "O serviço está temporariamente indisponível.",
+    503: "O serviço está temporariamente indisponível.", 504: "O serviço demorou para responder. Tente novamente.",
+  };
+  const message = typeof payload.message === "string" && payload.message.trim() ? payload.message.trim() : (fallbackByStatus[response.status] || (response.status >= 500 ? fallbackByStatus[500] : "Não foi possível concluir a solicitação."));
+  const code = typeof payload.code === "string" && /^[A-Z0-9_]{2,100}$/.test(payload.code) ? payload.code : `HTTP_${response.status}`;
+  const requestId = typeof payload.request_id === "string" ? payload.request_id.slice(0, 100) : undefined;
+  const details = Array.isArray(payload.details) ? payload.details.filter((detail) => detail && typeof detail.path === "string" && typeof detail.message === "string").map((detail) => ({ path: detail.path!.slice(0, 200), message: detail.message!.slice(0, 500) })) : undefined;
   return new ApiError(
-    payload.message || (response.status === 0 ? "Sem conexão com o servidor." : "Não foi possível concluir a solicitação."),
+    message,
     response.status,
-    payload.code || `HTTP_${response.status}`,
-    payload.request_id,
-    payload.details,
+    code,
+    requestId,
+    details,
   );
 }
 

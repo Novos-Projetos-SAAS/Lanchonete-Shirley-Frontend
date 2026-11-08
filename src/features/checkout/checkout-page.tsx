@@ -8,8 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { ArrowLeft, CheckCircle2, MapPin, RefreshCw, Store, Truck } from "lucide-react";
-import { Button, Card, Checkbox, EmptyState, ErrorState, Field, FieldGroup, Input, PageHeader, PriceBreakdown, Radio, Select, Textarea } from "@/components/ui";
-import { ApiError } from "@/lib/api-client";
+import { Button, Card, Checkbox, EmptyState, ErrorState, Field, FieldGroup, FormErrorSummary, Input, PageHeader, PriceBreakdown, Radio, Select, Textarea } from "@/components/ui";
+import { toFormError, type FormErrorFeedback } from "@/lib/api-errors";
 import { clearAttempt, getOrCreateAttempt } from "@/lib/idempotency";
 import { centsToMoney } from "@/lib/money";
 import { queryKeys } from "@/lib/query-keys";
@@ -53,7 +53,7 @@ export function CheckoutPage() {
   const items = useCartStore((state) => state.items);
   const hydrated = useCartStore((state) => state.hydrated);
   const clearCart = useCartStore((state) => state.clear);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<FormErrorFeedback | null>(null);
   const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status });
   const payments = useQuery({ queryKey: queryKeys.payments, queryFn: publicService.paymentMethods });
   const form = useForm<FormValues>({
@@ -118,8 +118,14 @@ export function CheckoutPage() {
       clearCart();
       router.replace("/pedido/confirmado");
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : "Não foi possível enviar o pedido.";
-      setSubmitError(`${message} Se tentar de novo sem alterar os dados, a mesma tentativa segura será reutilizada.`);
+      const feedback = toFormError(error, { fallback: "Não foi possível enviar o pedido.", aliases: {
+        "cliente.nome": "nome", "cliente.telefone": "telefone", "endereco.logradouro": "logradouro", "endereco.numero": "numero",
+        "endereco.bairro": "bairro", "endereco.cidade": "cidade", "endereco.uf": "uf",
+      } });
+      Object.entries(feedback.fields).forEach(([field, message]) => {
+        if (field in form.getValues()) form.setError(field as keyof FormValues, { type: "server", message });
+      });
+      setSubmitError({ ...feedback, message: `${feedback.message} Se tentar de novo sem alterar os dados, a mesma tentativa segura será reutilizada.` });
     }
   }
 
@@ -168,7 +174,7 @@ export function CheckoutPage() {
         <Card className="sticky-summary checkout-summary">
           <h2>Resumo</h2>
           <PriceBreakdown lines={[{ label: "Itens", value: centsToMoney(total) }, { label: deliveryType === "ENTREGA" ? "Entrega (a confirmar)" : "Retirada", value: "0.00" }, { label: "Estimativa", value: centsToMoney(total), emphasis: true }]} note="O servidor recalcula tudo com o cardápio atual." />
-          {submitError && <div className="form-error-summary" role="alert"><strong>Pedido não enviado</strong><p>{submitError}</p></div>}
+          <FormErrorSummary error={submitError} fieldIds={{ nome: "nome", telefone: "telefone", logradouro: "logradouro", numero: "numero", bairro: "bairro", cidade: "cidade", uf: "uf", metodo_pagamento_id: "metodo", troco_para: "troco" }} />
           <Button full size="lg" type="submit" loading={form.formState.isSubmitting} disabled={payments.isError || status.isLoading}><CheckCircle2 aria-hidden /> Confirmar pedido</Button>
           <Button full variant="ghost" asChild><Link href="/carrinho"><ArrowLeft aria-hidden /> Voltar ao carrinho</Link></Button>
           <p className="privacy-note">Ao confirmar, você envia apenas os dados necessários para este pedido.</p>

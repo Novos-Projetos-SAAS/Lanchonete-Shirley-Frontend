@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { CurrencyText, Field, Input, OfflineState, Pagination, QuantityStepper, RowActions } from ".";
+import { CurrencyText, Field, FormErrorSummary, Input, OfflineState, Pagination, QuantityStepper, RowActions } from ".";
 
 describe("componentes críticos", () => {
   it("formata dinheiro brasileiro a partir de string decimal", () => { render(<CurrencyText value="28.50" />); expect(screen.getByText(/28,50/)).toBeInTheDocument(); });
@@ -12,6 +12,11 @@ describe("componentes críticos", () => {
     expect(input).toHaveAttribute("aria-describedby", "name-hint name-error");
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAttribute("aria-required", "true");
+  });
+  it("resume os erros e direciona o foco ao primeiro campo inválido", async () => {
+    render(<><Input id="preco" /><FormErrorSummary error={{ message: "Revise", fields: { preco_base: "Informe o preço" }, requestId: "req-1" }} fieldIds={{ preco_base: "preco" }} /></>);
+    expect(screen.getByRole("alert")).toHaveTextContent("Referência do atendimento: req-1");
+    await vi.waitFor(() => expect(document.getElementById("preco")).toHaveFocus());
   });
   it("pagina listagens em blocos acessíveis", () => {
     const change = vi.fn();

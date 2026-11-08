@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/cn";
 import { formatCurrency } from "@/lib/money";
 import type { Money, OrderStatus, PaymentStatus } from "@/types/domain";
+import type { FormErrorFeedback } from "@/lib/api-errors";
 
 const buttonVariants = cva("button", {
   variants: {
@@ -92,6 +93,38 @@ export function Field({ label, htmlFor, hint, error, required, children }: Field
       <div>{control}</div>
       {hint && <p className="field__hint" id={`${htmlFor}-hint`}>{hint}</p>}
       {error && <p className="field__error" id={`${htmlFor}-error`} role="alert">{error}</p>}
+    </div>
+  );
+}
+
+interface FormErrorSummaryProps {
+  error: FormErrorFeedback | null;
+  fieldIds?: Record<string, string>;
+  focusFirstField?: boolean;
+}
+
+export function FormErrorSummary({ error, fieldIds = {}, focusFirstField = true }: FormErrorSummaryProps) {
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const entries = Object.entries(error?.fields ?? {});
+  const targetId = entries.length ? (fieldIds[entries[0][0]] ?? entries[0][0]) : undefined;
+  useEffect(() => {
+    if (!error) return;
+    const target = targetId ? document.getElementById(targetId) : null;
+    const focusTarget = focusFirstField && target instanceof HTMLElement ? target : summaryRef.current;
+    window.requestAnimationFrame(() => {
+      focusTarget?.focus({ preventScroll: true });
+      focusTarget?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+    });
+  }, [error, targetId, focusFirstField]);
+  if (!error) return null;
+  return (
+    <div className="form-error-summary" role="alert" aria-live="assertive" tabIndex={-1} ref={summaryRef}>
+      <strong>{error.message}</strong>
+      {entries.length > 0 && <ul>{entries.map(([field, message]) => {
+        const id = fieldIds[field] ?? field;
+        return <li key={field}><a href={`#${id}`} onClick={(event) => { event.preventDefault(); document.getElementById(id)?.focus(); }}>{message}</a></li>;
+      })}</ul>}
+      {error.requestId && <p className="form-error-summary__reference">Referência do atendimento: {error.requestId}</p>}
     </div>
   );
 }

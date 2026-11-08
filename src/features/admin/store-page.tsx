@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock3, Save, Store } from "lucide-react";
 import { PermissionGate } from "@/components/shared/permission-gate";
-import { Button, Card, Checkbox, ErrorState, Field, Input, PageHeader, Select } from "@/components/ui";
+import { Button, Card, Checkbox, ErrorState, Field, FormErrorSummary, Input, PageHeader, Select } from "@/components/ui";
 import { useToast } from "@/components/ui/toast";
 import { useAuth } from "@/features/auth/auth-provider";
-import { ApiError } from "@/lib/api-client";
+import { clearFormFieldError, toFormError, type FormErrorFeedback } from "@/lib/api-errors";
 import { queryKeys } from "@/lib/query-keys";
 import { adminService } from "@/services/admin-service";
 import { publicService } from "@/services/public-service";
@@ -38,6 +38,7 @@ export function StorePage() {
   const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status });
   const [values, setValues] = useState<Record<string, string | number | boolean | null>>({});
   const [schedules, setSchedules] = useState<Schedule[]>(emptySchedules);
+  const [formError, setFormError] = useState<FormErrorFeedback | null>(null);
 
   // Sincroniza o formulário editável quando os dados remotos chegam.
   useEffect(() => {
@@ -76,16 +77,18 @@ export function StorePage() {
     }));
   }, [scheduleQuery.data]);
 
-  function notifyError(error: Error) {
+  function notifyError(error: unknown) {
+    setFormError(toFormError(error, { fallback: "Não foi possível salvar as configurações." }));
     toast({
       tone: "error",
       title: "Não foi possível salvar",
-      description: error instanceof ApiError ? error.message : undefined,
+      description: toFormError(error).message,
     });
   }
 
   function set(name: string, value: string | number | boolean) {
     setValues((current) => ({ ...current, [name]: value }));
+    setFormError((current) => clearFormFieldError(current, name));
   }
 
   const saveConfig = useMutation({
@@ -99,6 +102,7 @@ export function StorePage() {
       nome_impressora: values.nome_impressora || null,
     }),
     onSuccess: async () => {
+      setFormError(null);
       toast({ tone: "success", title: "Configurações salvas" });
       await config.refetch();
     },
@@ -108,6 +112,7 @@ export function StorePage() {
   const saveSchedules = useMutation({
     mutationFn: () => adminService.replaceSchedules(schedules),
     onSuccess: async () => {
+      setFormError(null);
       toast({ tone: "success", title: "Horários salvos" });
       await scheduleQuery.refetch();
     },
@@ -117,6 +122,7 @@ export function StorePage() {
   const toggle = useMutation({
     mutationFn: (accept: boolean) => adminService.setStoreStatus(accept),
     onSuccess: async (_result, accept) => {
+      setFormError(null);
       set("aceitar_pedidos", accept);
       toast({ tone: "success", title: accept ? "Pedidos permitidos no horário" : "Recebimento pausado" });
       await Promise.all([
@@ -145,6 +151,8 @@ export function StorePage() {
       </PermissionGate>}
     />
 
+    <FormErrorSummary error={formError} fieldIds={{ nome_fantasia: "store-name", telefone: "store-phone", whatsapp: "store-whatsapp", taxa_entrega: "store-fee", tempo_estimado_min: "store-time", logo_url: "store-logo", endereco_trailer: "store-address", referencia_trailer: "store-reference", metodo_impressao: "print-method", nome_impressora: "printer-name" }} />
+
     <div className="store-status-card">
       <span className={`store-stamp ${status.data?.aberta ? "store-stamp--open" : ""}`}>{status.data?.aberta ? "Aberta" : "Fechada"}</span>
       <div>
@@ -158,28 +166,28 @@ export function StorePage() {
         <h2>Identidade e atendimento</h2>
         <fieldset className="settings-fieldset" disabled={!canConfigure}>
           <div className="form-grid form-grid--2">
-            <Field label="Nome fantasia" htmlFor="store-name" required>
+            <Field label="Nome fantasia" htmlFor="store-name" required error={formError?.fields.nome_fantasia}>
               <Input id="store-name" value={String(values.nome_fantasia || "")} onChange={(event) => set("nome_fantasia", event.target.value)} />
             </Field>
-            <Field label="Telefone" htmlFor="store-phone">
+            <Field label="Telefone" htmlFor="store-phone" error={formError?.fields.telefone}>
               <Input id="store-phone" type="tel" inputMode="tel" value={String(values.telefone || "")} onChange={(event) => set("telefone", event.target.value)} />
             </Field>
-            <Field label="WhatsApp" htmlFor="store-whatsapp" hint="Use DDD e número; o backend normaliza o formato.">
+            <Field label="WhatsApp" htmlFor="store-whatsapp" hint="Use DDD e número; o backend normaliza o formato." error={formError?.fields.whatsapp}>
               <Input id="store-whatsapp" type="tel" inputMode="tel" value={String(values.whatsapp || "")} onChange={(event) => set("whatsapp", event.target.value)} />
             </Field>
-            <Field label="Taxa de entrega" htmlFor="store-fee" hint="Use ponto nos centavos, por exemplo 5.00.">
+            <Field label="Taxa de entrega" htmlFor="store-fee" hint="Use ponto nos centavos, por exemplo 5.00." error={formError?.fields.taxa_entrega}>
               <Input id="store-fee" inputMode="decimal" value={String(values.taxa_entrega || "")} onChange={(event) => set("taxa_entrega", event.target.value)} />
             </Field>
-            <Field label="Tempo estimado (min)" htmlFor="store-time">
+            <Field label="Tempo estimado (min)" htmlFor="store-time" error={formError?.fields.tempo_estimado_min}>
               <Input id="store-time" type="number" min={1} max={1440} value={Number(values.tempo_estimado_min || 30)} onChange={(event) => set("tempo_estimado_min", Number(event.target.value))} />
             </Field>
-            <Field label="URL da logo" htmlFor="store-logo">
+            <Field label="URL da logo" htmlFor="store-logo" error={formError?.fields.logo_url}>
               <Input id="store-logo" type="url" value={String(values.logo_url || "")} onChange={(event) => set("logo_url", event.target.value)} />
             </Field>
-            <Field label="Endereço do trailer" htmlFor="store-address">
+            <Field label="Endereço do trailer" htmlFor="store-address" error={formError?.fields.endereco_trailer}>
               <Input id="store-address" value={String(values.endereco_trailer || "")} onChange={(event) => set("endereco_trailer", event.target.value)} />
             </Field>
-            <Field label="Referência" htmlFor="store-reference">
+            <Field label="Referência" htmlFor="store-reference" error={formError?.fields.referencia_trailer}>
               <Input id="store-reference" value={String(values.referencia_trailer || "")} onChange={(event) => set("referencia_trailer", event.target.value)} />
             </Field>
           </div>
@@ -209,7 +217,7 @@ export function StorePage() {
       <Card className="admin-card">
         <h2>Impressão automática</h2>
         <fieldset className="settings-fieldset" disabled={!canConfigure}>
-          <Field label="Método de impressão" htmlFor="print-method" hint="Android Bluetooth usa o app Shirley Impressão; o agente legado mantém a integração anterior.">
+          <Field label="Método de impressão" htmlFor="print-method" hint="Android Bluetooth usa o app Shirley Impressão; o agente legado mantém a integração anterior." error={formError?.fields.metodo_impressao}>
             <Select id="print-method" value={String(values.metodo_impressao || "DESABILITADA")} onChange={(event) => set("metodo_impressao", event.target.value)}>
               <option value="DESABILITADA">Desabilitada</option>
               <option value="ANDROID_BLUETOOTH">Android Bluetooth</option>
@@ -218,7 +226,7 @@ export function StorePage() {
           </Field>
           <Checkbox checked={Boolean(values.imprimir_automaticamente)} onChange={(event) => set("imprimir_automaticamente", event.target.checked)}>Solicitar comanda automaticamente</Checkbox>
           <Checkbox checked={Boolean(values.imprimir_pedidos_painel)} onChange={(event) => set("imprimir_pedidos_painel", event.target.checked)}>Também imprimir pedidos criados no painel</Checkbox>
-          {values.metodo_impressao === "AGENTE_LEGADO" && <Field label="Nome da impressora no agente" htmlFor="printer-name" hint="Use exatamente o nome configurado no agente legado.">
+          {values.metodo_impressao === "AGENTE_LEGADO" && <Field label="Nome da impressora no agente" htmlFor="printer-name" hint="Use exatamente o nome configurado no agente legado." error={formError?.fields.nome_impressora}>
             <Input id="printer-name" maxLength={120} value={String(values.nome_impressora || "")} onChange={(event) => set("nome_impressora", event.target.value)} />
           </Field>}
           {values.metodo_impressao === "ANDROID_BLUETOOTH" && <p className="muted">Pareie e monitore o telefone na página Impressões. A fila continua no servidor mesmo quando o aparelho estiver offline.</p>}

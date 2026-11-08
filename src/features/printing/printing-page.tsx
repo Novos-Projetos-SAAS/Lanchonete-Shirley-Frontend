@@ -8,6 +8,7 @@ import { Badge, Button, Card, ConfirmDialog, Dialog, EmptyState, ErrorState, Fie
 import { useToast } from "@/components/ui/toast";
 import { formatDateTime } from "@/lib/date";
 import { API_URL } from "@/lib/api-client";
+import { apiErrorMessage } from "@/lib/api-errors";
 import { adminService, type AdminRecord } from "@/services/admin-service";
 import type { PrintDevice, PrintPairing } from "@/types/domain";
 
@@ -23,10 +24,10 @@ export function PrintingPage() {
   const jobs = useQuery({ queryKey: ["print-jobs", status, page], queryFn: () => adminService.printJobs(status, page), refetchInterval: 20_000 });
   const android = useQuery({ queryKey: ["android-print-status"], queryFn: adminService.androidPrintStatus, refetchInterval: 15_000 });
   const refresh = async () => { await Promise.all([jobs.refetch(), android.refetch()]); };
-  const pairingMutation = useMutation({ mutationFn: () => adminService.createPrintPairing(API_URL), onSuccess: setPairing, onError: (error: Error) => toast({ tone: "error", title: "Não foi possível criar o pareamento", description: error.message }) });
-  const testMutation = useMutation({ mutationFn: adminService.testAndroidPrint, onSuccess: async () => { toast({ tone: "success", title: "Página de teste enfileirada" }); await jobs.refetch(); }, onError: (error: Error) => toast({ tone: "error", title: "Teste não enfileirado", description: error.message }) });
-  const revokeMutation = useMutation({ mutationFn: adminService.revokePrintDevice, onSuccess: async () => { toast({ tone: "success", title: "Dispositivo revogado" }); await android.refetch(); }, onError: (error: Error) => toast({ tone: "error", title: "Não foi possível revogar", description: error.message }) });
-  const reprintMutation = useMutation({ mutationFn: adminService.requestPrint, onSuccess: async () => { toast({ tone: "success", title: "2ª via enfileirada" }); await client.invalidateQueries({ queryKey: ["print-jobs"] }); }, onError: (error: Error) => toast({ tone: "error", title: "2ª via não solicitada", description: error.message }) });
+  const pairingMutation = useMutation({ mutationFn: () => adminService.createPrintPairing(API_URL), onSuccess: setPairing, onError: (error) => toast({ tone: "error", title: "Não foi possível criar o pareamento", description: apiErrorMessage(error) }) });
+  const testMutation = useMutation({ mutationFn: adminService.testAndroidPrint, onSuccess: async () => { toast({ tone: "success", title: "Página de teste enfileirada" }); await jobs.refetch(); }, onError: (error) => toast({ tone: "error", title: "Teste não enfileirado", description: apiErrorMessage(error) }) });
+  const revokeMutation = useMutation({ mutationFn: adminService.revokePrintDevice, onSuccess: async () => { toast({ tone: "success", title: "Dispositivo revogado" }); await android.refetch(); }, onError: (error) => toast({ tone: "error", title: "Não foi possível revogar", description: apiErrorMessage(error) }) });
+  const reprintMutation = useMutation({ mutationFn: adminService.requestPrint, onSuccess: async () => { toast({ tone: "success", title: "2ª via enfileirada" }); await client.invalidateQueries({ queryKey: ["print-jobs"] }); }, onError: (error) => toast({ tone: "error", title: "2ª via não solicitada", description: apiErrorMessage(error) }) });
   const columns = [
     { key: "id", header: "Impressão", render: (job: AdminRecord) => <div><strong>#{job.id}</strong><small className="print-job-kind">{job.tipo === "REIMPRESSAO" ? "2ª via" : String(job.tipo || "Comanda").toLowerCase()}</small></div> },
     { key: "order", header: "Pedido", render: (job: AdminRecord) => <span>#{String(job.pedido_id || "—")}</span> },

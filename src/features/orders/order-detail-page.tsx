@@ -5,7 +5,8 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Ban, CreditCard, Printer, RefreshCw, Save } from "lucide-react";
-import { ApiError, isVersionConflict } from "@/lib/api-client";
+import { isVersionConflict } from "@/lib/api-client";
+import { apiErrorMessage } from "@/lib/api-errors";
 import { formatDateTime } from "@/lib/date";
 import { orderStatusOptions, requiresStatusConfirmation } from "@/lib/order-rules";
 import { queryKeys } from "@/lib/query-keys";
@@ -48,7 +49,7 @@ export function OrderDetailPage() {
       if (isVersionConflict(error)) {
         toast({ tone: "error", title: "O pedido mudou em outro aparelho", description: "Os dados foram atualizados. Revise antes de tentar novamente." });
         await refresh();
-      } else toast({ tone: "error", title: "Não foi possível atualizar", description: error instanceof ApiError ? error.message : "Tente novamente." });
+      } else toast({ tone: "error", title: "Não foi possível atualizar", description: apiErrorMessage(error, "Tente novamente.") });
     },
   });
   const items = Array.isArray(order.data?.itens) ? order.data.itens as Array<Record<string, unknown>> : [];

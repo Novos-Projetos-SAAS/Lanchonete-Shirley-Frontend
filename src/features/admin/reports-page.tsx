@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeft, BarChart3, BookOpen, Boxes, CalendarDays, ChevronLeft, ChevronRight, Download, FileDown, PackageSearch, ReceiptText, Search, ShoppingBasket, Truck, UsersRound, Utensils } from "lucide-react";
-import { ApiError } from "@/lib/api-client";
+import { apiErrorMessage } from "@/lib/api-errors";
 import { formatDateTime, localDate } from "@/lib/date";
 import { formatCurrency } from "@/lib/money";
 import { adminService } from "@/services/admin-service";
@@ -116,12 +116,12 @@ function ReportBuilder({ code, report }: { code: string; report: ReportMetadata 
   const generation = useMutation({
     mutationFn: ({ page, currentFilters }: { page: number; currentFilters: Filters }) => adminService.generateReport(code, currentFilters, page, 50),
     onSuccess: (result, variables) => { setPreview(result); setConfirmedFilters({ ...variables.currentFilters }); },
-    onError: (error) => toast({ tone: "error", title: "Não foi possível gerar o relatório", description: error instanceof ApiError ? error.message : "Revise os filtros e tente novamente." }),
+    onError: (error) => toast({ tone: "error", title: "Não foi possível gerar o relatório", description: apiErrorMessage(error, "Revise os filtros e tente novamente.") }),
   });
   const pdf = useMutation({
     mutationFn: async () => { if (!confirmedFilters) throw new Error("Gere a prévia primeiro."); return adminService.reportPdf(code, confirmedFilters); },
     onSuccess: (response) => void downloadResponse(response, `relatorio-${code}.pdf`),
-    onError: (error) => toast({ tone: "error", title: "Não foi possível exportar o PDF", description: error instanceof ApiError ? error.message : "Gere a prévia novamente e tente exportar." }),
+    onError: (error) => toast({ tone: "error", title: "Não foi possível exportar o PDF", description: apiErrorMessage(error, "Gere a prévia novamente e tente exportar.") }),
   });
   const changeFilter = (key: string, value: FilterValue | undefined) => {
     setFilters((current) => { const next = { ...current }; if (value === undefined) delete next[key]; else next[key] = value; return next; });

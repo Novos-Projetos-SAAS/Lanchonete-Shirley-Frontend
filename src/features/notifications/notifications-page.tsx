@@ -7,7 +7,8 @@ import { Bell, BellOff, CheckCheck, ExternalLink, Smartphone } from "lucide-reac
 import { queryKeys } from "@/lib/query-keys";
 import { formatDateTime } from "@/lib/date";
 import { adminService, type AdminRecord } from "@/services/admin-service";
-import { disablePush, enablePush, pushSupport } from "@/features/pwa/push";
+import { disablePush, enablePush, pushSupport, PushSetupError } from "@/features/pwa/push";
+import { apiErrorMessage } from "@/lib/api-errors";
 import { Badge, Button, Card, EmptyState, ErrorState, PageHeader, Pagination, ResponsiveTable, RowActions, Skeleton } from "@/components/ui";
 import { useToast } from "@/components/ui/toast";
 
@@ -19,7 +20,7 @@ export function NotificationsPage() {
   const notifications = useQuery({ queryKey: [...queryKeys.notifications, page], queryFn: () => adminService.notifications(page) });
   const pushConfig = useQuery({ queryKey: ["push-config"], queryFn: adminService.pushConfig, retry: false });
   const read = useMutation({ mutationFn: adminService.markRead, onSuccess: async () => { await client.invalidateQueries({ queryKey: queryKeys.notifications }); await client.invalidateQueries({ queryKey: queryKeys.unreadNotifications }); } });
-  async function turnOn() { setPushBusy(true); try { await enablePush(); toast({ tone: "success", title: "Notificações ativadas neste aparelho" }); } catch (error) { toast({ tone: "error", title: "Não foi possível ativar", description: error instanceof Error ? error.message : undefined }); } finally { setPushBusy(false); } }
+  async function turnOn() { setPushBusy(true); try { await enablePush(); toast({ tone: "success", title: "Notificações ativadas neste aparelho" }); } catch (error) { toast({ tone: "error", title: "Não foi possível ativar", description: error instanceof PushSetupError ? error.message : apiErrorMessage(error, "Verifique a conexão e as permissões de notificação antes de tentar novamente.") }); } finally { setPushBusy(false); } }
   async function turnOff() { setPushBusy(true); try { await disablePush(); toast({ tone: "success", title: "Notificações desativadas neste aparelho" }); } catch { toast({ tone: "error", title: "Não foi possível desativar" }); } finally { setPushBusy(false); } }
   const columns = [
     { key: "notice", header: "Notificação", render: (item: AdminRecord) => <div className="table-primary"><strong>{String(item.titulo || "Notificação")}</strong><small>{String(item.corpo || "")}</small></div> },

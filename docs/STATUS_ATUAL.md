@@ -1,6 +1,12 @@
 # Status atual
 
-Atualizado em 06/11/2026.
+Atualizado em 08/11/2026.
+
+## Padronização de erros e feedback
+
+Concluída. Formulários principais interpretam `status`, `code`, `message`, `request_id` e `details`, preservam valores, mantêm diálogos abertos, mostram resumo/erro inline e focam o primeiro campo. O fluxo de ativação sem preço foi validado preventivamente e com `422` simulado em 390 px, seguido de correção e reenvio.
+
+Gates: lint, TypeScript, 58 unitários, build de 30 rotas e 32 Playwright/Axe aprovados. Leia `50_PADRONIZACAO_ERROS_FEEDBACK.md`.
 
 ## Etapa 11 — regressão final
 

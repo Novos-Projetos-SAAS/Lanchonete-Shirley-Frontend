@@ -1471,11 +1471,33 @@ h3 {
 }
 
 .form-error-summary {
+    position: sticky;
+    top: -0.35rem;
+    z-index: 2;
     padding: 0.9rem;
     border: 1px solid var(--danger);
     border-radius: var(--radius-sm);
     background: var(--danger-soft);
     color: #7b1914;
+    grid-column: 1 / -1;
+    overflow-wrap: anywhere;
+}
+
+.form-error-summary:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--danger) 38%, transparent);
+    outline-offset: 2px;
+}
+
+.form-error-summary a {
+    color: inherit;
+    font-weight: 750;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
+.form-error-summary__reference {
+    color: var(--text-muted);
+    font-size: 0.78rem;
 }
 
 .form-error-summary p,
