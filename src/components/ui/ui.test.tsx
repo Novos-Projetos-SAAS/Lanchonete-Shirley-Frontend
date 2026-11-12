@@ -18,6 +18,11 @@ describe("componentes críticos", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Referência do atendimento: req-1");
     await vi.waitFor(() => expect(document.getElementById("preco")).toHaveFocus());
   });
+  it("não repete no resumo a mesma mensagem já apresentada no campo", () => {
+    render(<><Input id="preco" /><FormErrorSummary error={{ message: "Informe o preço", fields: { preco_base: "Informe o preço." } }} fieldIds={{ preco_base: "preco" }} /></>);
+    expect(screen.getByRole("alert")).toHaveTextContent("Informe o preço");
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
   it("pagina listagens em blocos acessíveis", () => {
     const change = vi.fn();
     render(<Pagination page={2} totalPages={4} totalItems={37} onPageChange={change} />);

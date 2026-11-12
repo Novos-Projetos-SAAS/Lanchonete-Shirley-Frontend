@@ -3,7 +3,7 @@ import { ApiError } from "./api-client";
 import { apiErrorMessage, clearFormFieldError, toFormError } from "./api-errors";
 
 describe("feedback seguro da API", () => {
-  it("mapeia detalhes e referência para campos do formulário", () => {
+  it("mapeia detalhes sem repetir mensagem nem expor referência em erro corrigível", () => {
     const feedback = toFormError(new ApiError(
       "Informe o preço base antes de ativar o produto.",
       422,
@@ -12,10 +12,14 @@ describe("feedback seguro da API", () => {
       [{ path: "preco_base", message: "Informe o preço base." }],
     ), { prefix: "Não foi possível ativar o produto." });
     expect(feedback).toEqual({
-      message: "Não foi possível ativar o produto. Informe o preço base antes de ativar o produto.",
+      message: "Não foi possível ativar o produto.",
       fields: { preco_base: "Informe o preço base." },
-      requestId: "request-123",
+      requestId: undefined,
     });
+  });
+
+  it("mantém a referência somente para falha interna útil ao suporte", () => {
+    expect(toFormError(new ApiError("Falha interna", 500, "INTERNAL_ERROR", "request-500"))).toMatchObject({ requestId: "request-500" });
   });
 
   it("usa campo conhecido quando uma API antiga não envia details", () => {

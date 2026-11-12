@@ -57,9 +57,9 @@ export function toFormError(
   if (fallbackField && !Object.keys(fields).length) fields[options.aliases?.[fallbackField] ?? fallbackField] = apiErrorMessage(error, options.fallback);
   const message = apiErrorMessage(error, options.fallback);
   return {
-    message: options.prefix ? `${options.prefix} ${message}` : message,
+    message: options.prefix || message,
     fields,
-    requestId: apiError?.requestId,
+    requestId: apiError && apiError.status >= 500 ? apiError.requestId : undefined,
   };
 }
 

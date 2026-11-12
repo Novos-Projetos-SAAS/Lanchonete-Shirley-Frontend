@@ -11,6 +11,18 @@ import { queryKeys } from "@/lib/query-keys";
 import { publicService } from "@/services/public-service";
 import { cartTotalCents, useCartStore } from "@/store/cart-store";
 import { ProductCard } from "./product-card";
+import type { PublicMenu } from "@/types/domain";
+
+export function visibleMenuCategories(menu: PublicMenu, search: string, category: string) {
+  const term = search.trim().toLocaleLowerCase("pt-BR");
+  return menu
+    .filter((item) => category === "todos" || item.id === category)
+    .map((item) => ({
+      ...item,
+      produtos: (item.produtos || []).filter((product) => !term || `${product.nome} ${product.descricao || ""}`.toLocaleLowerCase("pt-BR").includes(term)),
+    }))
+    .filter((item) => (item.produtos?.length || 0) > 0);
+}
 
 export function MenuPage() {
   const [category, setCategory] = useState("todos");
@@ -58,14 +70,8 @@ export function MenuPage() {
   }, [category, contextReady, menu.data, returnPath]);
 
   const visibleCategories = useMemo(() => {
-    const term = search.trim().toLocaleLowerCase("pt-BR");
-    return (menu.data || [])
-      .map((item) => ({
-        ...item,
-        produtos: (item.produtos || []).filter((product) => !term || `${product.nome} ${product.descricao || ""}`.toLocaleLowerCase("pt-BR").includes(term)),
-      }))
-      .filter((item) => (item.produtos?.length || 0) > 0);
-  }, [menu.data, search]);
+    return visibleMenuCategories(menu.data || [], search, category);
+  }, [category, menu.data, search]);
 
   function selectCategory(id: string) {
     setCategory(id);

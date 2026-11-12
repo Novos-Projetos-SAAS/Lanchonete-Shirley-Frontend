@@ -30,6 +30,14 @@ O backend irmão recebeu a migration versionada 040, credencial hash-only por ap
 
 Gates web: frontend lint, TypeScript, 13 arquivos/35 testes e build de 30 rotas aprovados; backend lint e unitários aprovados. Android não foi compilado porque Gradle, SDK e ADB não existem neste host. A migration 040 não foi executada, a Neon não foi acessada, testes de integração não rodaram e nenhuma `.env`, seed ou dado foi alterado. Leia os documentos backend 40–45.
 
+## Correções da homologação manual — 10/11/2026
+
+**IMPLEMENTADO E APROVADO LOCALMENTE E NO TEST ISOLADO.** Produtos agora possuem filtros combináveis por categoria/estado/busca, seletor de categoria, desativação reversível, reativação validada, arquivamento e restauração preservando ID/vínculos. O cardápio filtra seções corretamente e o editor orienta a configuração dos dois pães sem inventar preços.
+
+O público recebeu `/meus-pedidos` com referências locais mínimas (10 itens/30 dias), status atualizado pela API, limpeza e compartilhamento. Navegação ativa, botão de senha, referências técnicas em erros comuns, duplicação/foco de erros e rodapé do modal mobile foram corrigidos.
+
+Gates: frontend com lint, TypeScript, 66 unitários e build de 31 rotas; Playwright 34/34; backend 119 unitários e 53/53 integrações no TEST isolado. Nenhuma migration, seed, `.env`, dado real, Android, deploy, commit ou push foi alterado. Leia `RELATORIO_CORRECOES_HOMOLOGACAO_MANUAL.md`.
+
 ## Etapa 8 — relatórios PDF e regras de pedidos
 
 **IMPLEMENTADO E APROVADO NO ESCOPO LOCAL.** O painel recebeu catálogo dinâmico com 12 relatórios gerenciais/cadastrais, formulário orientado por metadados, prévia paginada responsiva, totais e exportação PDF autenticada usando os mesmos filtros confirmados. O CSV legado foi preservado.

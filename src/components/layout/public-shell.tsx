@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { ClipboardList, ShoppingBag } from "lucide-react";
 import { BrandMark } from "@/components/shared/brand-mark";
 import { centsToMoney, formatCurrency } from "@/lib/money";
 import { cartTotalCents, useCartStore } from "@/store/cart-store";
@@ -18,6 +18,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
           <BrandMark />
           <nav aria-label="Navegação principal">
             <Link href="/">Cardápio</Link>
+            <Link className="recent-orders-link" href="/meus-pedidos" aria-label="Meus pedidos"><ClipboardList aria-hidden /><span>Meus pedidos</span></Link>
             <Link href="/acompanhar">Acompanhar</Link>
             <Link className="cart-link" href="/carrinho">
               <ShoppingBag aria-hidden />

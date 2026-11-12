@@ -13,6 +13,7 @@ import { toFormError, type FormErrorFeedback } from "@/lib/api-errors";
 import { clearAttempt, getOrCreateAttempt } from "@/lib/idempotency";
 import { centsToMoney } from "@/lib/money";
 import { queryKeys } from "@/lib/query-keys";
+import { rememberRecentOrder } from "@/lib/recent-orders";
 import { publicService } from "@/services/public-service";
 import { cartTotalCents, useCartStore } from "@/store/cart-store";
 import type { CreateOrderInput, OrderSummary } from "@/types/domain";
@@ -114,6 +115,7 @@ export function CheckoutPage() {
         subtotal: result.subtotal, taxa_entrega: result.taxa_entrega, total: result.total, criado_em: result.criado_em,
       };
       sessionStorage.setItem(CONFIRMATION_KEY, JSON.stringify(safeConfirmation));
+      rememberRecentOrder(safeConfirmation);
       clearAttempt();
       clearCart();
       router.replace("/pedido/confirmado");

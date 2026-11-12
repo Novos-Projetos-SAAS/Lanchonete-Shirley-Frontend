@@ -105,15 +105,19 @@ interface FormErrorSummaryProps {
 
 export function FormErrorSummary({ error, fieldIds = {}, focusFirstField = true }: FormErrorSummaryProps) {
   const summaryRef = useRef<HTMLDivElement>(null);
-  const entries = Object.entries(error?.fields ?? {});
-  const targetId = entries.length ? (fieldIds[entries[0][0]] ?? entries[0][0]) : undefined;
+  const normalizeMessage = (value: string) => value.trim().replace(/[.!?]+$/g, "").toLocaleLowerCase("pt-BR");
+  const fieldEntries = Object.entries(error?.fields ?? {});
+  const entries = fieldEntries.filter(([, message]) => !error || normalizeMessage(message) !== normalizeMessage(error.message));
+  const targetId = fieldEntries.length ? (fieldIds[fieldEntries[0][0]] ?? fieldEntries[0][0]) : undefined;
   useEffect(() => {
     if (!error) return;
     const target = targetId ? document.getElementById(targetId) : null;
     const focusTarget = focusFirstField && target instanceof HTMLElement ? target : summaryRef.current;
     window.requestAnimationFrame(() => {
       focusTarget?.focus({ preventScroll: true });
-      focusTarget?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+      const dialogBody = focusTarget?.closest(".dialog-body");
+      if (!focusFirstField && dialogBody instanceof HTMLElement) dialogBody.scrollTo({ top: 0, behavior: "auto" });
+      else focusTarget?.scrollIntoView?.({ behavior: "auto", block: focusFirstField ? "center" : "start" });
     });
   }, [error, targetId, focusFirstField]);
   if (!error) return null;

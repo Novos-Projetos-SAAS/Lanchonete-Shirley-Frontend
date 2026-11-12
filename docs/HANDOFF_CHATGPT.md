@@ -57,6 +57,15 @@ Próximo passo seguro: autorizar e aplicar 040 primeiro em TEST isolado, executa
 
 Arquivos centrais: `src/services/reportRegistry.js`, `src/services/reportPdfService.js`, `src/config/reportCatalog.js` no backend; `src/features/admin/reports-page.tsx`, `src/services/admin-service.ts` e `src/features/orders/order-detail-page.tsx` no frontend.
 
+## Homologação manual — handoff prioritário (10/11/2026)
+
+- Entrega verde: frontend lint/TypeScript/66 unitários/build e 34 Playwright; backend 119 unitários e 53 integrações em TEST isolado.
+- Novas rotas backend: desativar, reativar e restaurar produto; listagem aceita categoria/arquivado e retorna nome da categoria.
+- `/meus-pedidos` persiste somente código opaco, ID de exibição e datas, por 30 dias e no máximo 10 itens. Não contém PII.
+- Não publicar automaticamente pão/produto: preço real do francês, vínculos e disponibilidade do dia continuam manuais.
+- OTP entre dispositivos, deploy e homologação em ambiente hospedado permanecem externos.
+- Não há migration/seed. Development/produção permaneceram intocados. Leia `RELATORIO_CORRECOES_HOMOLOGACAO_MANUAL.md` antes de continuar.
+
 ## Etapa 7C — handoff prioritário
 
 **Resultado: APROVADO NO ESCOPO LOCAL.** Leia primeiro `32_AJUSTES_VISUAIS_DASHBOARD.md` e `IMAGENS_PRODUTOS.md`.

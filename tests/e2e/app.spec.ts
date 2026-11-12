@@ -2,7 +2,7 @@ import { expect, test, type Page, type Route } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir } from "node:fs/promises";
 
-const burger = { id: "10", categoria_id: "1", nome: "X-Bacon", descricao: "Hambúrguer, queijo e bacon. [DEMO-SHIRLEY-V1]", tipo: "LANCHE", preco_base: "22.00", imagem_url: null, ativo: true, disponivel_hoje: true, tipos_pao: [{ produto_id: "10", id: "2", codigo: "FRANCES", nome: "Pão francês", acrescimo: "2.50" }, { produto_id: "10", id: "1", codigo: "HAMBURGUER", nome: "Pão de hambúrguer", acrescimo: "0.00" }], adicionais: [{ produto_id: "10", id: "7", nome: "Queijo extra", descricao: "Uma fatia a mais", preco: "4.00", max_quantidade_por_item: 2 }] };
+const burger = { id: "10", categoria_id: "1", categoria_nome: "Lanches", nome: "X-Bacon", descricao: "Hambúrguer, queijo e bacon. [DEMO-SHIRLEY-V1]", tipo: "LANCHE", preco_base: "22.00", imagem_url: null, ativo: true, disponivel_hoje: true, deletado_em: null, tipos_pao: [{ produto_id: "10", id: "2", codigo: "FRANCES", nome: "Pão francês", acrescimo: "2.50" }, { produto_id: "10", id: "1", codigo: "HAMBURGUER", nome: "Pão de hambúrguer", acrescimo: "0.00" }], adicionais: [{ produto_id: "10", id: "7", nome: "Queijo extra", descricao: "Uma fatia a mais", preco: "4.00", max_quantidade_por_item: 2 }] };
 const soda = { id: "20", categoria_id: "2", nome: "Refrigerante Lata 350 ml", descricao: "Sabor escolhido no atendimento. [DEMO-SHIRLEY-V1]", tipo: "BEBIDA", preco_base: "6.00", imagem_url: null, ativo: true, disponivel_hoje: true, adicionais: [] };
 const menu = [{ id: "1", nome: "Lanches", slug: "lanches", ativo: true, produtos: [burger] }, { id: "2", nome: "Bebidas", slug: "bebidas", ativo: true, produtos: [soda] }];
 const session = { id: "1", nome: "Shirley", email: "admin@shirley.local", nivel: "ADMIN", permissoes: [] };
@@ -55,7 +55,17 @@ async function mockApi(page: Page, options: { closed?: boolean; networkError?: b
     if (options.productActivationError && path.endsWith("/admin/produtos/10") && route.request().method() === "PATCH" && productUpdateAttempts++ === 0) {
       return route.fulfill({ status: 422, headers: cors, json: { status: "fail", code: "PRODUCT_PRICE_REQUIRED", message: "Informe o preço base antes de ativar o produto.", request_id: "123e4567-e89b-42d3-a456-426614174000", details: [{ path: "preco_base", message: "Informe o preço base antes de ativar o produto." }] } });
     }
-    if (options.adminCatalog && path.endsWith("/admin/produtos")) return reply({ items: [burger], pagination: { page: 1, limit: 10, total: 1, total_pages: 1 } });
+    if (options.adminCatalog && path.endsWith("/admin/categorias")) return reply({ items: menu.map((category) => ({ id: category.id, nome: category.nome, slug: category.slug, ativo: category.ativo })), pagination: { page: 1, limit: 100, total: 2, total_pages: 1 } });
+    if (options.adminCatalog && path.endsWith("/admin/produtos/10/desativar") && route.request().method() === "PATCH") return reply({ ...burger, ativo: false, disponivel_hoje: false });
+    if (options.adminCatalog && path.endsWith("/admin/produtos/10/reativar") && route.request().method() === "POST") return reply({ ...burger, disponivel_hoje: false });
+    if (options.adminCatalog && path.endsWith("/admin/produtos/10/restaurar") && route.request().method() === "POST") return reply({ ...burger, ativo: false, disponivel_hoje: false });
+    if (options.adminCatalog && path.endsWith("/admin/produtos/10") && route.request().method() === "DELETE") return reply({ ...burger, ativo: false, disponivel_hoje: false, deletado_em: "2026-11-10T00:00:00.000Z" });
+    if (options.adminCatalog && path.endsWith("/admin/produtos")) {
+      const archived = url.searchParams.get("arquivado") === "true";
+      const inactive = url.searchParams.get("ativo") === "false";
+      const item = archived ? { ...burger, ativo: false, disponivel_hoje: false, deletado_em: "2026-11-10T00:00:00.000Z" } : inactive ? { ...burger, ativo: false, disponivel_hoje: false } : burger;
+      return reply({ items: [item], pagination: { page: 1, limit: 10, total: 1, total_pages: 1 } });
+    }
     if (options.adminCatalog && path.endsWith("/admin/tipos-pao")) return reply({ items: burger.tipos_pao, pagination: { page: 1, limit: 100, total: 2, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/adicionais")) return reply({ items: burger.adicionais, pagination: { page: 1, limit: 100, total: 1, total_pages: 1 } });
     if (options.adminCatalog && path.endsWith("/admin/produtos/10/vinculos")) return reply({ produto_id: "10", tipos_pao: [{ tipo_pao_id: "1", ativo: false, codigo: "HAMBURGUER", nome: "Pão de hambúrguer", acrescimo: "0.00" }, { tipo_pao_id: "2", ativo: true, codigo: "FRANCES", nome: "Pão francês", acrescimo: "2.50" }], adicionais: [{ adicional_id: "7", max_quantidade_por_item: 2, ativo: true, nome: "Queijo extra", preco: "4.00", disponivel_hoje: true, deletado_em: null }] });
@@ -109,6 +119,8 @@ test("fluxo público: dois itens, retorno ao cardápio e carrinho somente por a�
 
   await page.getByRole("button", { name: "Limpar busca" }).click();
   await page.getByRole("button", { name: "Bebidas" }).click();
+  await expect(page.getByRole("heading", { name: "Bebidas" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "X-Bacon" })).toHaveCount(0);
   await page.getByRole("link", { name: /refrigerante/i }).click();
   await page.getByRole("button", { name: /adicionar ao carrinho/i }).click();
   await expect(page).toHaveURL(/\?categoria=2$/);
@@ -169,6 +181,12 @@ test("erro de rede mostra recuperação explícita", async ({ page }) => { await
 
 test("login, lista e detalhe de pedidos no painel mobile", async ({ page }) => {
   await mockApi(page); await page.setViewportSize({ width: 360, height: 800 }); await page.goto("/admin/login"); await capture(page, "docs/screenshots/login-360.png", false);
+  const passwordInput = page.locator("#login-password"); const passwordToggle = page.getByRole("button", { name: "Mostrar senha" });
+  const [inputBox, toggleBox] = await Promise.all([passwordInput.boundingBox(), passwordToggle.boundingBox()]);
+  expect(inputBox).not.toBeNull(); expect(toggleBox).not.toBeNull();
+  expect(Math.abs((inputBox!.y + inputBox!.height / 2) - (toggleBox!.y + toggleBox!.height / 2))).toBeLessThan(2);
+  expect(await passwordToggle.evaluate((element) => getComputedStyle(element).borderTopWidth)).toBe("0px");
+  await passwordToggle.click(); await expect(passwordInput).toHaveAttribute("type", "text"); await page.getByRole("button", { name: "Ocultar senha" }).click();
   await page.getByLabel("E-mail").fill("admin@shirley.local"); await page.locator("#login-password").fill("SenhaSegura123"); await page.getByRole("button", { name: /entrar no painel/i }).click(); await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/pedidos"); const mobileOrders = page.locator(".responsive-table__mobile"); await expect(mobileOrders.getByText("Ana")).toBeVisible(); await page.getByLabel("Status").selectOption("PENDENTE"); await expect(mobileOrders.getByText("Ana")).toBeVisible(); await capture(page, "docs/screenshots/pedidos-360.png", false); await mobileOrders.getByRole("link", { name: /detalhes/i }).click(); await expect(page.getByText("X-Salada da Shirley")).toBeVisible(); await capture(page, "docs/screenshots/pedido-detalhe-360.png", false); await page.getByLabel("Novo status").selectOption("EM_PREPARO"); await page.getByRole("button", { name: /atualizar status/i }).click(); await expect(page.getByText("Pedido atualizado")).toBeVisible();
 });
@@ -243,6 +261,33 @@ test("editor de produto carrega vínculos atuais antes de permitir substituiçã
   await expect(page.getByRole("button", { name: "Salvar vínculos" })).toBeEnabled();
 });
 
+test("produtos combinam categoria, busca e estados com ações reversíveis", async ({ page }) => {
+  const listQueries: string[] = [];
+  page.on("request", (request) => {
+    const url = new URL(request.url());
+    if (url.pathname.endsWith("/admin/produtos") && request.method() === "GET") listQueries.push(url.search);
+  });
+  await mockApi(page, { adminCatalog: true });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/admin/produtos");
+  await page.getByLabel("Categoria").selectOption("1");
+  await page.getByPlaceholder("Buscar em produtos").fill("bacon");
+  await page.getByLabel("Estado").selectOption("inativos");
+  await expect(page.getByText("Inativo").first()).toBeVisible();
+  await expect.poll(() => listQueries.some((query) => query.includes("categoria_id=1") && query.includes("ativo=false") && query.includes("busca=bacon"))).toBe(true);
+  const table = page.locator(".responsive-table__desktop");
+  await table.getByLabel("Ações de X-Bacon").click();
+  await table.getByRole("button", { name: "Reativar" }).click();
+  await page.getByRole("button", { name: "Reativar", exact: true }).click();
+  await expect(page.getByText("Produto reativado")).toBeVisible();
+  await page.getByLabel("Estado").selectOption("arquivados");
+  await expect(table.getByText("Arquivado", { exact: true })).toBeVisible();
+  await table.getByLabel("Ações de X-Bacon").click();
+  await table.getByRole("button", { name: "Restaurar" }).click();
+  await page.getByRole("button", { name: "Restaurar", exact: true }).click();
+  await expect(page.getByText("Produto restaurado")).toBeVisible();
+});
+
 test("ativação de produto sem preço preserva o formulário e direciona a correção", async ({ page }) => {
   await mockApi(page, { adminCatalog: true, productActivationError: true });
   await page.setViewportSize({ width: 375, height: 667 });
@@ -265,11 +310,7 @@ test("ativação de produto sem preço preserva o formulário e direciona a corr
   await expect(cancelButton).toBeInViewport({ ratio: 1 });
   await expect(saveButton).toBeInViewport({ ratio: 1 });
   await expect(page.getByLabel("Nome")).toHaveValue("X-Bacon");
-  await expect(page.getByLabel("Produto ativo")).toBeChecked();
-  await price.fill(" ");
-  await saveButton.click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByText("Referência do atendimento: 123e4567-e89b-42d3-a456-426614174000")).toBeVisible();
+  await expect(page.getByText("Referência do atendimento: 123e4567-e89b-42d3-a456-426614174000")).toHaveCount(0);
   await expect(page.getByText("Cadastro atualizado")).toHaveCount(0);
   await price.fill("24.00");
   await saveButton.click();
@@ -384,6 +425,20 @@ test("aceite de convite limpa o fragmento antes de exibir o formulário", async 
   await expect(page.getByRole("heading", { name: "Convite aceito" })).toBeVisible();
 });
 
+test("Meus pedidos persiste após recarregar e permite limpar o histórico local", async ({ page }) => {
+  await mockApi(page);
+  await page.addInitScript(() => localStorage.setItem("shirley.recent-orders.v1", JSON.stringify({ version: 1, items: [{ code: "abcdef0123456789abcdef0123456789", orderId: "101", createdAt: "2026-10-27T20:00:00.000Z", savedAt: new Date().toISOString() }] })));
+  await page.goto("/meus-pedidos");
+  await expect(page.getByRole("heading", { name: "Meus pedidos" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "#101" })).toBeVisible();
+  await expect(page.getByText("Em preparo")).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "#101" })).toBeVisible();
+  await page.getByRole("button", { name: "Limpar histórico" }).first().click();
+  await page.getByRole("button", { name: "Limpar histórico", exact: true }).click();
+  await expect(page.getByText("Nenhum pedido recente")).toBeVisible();
+});
+
 for (const width of [320, 768, 1440]) {
   test(`tabela administrativa sem rolagem horizontal em ${width}px`, async ({ page }) => {
     await mockApi(page);
@@ -405,7 +460,7 @@ for (const width of [320, 360, 375, 390, 414, 430, 768, 1024, 1280, 1440]) {
       cart: JSON.stringify({ state: { items: [{ key: "10::2::7:1::", produtoId: "10", nome: "X-Bacon", tipo: "LANCHE", precoBase: "22.00", quantidade: 1, pao: { id: "2", nome: "Pão francês", acrescimo: "2.50" }, adicionais: [{ id: "7", nome: "Queijo extra", preco: "4.00", quantidade: 1 }] }] }, version: 0 }),
       confirmation: JSON.stringify({ codigo_acompanhamento: "abcdef0123456789abcdef0123456789", status: "PENDENTE", subtotal: "28.50", taxa_entrega: "0.00", total: "28.50" }),
     });
-    for (const path of ["/", "/produto/10", "/carrinho", "/finalizar", "/pedido/confirmado", "/acompanhar", "/acompanhar/abcdef0123456789abcdef0123456789"]) {
+    for (const path of ["/", "/produto/10", "/carrinho", "/finalizar", "/pedido/confirmado", "/acompanhar", "/acompanhar/abcdef0123456789abcdef0123456789", "/meus-pedidos"]) {
       await page.goto(path);
       await page.waitForTimeout(80);
       const overflow = await page.evaluate(() => {
@@ -437,7 +492,7 @@ test("telas públicas e login sem violações axe WCAG A/AA detectáveis", async
     const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
     expect(result.violations).toEqual([]);
   };
-  for (const [path, heading] of [["/", "Escolha seu pedido"], ["/produto/10", "X-Bacon"], ["/acompanhar", "Acompanhar pedido"], ["/acompanhar/abcdef0123456789abcdef0123456789", "Seu pedido está andando"]]) {
+  for (const [path, heading] of [["/", "Escolha seu pedido"], ["/produto/10", "X-Bacon"], ["/acompanhar", "Acompanhar pedido"], ["/acompanhar/abcdef0123456789abcdef0123456789", "Seu pedido está andando"], ["/meus-pedidos", "Meus pedidos"]]) {
     await page.goto(path);
     await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
     await assertAxe();

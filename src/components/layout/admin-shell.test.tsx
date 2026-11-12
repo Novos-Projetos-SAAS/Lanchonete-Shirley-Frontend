@@ -35,4 +35,17 @@ describe("AdminShell mobile", () => {
     expect(screen.getByRole("heading", { name: "Mais opções" })).toBeInTheDocument();
     for (const label of expectedLinks) expect(screen.getByRole("link", { name: label })).toBeInTheDocument();
   });
+
+  it("marca somente Novo pedido na rota de criação e Pedidos no detalhe", () => {
+    authState.permissions = ["pedidos.listar", "pedidos.criar"];
+    routerState.pathname = "/admin/pedidos/novo";
+    const { rerender } = render(<AdminShell><p>Conteúdo</p></AdminShell>);
+    expect(screen.getAllByRole("link", { name: "Novo pedido" }).every((link) => link.getAttribute("aria-current") === "page")).toBe(true);
+    expect(screen.getAllByRole("link", { name: "Pedidos" }).every((link) => !link.hasAttribute("aria-current"))).toBe(true);
+
+    routerState.pathname = "/admin/pedidos/123";
+    rerender(<AdminShell><p>Detalhe</p></AdminShell>);
+    expect(screen.getAllByRole("link", { name: "Pedidos" }).every((link) => link.getAttribute("aria-current") === "page")).toBe(true);
+    expect(screen.getAllByRole("link", { name: "Novo pedido" }).every((link) => !link.hasAttribute("aria-current"))).toBe(true);
+  });
 });
