@@ -31,3 +31,26 @@ describe("adminService listagens", () => {
     expect(request).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ body: { filtros: {}, page: 4, limit: 10 } }));
   });
 });
+
+describe("adminService configurações da loja", () => {
+  beforeEach(() => request.mockReset());
+
+  it("não envia o controle de recebimento pela rota de configurações", () => {
+    adminService.updateStoreConfig({
+      nome_fantasia: "Lanchonete Shirley",
+      aceitar_pedidos: true,
+      metodo_impressao: "ANDROID_BLUETOOTH",
+      imprimir_automaticamente: true,
+    });
+
+    expect(request).toHaveBeenCalledWith("/admin/loja/configuracoes", {
+      method: "PATCH",
+      body: {
+        nome_fantasia: "Lanchonete Shirley",
+        metodo_impressao: "ANDROID_BLUETOOTH",
+        imprimir_automaticamente: true,
+      },
+      csrf: true,
+    });
+  });
+});

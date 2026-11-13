@@ -18,6 +18,27 @@ function search(params: Record<string, string | number | boolean | undefined>) {
     return result ? `?${result}` : "";
 }
 
+const storeConfigFields = [
+    "nome_fantasia",
+    "telefone",
+    "whatsapp",
+    "endereco_trailer",
+    "referencia_trailer",
+    "logo_url",
+    "taxa_entrega",
+    "tempo_estimado_min",
+    "imprimir_automaticamente",
+    "nome_impressora",
+    "metodo_impressao",
+    "imprimir_pedidos_painel",
+] as const;
+
+function storeConfigBody(body: unknown) {
+    if (!body || typeof body !== "object" || Array.isArray(body)) return {};
+    const input = body as Record<string, unknown>;
+    return Object.fromEntries(storeConfigFields.filter((field) => field in input).map((field) => [field, input[field]]));
+}
+
 export const adminService = {
     changePassword: (body: { senha_atual: string; nova_senha: string; confirmar_nova_senha: string }) => apiRequest("/auth/alterar-senha", { method: "POST", body, csrf: true }),
     listResource: <T extends AdminRecord>(resource: string, params: Record<string, string | number | boolean | undefined> = {}) => apiRequest<PaginatedData<T>>(`/admin/${resource}${search({ page: 1, limit: 10, ...params })}`),
@@ -39,7 +60,7 @@ export const adminService = {
     updatePayment: (id: string, body: { status_pagamento: string; motivo?: string | null; versao: number }) => apiRequest<OrderSummary>(`/admin/pedidos/${id}/pagamento`, { method: "PATCH", body, csrf: true }),
     cancelOrder: (id: string, body: { motivo: string; versao: number }) => apiRequest<OrderSummary>(`/admin/pedidos/${id}/cancelar`, { method: "POST", body, csrf: true }),
     storeConfig: () => apiRequest<AdminRecord>("/admin/loja/configuracoes"),
-    updateStoreConfig: (body: unknown) => apiRequest<AdminRecord>("/admin/loja/configuracoes", { method: "PATCH", body, csrf: true }),
+    updateStoreConfig: (body: unknown) => apiRequest<AdminRecord>("/admin/loja/configuracoes", { method: "PATCH", body: storeConfigBody(body), csrf: true }),
     schedules: () => apiRequest<AdminRecord[]>("/admin/loja/horarios"),
     replaceSchedules: (horarios: unknown[]) => apiRequest<AdminRecord[]>("/admin/loja/horarios", { method: "PUT", body: { horarios }, csrf: true }),
     setStoreStatus: (aceitar_pedidos: boolean) => apiRequest<AdminRecord>("/admin/loja/status", { method: "PATCH", body: { aceitar_pedidos }, csrf: true }),
