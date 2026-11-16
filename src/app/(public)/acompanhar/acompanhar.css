@@ -1,0 +1,30 @@
+.tracking-search {
+    width: min(100%, 38rem);
+}
+
+.tracking-search .card {
+    padding: 1rem;
+}
+
+/* Acompanhamento: aria-current distingue a etapa atual de etapas concluídas. */
+.site-shell > main:has(> .tracking-search) {
+    display: block;
+    min-height: 0;
+}
+
+.site-shell .tracking-search {
+    margin-inline: auto;
+}
+
+.site-shell .tracking-search .input {
+    min-height: 3.25rem;
+    border-color: var(--text-muted);
+    border-radius: var(--radius-pill);
+    padding-inline: 1rem;
+    font-size: 1rem;
+}
+
+.site-shell .tracking-search .button {
+    width: 100%;
+    min-height: 3.25rem;
+}

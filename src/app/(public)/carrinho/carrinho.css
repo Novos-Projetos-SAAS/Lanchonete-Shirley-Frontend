@@ -1,0 +1,164 @@
+.cart-item {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+}
+
+.cart-item__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+}
+
+.cart-item__top h2 {
+    margin-bottom: 0.25rem;
+    font-size: 1.2rem;
+}
+
+.cart-item__top p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.cart-item__top .currency {
+    color: var(--brand);
+    font-family: var(--font-display);
+    font-weight: 900;
+}
+
+.cart-item ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--text-muted);
+}
+
+.cart-item__note {
+    margin: 0;
+    padding: 0.65rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.cart-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.cart-item__actions>div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.site-shell .cart-item {
+    padding: clamp(1rem, 3vw, 1.25rem);
+}
+
+.site-shell .cart-item__top .currency {
+    color: var(--text);
+}
+
+/* Carrinho: o resumo mantém os valores e os avisos calculados pela aplicação. */
+.site-shell > main:has(> .split-layout .cart-item) > .split-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--order-gap);
+    align-items: start;
+}
+
+.site-shell .cart-item {
+    gap: 1rem;
+}
+
+.site-shell .cart-item__top {
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+}
+
+.site-shell .cart-item__top > div {
+    flex: 1 1 10rem;
+    min-width: 0;
+}
+
+.site-shell .cart-item__top h2 {
+    font-size: 1.2rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.site-shell .cart-item__top .currency {
+    color: var(--brand-hover);
+    font-size: 1.3rem;
+}
+
+.site-shell .cart-item :is(p, ul) {
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.site-shell .cart-item__note {
+    padding: 0.8rem;
+    border-radius: 0.75rem;
+}
+
+.site-shell .cart-item__actions {
+    gap: 0.85rem;
+    padding-top: 1rem;
+}
+
+.site-shell .cart-item__actions > div {
+    gap: 0.5rem;
+}
+
+.site-shell .cart-item .stepper {
+    gap: 0.6rem;
+    border-color: var(--text-muted);
+    background: var(--surface);
+}
+
+.site-shell .cart-item .stepper .icon-button {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--surface-muted);
+    color: var(--brand-hover);
+}
+
+.site-shell .cart-item .stepper output {
+    min-width: 1.8rem;
+    font-size: 1rem;
+}
+
+.site-shell > main:has(.cart-item) .sticky-summary {
+    position: static;
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--order-radius);
+    box-shadow: var(--order-card-shadow);
+}
+
+@media (hover: hover) {
+
+    .site-shell .cart-item .stepper .icon-button:hover:not(:disabled) {
+        background: var(--brand-soft);
+    }
+}
+
+@media (min-width: 64rem) {
+    .site-shell > main:has(> .split-layout .cart-item) > .split-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem);
+    }
+
+    .site-shell > main:has(.cart-item) .sticky-summary {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+    }
+}

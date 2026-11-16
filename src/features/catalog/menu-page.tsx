@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Clock3, MapPin, RefreshCw, Search, ShoppingBag, Store, X } from "lucide-react";
 import { Button, Card, CurrencyText, EmptyState, ErrorState, Input, Skeleton } from "@/components/ui";
+import { ProductImage } from "@/components/shared/product-image";
 import { buildMenuReturnPath, consumeMenuPosition, menuContextFromSearch } from "@/lib/menu-context";
 import { centsToMoney } from "@/lib/money";
+import { resolveProductImage } from "@/lib/product-images";
 import { queryKeys } from "@/lib/query-keys";
 import { publicService } from "@/services/public-service";
 import { cartTotalCents, useCartStore } from "@/store/cart-store";
@@ -35,6 +37,7 @@ export function MenuPage() {
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
   const cartTotal = cartTotalCents(cartItems);
   const returnPath = buildMenuReturnPath({ search, category });
+  const categoryPreview = (menu.data || []).flatMap((item) => item.produtos || []).find((product) => resolveProductImage(product));
 
   useEffect(() => {
     const context = menuContextFromSearch(window.location.search);
@@ -105,26 +108,35 @@ export function MenuPage() {
               </>
             )}
           </Card>
+          <label className="search-box menu-intro__search">
+            <span className="sr-only">Buscar no cardápio</span><Search aria-hidden />
+            <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar lanche, bebida..." />
+            {search && <button type="button" onClick={() => setSearch("")} aria-label="Limpar busca"><X aria-hidden /><span>Limpar</span></button>}
+          </label>
         </div>
       </section>
 
       <section className="section public-menu__section" id="cardapio" aria-labelledby="cardapio-title">
         <div className="container">
+          <div className="menu-tools">
+            <nav className="category-rail" aria-label="Categorias do cardápio">
+              <button type="button" aria-current={category === "todos" ? "true" : undefined} onClick={() => selectCategory("todos")}>
+                <span className="category-item__image" aria-hidden="true">{categoryPreview ? <ProductImage product={categoryPreview} sizes="72px" /> : <Store />}</span>
+                <span className="category-item__name">Todos</span>
+              </button>
+              {(menu.data || []).map((item) => {
+                const preview = item.produtos?.find((product) => resolveProductImage(product)) || item.produtos?.[0];
+                return <button type="button" key={item.id} aria-current={category === item.id ? "true" : undefined} onClick={() => selectCategory(item.id)}>
+                  <span className="category-item__image" aria-hidden="true">{preview ? <ProductImage product={preview} sizes="72px" /> : <Store />}</span>
+                  <span className="category-item__name">{item.nome}</span>
+                </button>;
+              })}
+            </nav>
+          </div>
+
           <div className="section-heading public-section-heading">
             <div><p className="eyebrow">Cardápio</p><h2 id="cardapio-title">O que você quer hoje?</h2></div>
             <p>Preços e disponibilidade são confirmados ao enviar o pedido.</p>
-          </div>
-
-          <div className="menu-tools">
-            <label className="search-box">
-              <span className="sr-only">Buscar no cardápio</span><Search aria-hidden />
-              <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar lanche, bebida..." />
-              {search && <button type="button" onClick={() => setSearch("")} aria-label="Limpar busca"><X aria-hidden /><span>Limpar</span></button>}
-            </label>
-            <nav className="category-rail" aria-label="Categorias do cardápio">
-              <button type="button" aria-current={category === "todos" ? "true" : undefined} onClick={() => selectCategory("todos")}>Todos</button>
-              {(menu.data || []).map((item) => <button type="button" key={item.id} aria-current={category === item.id ? "true" : undefined} onClick={() => selectCategory(item.id)}>{item.nome}</button>)}
-            </nav>
           </div>
 
           <div className="menu-layout">

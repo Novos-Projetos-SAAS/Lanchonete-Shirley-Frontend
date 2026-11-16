@@ -11,7 +11,7 @@ export function ProductCard({ product, menuReturnPath }: { product: Product; men
   return (
     <article className="card product-card">
       <div className="product-card__image">
-        <ProductImage product={product} sizes="(min-width: 64rem) 12vw, (min-width: 36rem) 7.5rem, 7.75rem" />
+        <ProductImage product={product} sizes="(min-width: 77rem) 27rem, (min-width: 64rem) calc((100vw - 23rem) / 2), (min-width: 36rem) calc((100vw - 3rem) / 2), calc(100vw - 2rem)" />
       </div>
       <div className="product-card__body">
         <div><h4>{product.nome}</h4>{product.descricao && <p>{product.descricao}</p>}</div>
