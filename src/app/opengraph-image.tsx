@@ -5,12 +5,15 @@ import { ImageResponse } from "next/og";
 import sharp from "sharp";
 
 export const runtime = "nodejs";
-
-export const alt =
-  "Lanchonete Shirley — hambúrgueres, cachorro-quente, porções e bebidas. Peça online.";
+export const alt = "Lanchonete Shirley — peça seu lanche online";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/**
+ * WhatsApp costuma mostrar somente um recorte quadrado do centro da imagem.
+ * O título, o lanche e o convite para pedir ficam integralmente na faixa
+ * central de 630 px (x: 285 a 915), sem depender das laterais do banner.
+ */
 export default async function OpenGraphImage() {
   const photoPath = path.join(
     process.cwd(),
@@ -20,9 +23,10 @@ export default async function OpenGraphImage() {
     "hamburguer-artesanal",
     "x-tudo.webp",
   );
+
   const photoBuffer = await readFile(photoPath);
   const photoPng = await sharp(photoBuffer)
-    .resize(520, 520, { fit: "cover", position: "center" })
+    .resize(580, 400, { fit: "cover", position: "centre" })
     .png()
     .toBuffer();
   const photoSrc = "data:image/png;base64," + photoPng.toString("base64");
@@ -32,21 +36,37 @@ export default async function OpenGraphImage() {
       style={{
         display: "flex",
         position: "relative",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#fafaf9",
-        color: "#27221f",
+        alignItems: "center",
+        flexDirection: "column",
+        width: 1200,
+        height: 630,
+        backgroundColor: "#faf7f3",
         fontFamily: "sans-serif",
+        color: "#27221f",
+        overflow: "hidden",
       }}
     >
       <div
         style={{
           display: "flex",
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 10,
+          left: -135,
+          top: -235,
+          width: 440,
+          height: 440,
+          borderRadius: "50%",
+          backgroundColor: "#ad3226",
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          right: -210,
+          bottom: -270,
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
           backgroundColor: "#ad3226",
         }}
       />
@@ -54,103 +74,53 @@ export default async function OpenGraphImage() {
       <div
         style={{
           display: "flex",
+          position: "absolute",
+          top: 20,
+          left: 340,
+          right: 340,
+          alignItems: "center",
+          justifyContent: "center",
           flexDirection: "column",
-          width: 688,
-          padding: "64px 0 54px 66px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 52,
-              height: 52,
-              borderRadius: 12,
-              backgroundColor: "#ad3226",
-              color: "#fff",
-              fontSize: 30,
-              fontWeight: 800,
-            }}
-          >
-            S
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginLeft: 15,
-              fontSize: 23,
-              fontWeight: 800,
-              letterSpacing: 1.2,
-            }}
-          >
-            LANCHONETE SHIRLEY
-          </div>
-        </div>
-
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            marginTop: 83,
-            fontSize: 62,
-            fontWeight: 800,
-            letterSpacing: -2.5,
-            lineHeight: 1.07,
-          }}
-        >
-          <div>Seu lanche favorito,</div>
-          <div style={{ color: "#ad3226" }}>feito na hora.</div>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            marginTop: 27,
-            maxWidth: 560,
-            fontSize: 22,
-            lineHeight: 1.42,
-            color: "#615c59",
-          }}
-        >
-          Hambúrgueres, cachorro-quente, porções e bebidas. Escolha e peça online.
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            marginTop: "auto",
+            justifyContent: "center",
             alignItems: "center",
+            width: 48,
+            height: 48,
+            borderRadius: 14,
+            backgroundColor: "#ad3226",
+            color: "#fff",
+            fontSize: 31,
+            fontWeight: 800,
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 47,
-              padding: "0 20px",
-              borderRadius: 8,
-              backgroundColor: "#ad3226",
-              fontSize: 16,
-              fontWeight: 700,
-              letterSpacing: 0.4,
-              color: "#fff",
-            }}
-          >
-            CONFIRA O CARDÁPIO
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginLeft: 18,
-              color: "#615c59",
-              fontSize: 17,
-            }}
-          >
-            Faça seu pedido pelo site
-          </div>
+          S
+        </div>
+        <div
+          style={{
+            display: "flex",
+            marginTop: 8,
+            fontSize: 34,
+            fontWeight: 800,
+            letterSpacing: -0.8,
+          }}
+        >
+          Lanchonete
+        </div>
+        <div
+          style={{
+            display: "flex",
+            marginTop: -10,
+            fontSize: 63,
+            fontWeight: 800,
+            letterSpacing: -2.4,
+            color: "#ad3226",
+          }}
+        >
+          Shirley
         </div>
       </div>
 
@@ -158,33 +128,43 @@ export default async function OpenGraphImage() {
         style={{
           display: "flex",
           position: "absolute",
-          right: 0,
-          top: 10,
-          bottom: 0,
-          width: 470,
-          backgroundColor: "#27221f",
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          top: 70,
-          right: 47,
-          width: 430,
-          height: 490,
+          top: 195,
+          left: 320,
+          width: 560,
+          height: 325,
           borderRadius: 24,
           overflow: "hidden",
-          border: "7px solid #fff",
+          boxShadow: "0 8px 28px rgba(39,34,31,0.14)",
+          border: "6px solid #fff",
         }}
       >
         <img
           src={photoSrc}
-          alt="Hambúrguer X-Tudo do cardápio"
-          width={430}
-          height={490}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          width={560}
+          height={325}
+          alt="Hambúrguer X-Tudo da Lanchonete Shirley"
+          style={{ objectFit: "cover", width: "100%", height: "100%" }}
         />
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          left: 363,
+          bottom: 34,
+          width: 474,
+          height: 69,
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 13,
+          backgroundColor: "#ad3226",
+          fontSize: 27,
+          fontWeight: 800,
+          color: "#fff",
+        }}
+      >
+        Peça seu lanche online
       </div>
     </div>,
     size,
