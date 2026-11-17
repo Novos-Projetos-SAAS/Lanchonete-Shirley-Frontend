@@ -13,6 +13,7 @@ import { toFormError, type FormErrorFeedback } from "@/lib/api-errors";
 import { ApiError } from "@/lib/api-client";
 import { clearAttempt, getOrCreateAttempt } from "@/lib/idempotency";
 import { centsToMoney } from "@/lib/money";
+import { isValidBrazilianMobile, maskBrazilianMobile } from "@/lib/phone-mask";
 import { queryKeys } from "@/lib/query-keys";
 import { rememberRecentOrder } from "@/lib/recent-orders";
 import { publicService } from "@/services/public-service";
@@ -21,7 +22,7 @@ import type { CreateOrderInput, OrderSummary } from "@/types/domain";
 
 const schema = z.object({
   nome: z.string().trim().min(2, "Informe seu nome.").max(120),
-  telefone: z.string().trim().regex(/^\+?[0-9 ()-]{10,20}$/, "Informe um telefone com DDD."),
+  telefone: z.string().trim().refine(isValidBrazilianMobile, "Informe um celular com DDD (11 dígitos)."),
   tipo_entrega: z.enum(["ENTREGA", "RETIRADA"]),
   logradouro: z.string().trim().max(160),
   numero: z.string().trim().max(30),
@@ -150,7 +151,23 @@ export function CheckoutPage() {
           <FieldGroup className="checkout-card" title="Seus dados" description="Usados somente para identificar e atualizar este pedido.">
             <div className="form-grid form-grid--2">
               <Field label="Nome" htmlFor="nome" required error={form.formState.errors.nome?.message}><Input id="nome" autoComplete="name" {...form.register("nome")} /></Field>
-              <Field label="Telefone com DDD" htmlFor="telefone" required error={form.formState.errors.telefone?.message}><Input id="telefone" type="tel" inputMode="tel" autoComplete="tel" placeholder="(18) 99999-9999" {...form.register("telefone")} /></Field>
+              <Field label="Telefone com DDD" htmlFor="telefone" required error={form.formState.errors.telefone?.message}>
+                <Controller
+                  control={form.control}
+                  name="telefone"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="telefone"
+                      type="tel"
+                      inputMode="numeric"
+                      autoComplete="tel-national"
+                      placeholder="(18) 99999-9999"
+                      onChange={(event) => field.onChange(maskBrazilianMobile(event.target.value))}
+                    />
+                  )}
+                />
+              </Field>
             </div>
           </FieldGroup>
 
