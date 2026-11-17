@@ -151,7 +151,7 @@ export function CheckoutPage() {
           <FieldGroup className="checkout-card" title="Seus dados" description="Usados somente para identificar e atualizar este pedido.">
             <div className="form-grid form-grid--2">
               <Field label="Nome" htmlFor="nome" required error={form.formState.errors.nome?.message}><Input id="nome" autoComplete="name" {...form.register("nome")} /></Field>
-              <Field label="Celular com DDD" htmlFor="telefone" required error={form.formState.errors.telefone?.message}>
+              <Field label="Telefone com DDD" htmlFor="telefone" required error={form.formState.errors.telefone?.message}>
                 <Controller
                   control={form.control}
                   name="telefone"
