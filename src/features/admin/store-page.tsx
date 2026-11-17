@@ -108,6 +108,7 @@ export function StorePage() {
             endereco_trailer: values.endereco_trailer || null,
             referencia_trailer: values.referencia_trailer || null,
             nome_impressora: values.nome_impressora || null,
+            tempo_estimado_min: Number(values.tempo_estimado_min),
         }),
         onSuccess: async () => {
             setFormError(null);
@@ -418,7 +419,7 @@ export function StorePage() {
                                     type="number"
                                     min={1}
                                     max={1440}
-                                    value={Number(values.tempo_estimado_min || 30)}
+                                    value={String(values.tempo_estimado_min ?? "")}
                                     onChange={(event) =>
                                         set(
                                             "tempo_estimado_min",
