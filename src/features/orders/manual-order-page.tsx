@@ -50,7 +50,7 @@ export function ManualOrderPage() {
               <p>Identificação usada pela equipe durante o atendimento.</p>
               <div className="form-grid form-grid--2">
                 <Field label="Nome" htmlFor="manual-name" required error={error?.fields.nome}><Input id="manual-name" autoComplete="name" value={name} onChange={(event) => { setName(event.target.value); clearError("nome"); }} /></Field>
-                <Field label="Celular" htmlFor="manual-phone" required hint="Informe DDD e número (11 dígitos)." error={error?.fields.telefone}><Input id="manual-phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="(18) 99999-9999" value={phone} onChange={(event) => { setPhone(maskBrazilianMobile(event.target.value)); clearError("telefone"); }} /></Field>
+                <Field label="Telefone" htmlFor="manual-phone" required hint="Informe DDD e número (11 dígitos)." error={error?.fields.telefone}><Input id="manual-phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="(18) 99999-9999" value={phone} onChange={(event) => { setPhone(maskBrazilianMobile(event.target.value)); clearError("telefone"); }} /></Field>
               </div>
             </fieldset>
             <fieldset className="manual-fieldset">
