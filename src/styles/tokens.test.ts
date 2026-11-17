@@ -4,7 +4,10 @@ import { describe, expect, it } from "vitest";
 
 describe("tokens visuais", () => {
   it("centraliza a paleta sóbria, foco e redução de movimento", () => {
-    const css = readFileSync(resolve(process.cwd(), "src/app/globals.css"), "utf8");
+    const css = readFileSync(
+      resolve(process.cwd(), "src/app/styles/base.css"),
+      "utf8"
+    );
     expect(css).toContain("--brand: #a9342b");
     expect(css).toContain("--accent: #d6a34b");
     expect(css).toContain("--background: #f7f7f8");
