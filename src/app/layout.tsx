@@ -9,7 +9,7 @@ const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || (
   process.env.NODE_ENV === "production"
     ? "https://lanchonete-shirley-frontend.vercel.app"
     : "http://localhost:3000"
-)).replace(/\\/+$/, "");
+));
 
 const siteTitle = "Shirley Lanches Artesanal | Peça online";
 const siteDescription = "Hambúrgueres artesanais, cachorro-quente, batatas fritas e bebidas. Confira o cardápio da Shirley e faça seu pedido online em Luiziânia, SP.";
