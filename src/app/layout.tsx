@@ -5,7 +5,9 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { ConnectionBanner } from "@/components/shared/connection-banner";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "http://localhost:3000");
 const description =
   "Hambúrgueres, cachorro-quente, porções e bebidas. Escolha seus favoritos e faça seu pedido online na Lanchonete Shirley.";
 const socialTitle = "Lanchonete Shirley | Peça seu lanche online";
