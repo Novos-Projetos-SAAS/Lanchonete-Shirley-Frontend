@@ -7,7 +7,7 @@
 
 ## Padrão visual e geração
 
-As 23 fotografias de lanches e porções foram geradas especificamente a partir dos ingredientes da seed oficial `011_cardapio_shirley.js`. As duas águas foram geradas sem marca ou rótulo, porque a seed não informa fabricante ou volume. As dez bebidas restantes usam fotografias das embalagens reais das marcas Coca-Cola, Fanta, Guaraná Antarctica e Red Bull sobre um cenário gerado no mesmo padrão visual.
+As 23 fotografias de lanches e porções foram geradas especificamente a partir dos ingredientes da seed oficial `011_cardapio_shirley.js`. As duas águas foram geradas sem marca ou rótulo, porque a seed não informa fabricante ou volume. As dez bebidas restantes usam referências das embalagens reais das marcas Coca-Cola, Fanta, Guaraná Antarctica, Monster e Red Bull sobre um cenário gerado no mesmo padrão visual.
 
 O conjunto usa fotografia gastronômica hiper-realista, enquadramento quadrado, produto centralizado, iluminação quente e suave, tábua de madeira escura e fundo de lanchonete desfocado. Os arquivos finais têm 1200 × 1200 pixels, formato WebP e qualidade 86.
 
@@ -53,13 +53,13 @@ Prompt-base usado na série:
 | Bebidas | Guaraná 1L | Nova, Guaraná Antarctica | `/images/produtos/bebidas/guarana-1l.webp` |
 | Bebidas | Coca-Cola 2L | Nova, Coca-Cola Original | `/images/produtos/bebidas/coca-cola-2l.webp` |
 | Bebidas | Guaraná 2L | Nova, Guaraná Antarctica | `/images/produtos/bebidas/guarana-2l.webp` |
-| Bebidas | Energético | Nova, Red Bull original | `/images/produtos/bebidas/energetico.webp` |
+| Bebidas | Energético | Nova, Monster e Red Bull lado a lado | `/images/produtos/bebidas/energetico.webp` |
 
 ## Bebidas de marca
 
 Foram consultadas referências atuais da [Coca-Cola Brasil](https://www.coca-cola.com/br/pt/brands/coca-cola/produtos), do [portfólio Coca-Cola FEMSA](https://portfoliococacolafemsa.com.br/sp-metropole/portfolios/01kyvfjbhv6szmsgk09ngkttd8), do distribuidor autorizado [Brasal Refrigerantes](https://refrigerantes.brasal.com.br/coca-cola/), do [Guaraná Antarctica](https://rizatti.com.br/nossas-marcas/refrigerantes/guarana-antarctica/guarana-antarctica) e do [Red Bull Energy Drink](https://www.redbull.com/br-pt/energydrink/products/red-bull-energy-drink).
 
-Como a seed usa nomes genéricos em três itens, esta branch adota Fanta Laranja, Guaraná Antarctica e Red Bull original. Nenhum volume foi acrescentado ao nome do produto quando a seed não o informa. As embalagens fotografadas foram preservadas e somente o fundo foi substituído pelo cenário comum da série.
+Como a seed usa nomes genéricos em três itens, esta branch adota Fanta Laranja e Guaraná Antarctica. Para o item `Energético`, cuja marca não foi informada, a imagem apresenta Monster e Red Bull lado a lado, sem afirmar qual deles é vendido. Nenhum volume foi acrescentado ao nome do produto quando a seed não o informa.
 
 ## Associação no backend
 
@@ -96,7 +96,7 @@ Nenhum arquivo CSS, componente visual, preço, descrição, categoria, disponibi
 
 - Frontend `npm run check`: aprovado com Next.js 16.4.6; lint, TypeScript, 68 testes e build de produção concluídos.
 - Backend `npm run check`: aprovado; lint e 125 testes unitários concluídos.
-- Verificação dos arquivos e dimensões: aprovada; 35 arquivos WebP reais, todos com 1200 × 1200 pixels, totalizando 6.510.512 bytes.
+- Verificação dos arquivos e dimensões: aprovada; 35 arquivos WebP reais, todos com 1200 × 1200 pixels, totalizando 7.200.332 bytes.
 - Teste específico da seed: aprovado; confirma preservação de URL personalizada, alteração exclusiva de `imagem_url` e idempotência.
 - Seed não executada em banco local ou de produção.
 - Nenhum deploy, commit ou push realizado.
