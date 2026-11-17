@@ -1,6 +1,12 @@
 # Status atual
 
-Atualizado em 08/11/2026.
+Atualizado em 15/11/2026.
+
+## Diagnóstico de impressão Bluetooth
+
+A fila em `/admin/impressoes` agora mostra `ultimo_erro` de cada job. Lint, TypeScript, 67 testes e build aprovados. O app Android irmão recebeu a correção de permissão `BLUETOOTH_SCAN` e APK 1.0.1 de teste; impressão física pendente. Consulte `../../Lanchonete-Shirley-Android-Print/docs/55_FALHA_IMPRESSAO_ANDROID_12_MAIS.md`.
+
+Estado anterior em 08/11/2026.
 
 ## Padronização de erros e feedback
 

@@ -10,6 +10,7 @@ import { z } from "zod";
 import { ArrowLeft, CheckCircle2, MapPin, RefreshCw, Store, Truck } from "lucide-react";
 import { Button, Card, Checkbox, EmptyState, ErrorState, Field, FieldGroup, FormErrorSummary, Input, PageHeader, PriceBreakdown, Radio, Select, Textarea } from "@/components/ui";
 import { toFormError, type FormErrorFeedback } from "@/lib/api-errors";
+import { ApiError } from "@/lib/api-client";
 import { clearAttempt, getOrCreateAttempt } from "@/lib/idempotency";
 import { centsToMoney } from "@/lib/money";
 import { queryKeys } from "@/lib/query-keys";
@@ -55,7 +56,7 @@ export function CheckoutPage() {
   const hydrated = useCartStore((state) => state.hydrated);
   const clearCart = useCartStore((state) => state.clear);
   const [submitError, setSubmitError] = useState<FormErrorFeedback | null>(null);
-  const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status });
+  const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status, refetchInterval: 30_000 });
   const payments = useQuery({ queryKey: queryKeys.payments, queryFn: publicService.paymentMethods });
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -120,6 +121,9 @@ export function CheckoutPage() {
       clearCart();
       router.replace("/pedido/confirmado");
     } catch (error) {
+      if (error instanceof ApiError && error.code === "STORE_CLOSED") {
+        await status.refetch();
+      }
       const feedback = toFormError(error, { fallback: "Não foi possível enviar o pedido.", aliases: {
         "cliente.nome": "nome", "cliente.telefone": "telefone", "endereco.logradouro": "logradouro", "endereco.numero": "numero",
         "endereco.bairro": "bairro", "endereco.cidade": "cidade", "endereco.uf": "uf",

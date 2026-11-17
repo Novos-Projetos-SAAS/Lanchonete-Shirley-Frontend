@@ -31,7 +31,7 @@ export function MenuPage() {
   const [search, setSearch] = useState("");
   const [contextReady, setContextReady] = useState(false);
   const restoredRef = useRef(false);
-  const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status, refetchInterval: 60_000 });
+  const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status, refetchInterval: 30_000 });
   const menu = useQuery({ queryKey: queryKeys.menu, queryFn: publicService.menu });
   const cartItems = useCartStore((state) => state.items);
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantidade, 0);

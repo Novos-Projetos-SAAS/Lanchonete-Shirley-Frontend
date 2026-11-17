@@ -1,6 +1,6 @@
 import { apiRequest } from "@/lib/api-client";
 import type { PaginatedData } from "@/types/api";
-import type { AndroidPrintStatus, CreateOrderInput, Invitation, InvitationSecretResponse, OrderSummary, PrintPairing, ReportMetadata, ReportPreview } from "@/types/domain";
+import type { AndroidPrintStatus, CreateOrderInput, Invitation, InvitationSecretResponse, OrderSummary, PrintPairing, ReportMetadata, ReportPreview, StoreOperationMode } from "@/types/domain";
 
 // As respostas administrativas variam por recurso; componentes convertem os
 // campos antes de renderizar ou enviar de volta à API.
@@ -64,6 +64,14 @@ export const adminService = {
     schedules: () => apiRequest<AdminRecord[]>("/admin/loja/horarios"),
     replaceSchedules: (horarios: unknown[]) => apiRequest<AdminRecord[]>("/admin/loja/horarios", { method: "PUT", body: { horarios }, csrf: true }),
     setStoreStatus: (aceitar_pedidos: boolean) => apiRequest<AdminRecord>("/admin/loja/status", { method: "PATCH", body: { aceitar_pedidos }, csrf: true }),
+
+    setStoreOperationMode: (modo_operacao: StoreOperationMode) =>
+        apiRequest<AdminRecord>("/admin/loja/status", {
+            method: "PATCH",
+            body: { modo_operacao },
+            csrf: true,
+        }),
+
     accessLevels: () => apiRequest<AdminRecord[]>("/admin/niveis-acesso"),
     invitationLevels: () => apiRequest<AdminRecord[]>("/admin/convites/niveis-acesso"),
     invitations: (params: Record<string, string | number | boolean | undefined> = {}) => apiRequest<PaginatedData<Invitation>>(`/admin/convites${search({ page: 1, limit: 10, ...params })}`),

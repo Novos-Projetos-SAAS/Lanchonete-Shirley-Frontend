@@ -1,6 +1,14 @@
 # Handoff para análise
 
-Data: 08/11/2026. Projeto: `Lanchonete-Shirley-Frontend`. Baseline do scaffold: `0f1bb4a`.
+Data: 15/11/2026. Projeto: `Lanchonete-Shirley-Frontend`.
+
+## Impressão Android 12+
+
+- A lista de jobs em `/admin/impressoes` mostra o `ultimo_erro` registrado, inclusive quando o job voltou a `PENDENTE` após uma falha anterior ao envio.
+- Lint, TypeScript, 67 testes e build aprovados. A correção principal está no APK 1.0.1 do projeto Android irmão: declaração e pedido de `BLUETOOTH_SCAN` para `cancelDiscovery()` no Android 12+.
+- Confirmar no aparelho Android 14/16 com a MPT-II: teste local primeiro, depois iniciar turno e enfileirar teste pelo painel. Ver `../../Lanchonete-Shirley-Android-Print/docs/55_FALHA_IMPRESSAO_ANDROID_12_MAIS.md`.
+
+Estado anterior em 08/11/2026. Baseline do scaffold: `0f1bb4a`.
 
 ## Padronização de erros — handoff prioritário
 

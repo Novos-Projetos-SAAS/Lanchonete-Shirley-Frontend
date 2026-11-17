@@ -53,4 +53,14 @@ describe("adminService configurações da loja", () => {
       csrf: true,
     });
   });
+
+  it("salva o modo de funcionamento pela rota administrativa com CSRF", () => {
+    adminService.setStoreOperationMode("ABERTO_MANUAL");
+
+    expect(request).toHaveBeenCalledWith("/admin/loja/status", {
+      method: "PATCH",
+      body: { modo_operacao: "ABERTO_MANUAL" },
+      csrf: true,
+    });
+  });
 });
