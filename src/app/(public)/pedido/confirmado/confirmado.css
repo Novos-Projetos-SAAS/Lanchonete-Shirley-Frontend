@@ -1,0 +1,123 @@
+.confirmation-page {
+    max-width: 48rem;
+}
+
+.confirmation-seal {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    background: var(--success-soft);
+    color: var(--success);
+    box-shadow: 5px 5px 0 #b9dcc7;
+    transform: rotate(-3deg);
+}
+
+.confirmation-seal svg {
+    width: 2.3rem;
+    height: 2.3rem;
+}
+
+.confirmation-ticket {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border-style: dashed;
+}
+
+.confirmation-ticket__code {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.confirmation-ticket__code small {
+    color: var(--text-muted);
+}
+
+.confirmation-ticket__code strong {
+    overflow-wrap: anywhere;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    letter-spacing: 0.04em;
+}
+
+.confirmation-ticket__code .button {
+    justify-self: start;
+}
+
+.site-shell .confirmation-seal {
+    box-shadow: none;
+    transform: none;
+}
+
+.site-shell .confirmation-ticket {
+    border-style: solid;
+    border-top: 3px solid var(--success);
+}
+
+/* Confirmação: o selo indica recebimento; o status e os valores não são substituídos. */
+.site-shell .confirmation-page {
+    max-width: 48rem;
+}
+
+.site-shell .confirmation-seal {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto 1rem;
+    border: 1px solid var(--success);
+    background: var(--success-soft);
+}
+
+.site-shell .confirmation-page > .page-header {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+}
+
+.site-shell .confirmation-page .page-header p:last-child {
+    margin-inline: auto;
+}
+
+.site-shell .confirmation-ticket {
+    gap: 1.25rem;
+}
+
+.site-shell .confirmation-ticket__code {
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: var(--surface-muted);
+}
+
+.site-shell .confirmation-ticket__code strong {
+    min-width: 0;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    word-break: break-all;
+}
+
+.site-shell .confirmation-ticket__code .button {
+    justify-self: stretch;
+    background: var(--surface);
+}
+
+.site-shell .confirmation-ticket > .cluster {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.65rem;
+}
+
+@media (min-width: 36rem) {
+    .site-shell .confirmation-ticket > .cluster {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .site-shell .confirmation-ticket > .cluster > .button--primary {
+        grid-column: 1 / -1;
+    }
+}
