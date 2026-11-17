@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   applicationName: "Shirley Lanches Artesanal",
   keywords: ["Shirley Lanches", "hambúrguer artesanal", "cachorro-quente", "batata frita", "lanches em Luiziânia", "cardápio online", "delivery"],
   openGraph: {
+    url: siteUrl,
     type: "website",
     locale: "pt_BR",
     siteName: "Shirley Lanches Artesanal",
