@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { io, type Socket } from "socket.io-client";
-import { API_URL } from "@/lib/api-client";
+import { API_REQUEST_BASE } from "@/lib/api-client";
 import { queryKeys } from "@/lib/query-keys";
 
 export function useAdminRealtime(enabled = true) {
@@ -13,7 +13,7 @@ export function useAdminRealtime(enabled = true) {
   const [connected, setConnected] = useState(false);
   useEffect(() => {
     if (!enabled) return;
-    const origin = new URL(API_URL).origin;
+    const origin = new URL(API_REQUEST_BASE, window.location.origin).origin;
     const socket = io(`${origin}/admin`, { withCredentials: true, transports: ["websocket", "polling"] });
     socketRef.current = socket;
     const reconcile = () => { setConnected(true); void queryClient.invalidateQueries({ queryKey: ["admin-orders"] }); void queryClient.invalidateQueries({ queryKey: queryKeys.notifications }); void queryClient.invalidateQueries({ queryKey: queryKeys.unreadNotifications }); };

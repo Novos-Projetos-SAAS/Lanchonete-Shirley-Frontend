@@ -1,6 +1,8 @@
 import type { ErrorEnvelope, SuccessEnvelope } from "@/types/api";
+import { resolveApiConnection } from "./api-url";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333/api/v1").replace(/\/$/, "");
+const { apiBase: API_REQUEST_BASE } = resolveApiConnection(API_URL, process.env.NEXT_PUBLIC_SITE_URL);
 const DEFAULT_TIMEOUT = 15_000;
 export const SESSION_EXPIRED_EVENT = "shirley:session-expired";
 
@@ -68,7 +70,7 @@ async function fetchWithTimeout(path: string, options: ApiRequestOptions = {}) {
   const body = options.body == null ? undefined : isBodyInit(options.body) ? options.body : JSON.stringify(options.body);
   if (body && !(body instanceof FormData) && !headers.has("content-type")) headers.set("content-type", "application/json");
   try {
-    return await fetch(`${API_URL}${path}`, {
+    return await fetch(`${API_REQUEST_BASE}${path}`, {
       ...options,
       body,
       headers,
@@ -169,5 +171,5 @@ export function isVersionConflict(error: unknown) {
   return error instanceof ApiError && error.status === 409 && error.code === "ORDER_VERSION_CONFLICT";
 }
 
-export { API_URL };
+export { API_URL, API_REQUEST_BASE };
 

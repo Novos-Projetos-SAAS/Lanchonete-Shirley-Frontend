@@ -1,25 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, ClipboardCopy, Home, List, Share2 } from "lucide-react";
 import { Button, Card, EmptyState, PageHeader, PriceBreakdown, StatusBadge } from "@/components/ui";
 import type { OrderSummary } from "@/types/domain";
 import { useToast } from "@/components/ui/toast";
 import { rememberRecentOrder } from "@/lib/recent-orders";
+import { trackingUrl } from "@/lib/infinitepay";
 
 const KEY = "shirley.order.confirmation";
 export function ConfirmationPage() {
+  const router = useRouter();
   const [order, setOrder] = useState<Partial<OrderSummary> | null>(null);
   const [loaded, setLoaded] = useState(false);
   const { toast } = useToast();
-  // A confirmação existe apenas no sessionStorage do navegador após o checkout.
+  // A confirmação local fica no sessionStorage; o retorno online usa o código do pedido.
   useEffect(() => {
+    const codes = new URLSearchParams(window.location.search).getAll("codigo");
+    const returned = codes.length === 1 ? trackingUrl(codes[0], window.location.search) : null;
+    if (returned) { router.replace(returned); return; }
     let parsed: Partial<OrderSummary> | null = null;
     try { const value = sessionStorage.getItem(KEY); parsed = value ? JSON.parse(value) as Partial<OrderSummary> : null; } catch { sessionStorage.removeItem(KEY); }
     if (parsed) rememberRecentOrder(parsed);
+    if (parsed?.pagamento?.fluxo === "INFINITEPAY" && parsed.codigo_acompanhamento) {
+      const tracking = trackingUrl(parsed.codigo_acompanhamento);
+      if (tracking) { router.replace(tracking); return; }
+    }
     queueMicrotask(() => { setOrder(parsed); setLoaded(true); });
-  }, []);
+  }, [router]);
   if (!loaded) return <main className="container centered-page" id="conteudo-principal">Carregando confirmação…</main>;
   if (!order?.codigo_acompanhamento) return <main className="container centered-page" id="conteudo-principal"><EmptyState title="Nenhuma confirmação recente" description="Se você já fez um pedido, use o código recebido para acompanhar." action={<Button asChild><Link href="/acompanhar">Acompanhar pedido</Link></Button>} /></main>;
   async function copyCode() { await navigator.clipboard.writeText(order!.codigo_acompanhamento!); toast({ tone: "success", title: "Código copiado" }); }

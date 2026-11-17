@@ -12,6 +12,7 @@ import { Button, Card, Checkbox, EmptyState, ErrorState, Field, FieldGroup, Form
 import { toFormError, type FormErrorFeedback } from "@/lib/api-errors";
 import { ApiError } from "@/lib/api-client";
 import { clearAttempt, getOrCreateAttempt } from "@/lib/idempotency";
+import { checkoutUrl, trackingUrl } from "@/lib/infinitepay";
 import { centsToMoney } from "@/lib/money";
 import { queryKeys } from "@/lib/query-keys";
 import { rememberRecentOrder } from "@/lib/recent-orders";
@@ -57,7 +58,7 @@ export function CheckoutPage() {
   const clearCart = useCartStore((state) => state.clear);
   const [submitError, setSubmitError] = useState<FormErrorFeedback | null>(null);
   const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status, refetchInterval: 30_000 });
-  const payments = useQuery({ queryKey: queryKeys.payments, queryFn: publicService.paymentMethods });
+  const payments = useQuery({ queryKey: queryKeys.payments, queryFn: publicService.paymentMethods, refetchInterval: 30_000 });
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -71,6 +72,8 @@ export function CheckoutPage() {
   const paymentMethodId = useWatch({ control: form.control, name: "metodo_pagamento_id" });
   const changeNeeded = useWatch({ control: form.control, name: "precisa_troco" });
   const isCashPayment = payments.data?.some((method) => method.id === paymentMethodId && method.codigo === "DINHEIRO") ?? false;
+  const onlinePaymentMethod = payments.data?.find((method) => method.id === paymentMethodId && method.online_habilitado);
+  const isOnlinePayment = Boolean(onlinePaymentMethod);
   const total = useMemo(() => cartTotalCents(items), [items]);
 
   useEffect(() => {
@@ -111,15 +114,23 @@ export function CheckoutPage() {
     const attempt = getOrCreateAttempt(body);
     try {
       const result = await publicService.createOrder(body, attempt.key);
+      const tracking = trackingUrl(result.codigo_acompanhamento ?? "");
+      if (!tracking) throw new Error("Resposta do pedido sem código de acompanhamento válido.");
       const safeConfirmation: Partial<OrderSummary> = {
         pedido_id: result.pedido_id, codigo_acompanhamento: result.codigo_acompanhamento, status: result.status,
         subtotal: result.subtotal, taxa_entrega: result.taxa_entrega, total: result.total, criado_em: result.criado_em,
+        pagamento: result.pagamento, status_pagamento: result.status_pagamento,
       };
       sessionStorage.setItem(CONFIRMATION_KEY, JSON.stringify(safeConfirmation));
       rememberRecentOrder(safeConfirmation);
       clearAttempt();
       clearCart();
-      router.replace("/pedido/confirmado");
+      if (result.pagamento?.fluxo === "INFINITEPAY") {
+        const checkout = checkoutUrl(result.pagamento.checkout_url);
+        if (checkout) {
+          try { window.location.assign(checkout); } catch { router.replace(tracking); }
+        } else router.replace(tracking);
+      } else router.replace("/pedido/confirmado");
     } catch (error) {
       if (error instanceof ApiError && error.code === "STORE_CLOSED") {
         await status.refetch();
@@ -169,7 +180,8 @@ export function CheckoutPage() {
 
           <FieldGroup className="checkout-card" title="Pagamento">
             {payments.isError ? <ErrorState compact title="Formas de pagamento indisponíveis" description="Tente carregar novamente antes de enviar." action={<Button type="button" variant="ghost" onClick={() => void payments.refetch()}><RefreshCw aria-hidden /> Tentar novamente</Button>} /> : <div className="form-grid">
-              <Field label="Forma de pagamento" htmlFor="metodo" required error={form.formState.errors.metodo_pagamento_id?.message}><Select id="metodo" {...form.register("metodo_pagamento_id")}><option value="">Selecione</option>{payments.data?.map((method) => <option value={method.id} key={method.id}>{method.nome}</option>)}</Select></Field>
+              <Field label="Forma de pagamento" htmlFor="metodo" required error={form.formState.errors.metodo_pagamento_id?.message}><Select id="metodo" {...form.register("metodo_pagamento_id")}><option value="">Selecione</option>{payments.data?.map((method) => <option value={method.id} key={method.id}>{method.nome}{method.online_habilitado ? " — online pela InfinitePay" : ""}</option>)}</Select></Field>
+              {isOnlinePayment && <p className="privacy-note" role="status">Você será direcionado ao checkout seguro da InfinitePay. O pedido só será preparado após a confirmação do pagamento.{onlinePaymentMethod?.codigo === "PIX" && " O checkout com Pix também oferece cartão de crédito."}</p>}
               {isCashPayment && <Controller control={form.control} name="precisa_troco" render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange}>Preciso de troco</Checkbox>} />}
               {isCashPayment && changeNeeded && <Field label="Troco para" htmlFor="troco" required hint="Use ponto nos centavos. Ex.: 50.00" error={form.formState.errors.troco_para?.message}><Input id="troco" inputMode="decimal" placeholder="50.00" {...form.register("troco_para")} /></Field>}
             </div>}
@@ -181,7 +193,7 @@ export function CheckoutPage() {
           <h2>Resumo</h2>
           <PriceBreakdown lines={[{ label: "Itens", value: centsToMoney(total) }, { label: deliveryType === "ENTREGA" ? "Entrega (a confirmar)" : "Retirada", value: "0.00" }, { label: "Estimativa", value: centsToMoney(total), emphasis: true }]} note="O servidor recalcula tudo com o cardápio atual." />
           <FormErrorSummary error={submitError} fieldIds={{ nome: "nome", telefone: "telefone", logradouro: "logradouro", numero: "numero", bairro: "bairro", cidade: "cidade", uf: "uf", metodo_pagamento_id: "metodo", troco_para: "troco" }} />
-          <Button full size="lg" type="submit" loading={form.formState.isSubmitting} disabled={payments.isError || status.isLoading}><CheckCircle2 aria-hidden /> Confirmar pedido</Button>
+          <Button full size="lg" type="submit" loading={form.formState.isSubmitting} disabled={payments.isError || payments.isLoading || status.isLoading}><CheckCircle2 aria-hidden /> {isOnlinePayment ? "Ir para pagamento seguro" : "Confirmar pedido"}</Button>
           <Button full variant="ghost" asChild><Link href="/carrinho"><ArrowLeft aria-hidden /> Voltar ao carrinho</Link></Button>
           <p className="privacy-note">Ao confirmar, você envia apenas os dados necessários para este pedido.</p>
         </Card>
