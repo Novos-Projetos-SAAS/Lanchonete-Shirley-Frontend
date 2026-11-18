@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "branch": "feature/infinitepay-checkout-mvp",
+  "head": "dc985e69864c0dd61a1d7a9ee804de45e7694d7a",
+  "changedSinceStart": [
+    "src/app/admin/produtos/page.tsx",
+    "src/app/globals.css",
+    "src/components/layout/admin-shell.tsx",
+    "src/features/admin/resource-page.tsx",
+    "src/features/orders/manual-order-page.tsx",
+    "tests/e2e/app.spec.ts"
+  ],
+  "newSourceFiles": [
+    "src/app/styles/admin.css",
+    "src/features/admin/catalog-workspace.tsx"
+  ],
+  "nextConfigPreserved": true,
+  "publicSourceFilesPreserved": true,
+  "servicesContractsPermissionsAuthPreserved": true,
+  "businessSymbolsIdentical": [
+    "src/features/admin/resource-page.tsx:initialValues",
+    "src/features/admin/resource-page.tsx:recordValues",
+    "src/features/admin/resource-page.tsx:resourceValue",
+    "src/features/admin/resource-page.tsx:ResourceInput",
+    "src/features/admin/resource-page.tsx:ProductAssociations",
+    "src/features/orders/manual-order-page.tsx:addItem",
+    "src/features/orders/manual-order-page.tsx:submit",
+    "src/features/orders/manual-order-page.tsx:selectProduct",
+    "src/features/orders/manual-order-page.tsx:ProductOptions",
+    "ResourcePage:save",
+    "ResourcePage:remove",
+    "ResourcePage:deactivate",
+    "ResourcePage:reactivate",
+    "ResourcePage:restore",
+    "ResourcePage:filters"
+  ],
+  "testCapturesRestored": 0,
+  "staged": false
+}

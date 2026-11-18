@@ -9,5 +9,6 @@
 @import "./(public)/acompanhar/[codigo]/acompanhamento.css";
 @import "./(public)/pedidos-compartilhado.css";
 @import "./(public)/finalizar/finalizar.css";
+@import "./styles/admin.css";
 
 /* Entrada global: base comum e folhas organizadas nas pastas das telas. */

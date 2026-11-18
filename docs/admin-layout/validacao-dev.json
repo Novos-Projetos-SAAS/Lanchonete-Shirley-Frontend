@@ -1,0 +1,568 @@
+{
+  "layouts": [
+    {
+      "label": "360:/admin",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/produtos",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/categorias",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/paes",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/adicionais",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/metodos-pagamento",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/pedidos",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/pedidos/101",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/pedidos/novo",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/usuarios",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/convites",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/relatorios",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/logs",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/notificacoes",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:/admin/perfil",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:editor",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "360:menu",
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "label": "390:/admin",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/produtos",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/categorias",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/paes",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/adicionais",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/metodos-pagamento",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/pedidos",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/pedidos/101",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/pedidos/novo",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/usuarios",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/convites",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/relatorios",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/logs",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/notificacoes",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:/admin/perfil",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:editor",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "390:menu",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "label": "768:/admin",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/produtos",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/categorias",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/paes",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/adicionais",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/metodos-pagamento",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/pedidos",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/pedidos/101",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/pedidos/novo",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/usuarios",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/convites",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/relatorios",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/logs",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/notificacoes",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:/admin/perfil",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:editor",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "768:menu",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "label": "1024:/admin",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/produtos",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/categorias",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/paes",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/adicionais",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/metodos-pagamento",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/pedidos",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/pedidos/101",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/pedidos/novo",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/usuarios",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/convites",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/relatorios",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/logs",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/notificacoes",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:/admin/perfil",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1024:editor",
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "label": "1440:/admin",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/produtos",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/categorias",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/paes",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/adicionais",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/metodos-pagamento",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/pedidos",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/pedidos/101",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/pedidos/novo",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/usuarios",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/convites",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/relatorios",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/logs",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/notificacoes",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:/admin/perfil",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "1440:editor",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "label": "reflow-200%",
+      "width": 720,
+      "scrollWidth": 720
+    }
+  ],
+  "axe": [
+    {
+      "label": "390:/admin/produtos",
+      "violations": []
+    },
+    {
+      "label": "390:/admin/categorias",
+      "violations": []
+    },
+    {
+      "label": "390:/admin/pedidos",
+      "violations": []
+    },
+    {
+      "label": "390:/admin/pedidos/novo",
+      "violations": []
+    },
+    {
+      "label": "390:editor",
+      "violations": []
+    },
+    {
+      "label": "1440:/admin/produtos",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "targets": [
+            [
+              ".admin-user"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "1440:/admin/categorias",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "targets": [
+            [
+              ".admin-user"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "1440:/admin/pedidos",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "targets": [
+            [
+              ".admin-user"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "1440:/admin/pedidos/novo",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "targets": [
+            [
+              ".admin-user"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "1440:editor",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "targets": [
+            [
+              ".admin-user"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "unavailable": [
+    {
+      "width": 360,
+      "route": "/admin/loja"
+    },
+    {
+      "width": 360,
+      "route": "/admin/impressoes"
+    },
+    {
+      "width": 390,
+      "route": "/admin/loja"
+    },
+    {
+      "width": 390,
+      "route": "/admin/impressoes"
+    },
+    {
+      "width": 768,
+      "route": "/admin/loja"
+    },
+    {
+      "width": 768,
+      "route": "/admin/impressoes"
+    },
+    {
+      "width": 1024,
+      "route": "/admin/loja"
+    },
+    {
+      "width": 1024,
+      "route": "/admin/impressoes"
+    },
+    {
+      "width": 1440,
+      "route": "/admin/loja"
+    },
+    {
+      "width": 1440,
+      "route": "/admin/impressoes"
+    }
+  ],
+  "errors": [],
+  "publicNavigation": [
+    {
+      "width": 390,
+      "sameStyles": false,
+      "limitation": "Destino sem os elementos públicos esperados no servidor de desenvolvimento."
+    },
+    {
+      "width": 1440,
+      "sameStyles": false,
+      "limitation": "Destino sem os elementos públicos esperados no servidor de desenvolvimento."
+    }
+  ],
+  "status": "FAIL",
+  "failure": "expect(received).toEqual(expected) // deep equality\n\n- Expected  -  1\n+ Received  + 42\n\n- Array []\n+ Array [\n+   Object {\n+     \"id\": \"label-content-name-mismatch\",\n+     \"targets\": Array [\n+       Array [\n+         \".admin-user\",\n+       ],\n+     ],\n+   },\n+   Object {\n+     \"id\": \"label-content-name-mismatch\",\n+     \"targets\": Array [\n+       Array [\n+         \".admin-user\",\n+       ],\n+     ],\n+   },\n+   Object {\n+     \"id\": \"label-content-name-mismatch\",\n+     \"targets\": Array [\n+       Array [\n+         \".admin-user\",\n+       ],\n+     ],\n+   },\n+   Object {\n+     \"id\": \"label-content-name-mismatch\",\n+     \"targets\": Array [\n+       Array [\n+         \".admin-user\",\n+       ],\n+     ],\n+   },\n+   Object {\n+     \"id\": \"label-content-name-mismatch\",\n+     \"targets\": Array [\n+       Array [\n+         \".admin-user\",\n+       ],\n+     ],\n+   },\n+ ]"
+}
