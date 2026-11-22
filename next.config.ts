@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,
-  allowedDevOrigins: ["127.0.0.1", "https://lanchonete-shirley-frontend.vercel.app/"],
+  allowedDevOrigins: ["127.0.0.1", "https://shirley-lanches-artesanais.vercel.app/"],
   // Preserva /socket.io/ no handshake do Engine.IO.
   skipTrailingSlashRedirect: apiConnection.rewrites.length > 0,
   async rewrites() {

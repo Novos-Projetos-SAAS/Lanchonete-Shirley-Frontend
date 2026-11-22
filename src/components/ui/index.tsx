@@ -260,7 +260,7 @@ export function Pagination({ page, totalPages, totalItems, onPageChange, label =
   return <nav className="pagination" aria-label={label}><Button variant="ghost" disabled={page <= 1} onClick={() => onPageChange(page - 1)}><ChevronLeft aria-hidden /> Anterior</Button><span>Página {page} de {pages} · {totalItems} {totalItems === 1 ? "registro" : "registros"}</span><Button variant="ghost" disabled={page >= pages} onClick={() => onPageChange(page + 1)}>Próxima <ChevronRight aria-hidden /></Button></nav>;
 }
 
-export function RowActions({ label = "Ações do registro", children }: { label?: string; children: ReactNode }) {
+export function RowActions({ label = "Ações do registro", children, menuOnMobile = false }: { label?: string; children: ReactNode; menuOnMobile?: boolean }) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const actions = Children.toArray(children).filter(Boolean);
   const [mobileActions, setMobileActions] = useState(false);
@@ -291,7 +291,7 @@ export function RowActions({ label = "Ações do registro", children }: { label?
     };
   }, []);
   if (!actions.length) return <span className="muted">Sem ações</span>;
-  if (mobileActions) return <div className="row-actions row-actions--inline" role="group" aria-label={label}>{actions}</div>;
+  if (mobileActions && !menuOnMobile) return <div className="row-actions row-actions--inline" role="group" aria-label={label}>{actions}</div>;
   return <details className="row-actions" ref={detailsRef}><summary role="button" aria-label={label} title={label}><MoreHorizontal aria-hidden /></summary><div className="row-actions__menu">{actions}</div></details>;
 }
 

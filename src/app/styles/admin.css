@@ -935,7 +935,7 @@
 
   .admin-shell--workspace .manual-order-workspace .catalog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5rem), 14rem));
     align-items: stretch;
     gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
@@ -1068,7 +1068,18 @@
 
 @container manual-order-area (max-width: 24rem) {
   .admin-shell--workspace .manual-order-workspace .catalog-grid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  /* Em celulares estreitos, recupera espaco sem esconder o nome/preco. */
+  .admin-shell--workspace .manual-order-workspace .catalog-grid .catalog-card__info {
+    padding: 0.45rem 0.55rem 0.7rem;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-grid .catalog-photo {
+    width: calc(100% - 0.8rem);
+    margin: 0.4rem;
   }
 }
 /* SHIRLEY MANUAL ORDER RESPONSIVE END */
@@ -1135,3 +1146,95 @@
   color: var(--brand);
 }
 
+/* SHIRLEY-ADMIN-BOTTOM-NAV-NOWRAP-V1
+   Corrige a quebra de "Novo pedido" e outros titulos em celulares.
+   Aplicar ao final de src/app/styles/admin.css.
+*/
+@media screen and (max-width: 63.999rem) {
+  .admin-shell--workspace .admin-bottom-nav {
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .admin-shell--workspace .admin-bottom-nav > :is(a, button) {
+    padding-inline: 0.1rem;
+    white-space: nowrap;
+    font-size: clamp(0.6rem, 2.75vw, 0.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+  }
+}
+
+/* Larguras excepcionais abaixo de 320px: evita sobrepor abas vizinhas. */
+@media screen and (max-width: 319px) {
+  .admin-shell--workspace .admin-bottom-nav > :is(a, button) {
+    font-size: 0.52rem;
+  }
+}
+
+/* SHIRLEY-PRODUTOS-3-PONTOS-MOBILE-V1 */
+/* Cards em 2 colunas no celular: acoes pelo menu compacto, sem texto vertical. */
+@media screen and (max-width: 47.999rem) {
+  .admin-shell--workspace .catalog-workspace .catalog-grid > .catalog-card:has(.row-actions[open]) {
+    z-index: 80;
+  }
+
+  .admin-shell--workspace .catalog-workspace .catalog-card__footer {
+    min-width: 0;
+    gap: 0.375rem;
+    padding-inline: 0.55rem;
+  }
+
+  .admin-shell--workspace .catalog-workspace .catalog-card__status {
+    min-width: 0;
+  }
+
+  .admin-shell--workspace .catalog-workspace .catalog-card__footer > .row-actions {
+    position: static;
+    flex: 0 0 2.75rem;
+    width: 2.75rem;
+    margin-left: auto;
+  }
+
+  .admin-shell--workspace .catalog-workspace .catalog-card__footer .row-actions > summary {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .admin-shell--workspace .catalog-workspace .catalog-card__footer .row-actions__menu {
+    top: auto;
+    bottom: calc(100% + 0.375rem);
+    right: 0;
+    left: auto;
+    width: 13rem;
+    min-width: 0;
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
+    z-index: 100;
+  }
+
+  /* Em cards estreitos: primeira coluna abre para a direita. */
+  @media screen and (max-width: 30rem) {
+    .admin-shell--workspace .catalog-workspace .catalog-grid > .catalog-card:nth-child(odd)
+      .row-actions__menu {
+      right: auto;
+      left: 0;
+    }
+  }
+
+  .admin-shell--workspace .catalog-workspace .row-actions__menu .button {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    flex-direction: row;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    text-align: left;
+  }
+}
+/* FIM SHIRLEY-PRODUTOS-3-PONTOS-MOBILE-V1 */
