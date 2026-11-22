@@ -202,7 +202,7 @@ export function ManualOrderPage() {
     }
 
     const body: CreateOrderInput = {
-      cliente: { nome, telefone: phone },
+      cliente: { nome: name, telefone: phone },
       tipo_entrega: delivery,
       endereco: delivery === "ENTREGA" ? {
         logradouro: street,
