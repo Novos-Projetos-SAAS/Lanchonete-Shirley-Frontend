@@ -1,0 +1,308 @@
+/*
+ * Shirley Lanches — tabelas administrativas, visual clean.
+ * Escopo limitado ao painel: não modifica o cardápio público nem a lógica das tabelas.
+ * Referência: cabeçalho cinza quente, linhas em tons alternados, etiquetas suaves.
+ */
+@media screen {
+    /* .admin-shell--workspace {
+  --admin-list-surface: #fffdf8;
+  --admin-list-header: #7a2924;
+  --admin-list-stripe: #f5eee4;
+  --admin-list-line: #d5c5b5;
+  --admin-list-text: #342923;
+  --admin-list-muted: #75665c;
+  --admin-list-lime: #f2bd55;
+  --admin-list-hover: #f8e5cc;
+} */
+
+    .admin-shell--workspace {
+        --admin-list-surface: #ffffff;
+        --admin-list-header: #252525;
+        --admin-list-stripe: #f5f2ee;
+        --admin-list-line: #d4ccc3;
+        --admin-list-text: #302b27;
+        --admin-list-muted: #73685e;
+        --admin-list-lime: #ffb05c;
+        --admin-list-hover: #f7efe6;
+    }
+
+
+    /* Um mesmo desenho para as tabelas de pedidos, cadastros e relatórios. */
+    .admin-shell--workspace .responsive-table,
+    .admin-shell--workspace .report-preview .report-table-wrap {
+        min-width: 0;
+        border: 1px solid var(--admin-list-line);
+        border-radius: 0.85rem;
+        background: var(--admin-list-surface);
+        box-shadow: 0 5px 20px rgb(50 45 38 / 3%);
+    }
+
+    .admin-shell--workspace .responsive-table {
+        padding: 0.55rem;
+    }
+
+    .admin-shell--workspace .responsive-table__desktop {
+        border: 0;
+        border-radius: 0.55rem;
+        background: transparent;
+    }
+
+    .admin-shell--workspace .responsive-table table,
+    .admin-shell--workspace .report-preview table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: var(--admin-list-text);
+        font-size: 0.8125rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .admin-shell--workspace .responsive-table thead th,
+    .admin-shell--workspace .report-preview thead th {
+        position: relative;
+        z-index: auto;
+        padding: 0.95rem 0.8rem;
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--admin-list-line);
+        background: var(--admin-list-header);
+        color: #ffffff;
+        font-size: 0.90rem;
+        font-weight: 650;
+        letter-spacing: 0.015em;
+        line-height: 1.45;
+        text-align: left;
+        text-transform: none;
+        white-space: normal;
+    }
+
+    .admin-shell--workspace .responsive-table thead th:first-child,
+    .admin-shell--workspace .report-preview thead th:first-child {
+        border-top-left-radius: 0.55rem;
+    }
+
+    .admin-shell--workspace .responsive-table thead th:last-child,
+    .admin-shell--workspace .report-preview thead th:last-child {
+        border-top-right-radius: 0.55rem;
+    }
+
+    .admin-shell--workspace .responsive-table tbody td,
+    .admin-shell--workspace .report-preview tbody td {
+        padding: 0.85rem 0.8rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--admin-list-line);
+        background: #fff;
+        color: var(--admin-list-text);
+        vertical-align: middle;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-shell--workspace .responsive-table tbody tr:nth-child(even) td,
+    .admin-shell--workspace .report-preview tbody tr:nth-child(even) td {
+        background: var(--admin-list-stripe);
+    }
+
+    .admin-shell--workspace .responsive-table tbody tr:hover td,
+    .admin-shell--workspace .report-preview tbody tr:hover td {
+        background: var(--admin-list-hover);
+    }
+
+    .admin-shell--workspace .responsive-table tbody tr:last-child td,
+    .admin-shell--workspace .report-preview tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .admin-shell--workspace .responsive-table tbody tr:last-child td:first-child,
+    .admin-shell--workspace .report-preview tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 0.55rem;
+    }
+
+    .admin-shell--workspace .responsive-table tbody tr:last-child td:last-child,
+    .admin-shell--workspace .report-preview tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 0.55rem;
+    }
+
+    /* Destaque em textos principais e informação auxiliar. */
+    .admin-shell--workspace .responsive-table .table-primary strong {
+        color: #292929;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .admin-shell--workspace .responsive-table .table-primary small {
+        color: var(--admin-list-muted);
+        font-size: 0.73rem;
+        font-weight: 400;
+    }
+
+    /* Etiquetas arredondadas como as da referência, mantendo semântica dos estados. */
+    .admin-shell--workspace .responsive-table :is(.badge, .status),
+    .admin-shell--workspace .report-preview :is(.badge, .status),
+    .admin-shell--workspace .responsive-table__mobile :is(.badge, .status) {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        max-width: 100%;
+        border: 0;
+        border-radius: 999px;
+        padding: 0.27rem 0.65rem;
+        font-size: 0.71rem;
+        font-weight: 650;
+        line-height: 1.4;
+        white-space: normal;
+    }
+
+    .admin-shell--workspace .responsive-table :is(.badge--success, .status--pago, .status--entregue, .status--pronto_para_retirada),
+    .admin-shell--workspace .report-preview :is(.badge--success, .status--pago, .status--entregue, .status--pronto_para_retirada) {
+        background: #d9f3a5;
+        color: #36521c;
+    }
+
+    .admin-shell--workspace .responsive-table :is(.status--pendente, .status--em_preparo),
+    .admin-shell--workspace .report-preview :is(.status--pendente, .status--em_preparo) {
+        background: #ffe3a3;
+        color: #785017;
+    }
+
+    .admin-shell--workspace .responsive-table .status--saiu_para_entrega,
+    .admin-shell--workspace .report-preview .status--saiu_para_entrega {
+        background: #ffceaa;
+        color: #813f19;
+    }
+
+    .admin-shell--workspace .responsive-table :is(.badge--muted, .status--cancelado, .status--estornado),
+    .admin-shell--workspace .report-preview :is(.badge--muted, .status--cancelado, .status--estornado) {
+        background: #e8e8e8;
+        color: #626262;
+    }
+
+    /* Controles de ação da linha: discretos, sem perder foco/teclado. */
+    .admin-shell--workspace .responsive-table .row-actions>summary {
+        width: 2.15rem;
+        height: 2.15rem;
+        min-height: 2.15rem;
+        margin-left: auto;
+        border-color: #edeae6;
+        border-radius: 0.55rem;
+        background: #f8f7f5;
+        color: #77736f;
+    }
+
+    .admin-shell--workspace .responsive-table .row-actions>summary:hover {
+        background: #edf4db;
+        color: #4a5e29;
+    }
+
+    .admin-shell--workspace .responsive-table :is(button, a, summary):focus-visible,
+    .admin-shell--workspace .report-preview :is(button, a):focus-visible {
+        outline: 3px solid #a3d34e;
+        outline-offset: 2px;
+    }
+
+    /* Paginação original mantida, com botões em tom leve e acento verde-lima. */
+    .admin-shell--workspace :is(.pagination, .report-pagination) {
+        gap: 0.6rem;
+        margin-top: 0.95rem;
+        padding: 0.4rem 0.2rem;
+        color: var(--admin-list-muted);
+        font-size: 0.76rem;
+    }
+
+    .admin-shell--workspace :is(.pagination, .report-pagination)>span {
+        color: var(--admin-list-muted);
+        font-size: 0.76rem;
+    }
+
+    .admin-shell--workspace :is(.pagination, .report-pagination)>.button {
+        min-height: 2.1rem;
+        padding: 0.3rem 0.75rem;
+        border: 1px solid #e9e8e5;
+        border-radius: 0.6rem;
+        background: #f6f6f5;
+        color: #585753;
+        font-size: 0.76rem;
+        box-shadow: none;
+    }
+
+    .admin-shell--workspace :is(.pagination, .report-pagination)>.button:hover:not(:disabled) {
+        background: var(--admin-list-lime);
+        border-color: var(--admin-list-lime);
+        color: #2f3e20;
+    }
+
+    /* Telas menores: cartões com as mesmas cores, sem rolagem horizontal forçada. */
+    .admin-shell--workspace .responsive-table__mobile,
+    .admin-shell--workspace .report-mobile-list {
+        gap: 0.65rem;
+    }
+
+    .admin-shell--workspace .responsive-table__mobile .data-card,
+    .admin-shell--workspace .report-mobile-list article {
+        overflow: visible;
+        border: 1px solid var(--admin-list-line);
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: none;
+    }
+
+    .admin-shell--workspace .responsive-table__mobile .data-card:nth-child(even),
+    .admin-shell--workspace .report-mobile-list article:nth-child(even) {
+        background: var(--admin-list-stripe);
+    }
+
+    .admin-shell--workspace .responsive-table__mobile .data-card__field,
+    .admin-shell--workspace .report-mobile-list article>div {
+        border-color: var(--admin-list-line);
+        padding: 0.7rem 0.8rem;
+    }
+
+    .admin-shell--workspace .responsive-table__mobile .data-card__field>span,
+    .admin-shell--workspace .report-mobile-list article>div>span {
+        color: var(--admin-list-muted);
+        font-size: 0.69rem;
+        font-weight: 650;
+        letter-spacing: 0;
+        text-transform: none;
+    }
+
+    /* Toolbar fica acima das tabelas, com campos visualmente mais leves. */
+    .admin-shell--workspace .toolbar {
+        border-radius: 0.75rem;
+        background: #fff;
+    }
+
+    .admin-shell--workspace .toolbar :is(.input, select),
+    .admin-shell--workspace .resource-search .input {
+        border-color: #e8e7e5;
+        border-radius: 0.55rem;
+        background: #f7f7f6;
+    }
+}
+
+@media screen and (min-width: 48rem) {
+    .admin-shell--workspace .responsive-table__desktop {
+        display: block;
+        overflow: visible;
+        /* não corta o menu de ações das linhas */
+    }
+
+    .admin-shell--workspace .report-preview .report-table-wrap {
+        overflow-x: auto;
+    }
+}
+
+@media print {
+
+    .admin-shell--workspace .responsive-table,
+    .admin-shell--workspace .report-preview .report-table-wrap {
+        border: 1px solid #d5d5d5;
+        box-shadow: none;
+    }
+
+    .admin-shell--workspace .responsive-table tbody td,
+    .admin-shell--workspace .report-preview tbody td {
+        color: #111;
+    }
+}

@@ -415,3 +415,284 @@
         top: calc(var(--header-height) + 1rem);
     }
 }
+
+
+
+/* ==========================================
+   SHIRLEY LANCHES ARTESANAL
+   /finalizar — Estado de carrinho vazio
+   ========================================== */
+
+/*
+  Identifica o estado vazio do checkout pelo
+  link sem ícone. O carrinho vazio utiliza
+  outro botão, com ícone de seta.
+*/
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) {
+  --background: #f5f3f0;
+  --surface-muted: #f5f3f0;
+  --text: #242321;
+  --text-muted: #625f5a;
+  --border: #eae6e1;
+  --checkout-ink: #171817;
+
+  background: var(--background);
+  color: var(--text);
+}
+
+/* Cabeçalho igual ao checkout */
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) > .site-header {
+  min-height: 4.25rem;
+  border: 0;
+  background-color: #171817;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / 80%),
+      rgb(0 0 0 / 68%)
+    ),
+    url("/images/home/cardapio-fundo.webp");
+  background-position: center 48%;
+  background-size: cover;
+  color: #fff;
+  backdrop-filter: none;
+}
+
+/* Marca */
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) .site-header .brand-mark {
+  color: #fff;
+}
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) .site-header .brand-mark small {
+  color: #eae6e1;
+}
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) .site-header .brand-mark__icon {
+  border-radius: 50%;
+  background: rgb(0 0 0 / 58%);
+  box-shadow: none;
+  transform: none;
+}
+
+/* Navegação */
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) .site-header nav > a {
+  min-height: 2.75rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 58%);
+  color: #fff;
+}
+
+.site-shell:has(
+  > main.centered-page
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) .site-header nav > a.cart-link {
+  background: var(--brand);
+  color: #fff;
+}
+
+/* Área central */
+
+.site-shell > main.centered-page:has(
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) {
+  display: grid;
+  place-items: center;
+  width: min(calc(100% - 2rem), 68rem);
+  min-height: 65dvh;
+  margin-inline: auto;
+  padding-block:
+    clamp(2rem, 6vw, 4rem)
+    calc(3rem + env(safe-area-inset-bottom));
+}
+
+/* Card premium */
+
+.site-shell > main.centered-page:has(
+  > .state:not(.state--error)
+  > a.button[href="/"]:not(:has(svg))
+) > .state {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+
+  width: min(100%, 34rem);
+  max-width: 34rem;
+  min-width: 0;
+  margin: 0;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+
+  border: 1px solid #171817;
+  border-radius: 1.75rem;
+  background: #171817;
+  color: #fff;
+
+  box-shadow: 0 12px 32px rgb(41 37 34 / 12%);
+  text-align: center;
+}
+
+/* Ícone do carrinho vazio */
+
+.site-shell > main.centered-page:has(
+  > .state > a.button[href="/"]:not(:has(svg))
+) > .state > svg {
+  width: 4rem;
+  height: 4rem;
+  margin: 0;
+  padding: 0.9rem;
+
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 1.25rem;
+  background: rgb(255 255 255 / 10%);
+  color: var(--accent);
+}
+
+/* Título */
+
+.site-shell > main.centered-page:has(
+  > .state > a.button[href="/"]:not(:has(svg))
+) > .state > h2 {
+  margin: 0;
+  color: #fff;
+
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4.5vw, 2.35rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* Mensagem em superfície branca */
+
+.site-shell > main.centered-page:has(
+  > .state > a.button[href="/"]:not(:has(svg))
+) > .state > p {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(1rem, 3vw, 1.4rem);
+
+  border-radius: 1.2rem;
+  background: #fff;
+  color: #625f5a;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Botão principal */
+
+.site-shell > main.centered-page:has(
+  > .state > a.button[href="/"]:not(:has(svg))
+) > .state > .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: min(100%, 24rem);
+  min-height: 3.35rem;
+  margin-top: 0.35rem;
+  padding: 0.85rem 1.25rem;
+
+  border: 0;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+
+  font-size: 1rem;
+  font-weight: 850;
+  text-decoration: none;
+  box-shadow: none;
+
+  transition: background-color 150ms ease;
+}
+
+/* Interações */
+
+@media (hover: hover) {
+  .site-shell > main.centered-page:has(
+    > .state > a.button[href="/"]:not(:has(svg))
+  ) > .state > .button:hover {
+    background: var(--brand-hover);
+  }
+}
+
+.site-shell > main.centered-page:has(
+  > .state > a.button[href="/"]:not(:has(svg))
+) > .state > .button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Smartphones */
+
+@media (max-width: 480px) {
+  .site-shell > main.centered-page:has(
+    > .state > a.button[href="/"]:not(:has(svg))
+  ) {
+    width: calc(100% - 1.5rem);
+    min-height: 65dvh;
+    padding-block: 1.5rem 2.5rem;
+  }
+
+  .site-shell > main.centered-page:has(
+    > .state > a.button[href="/"]:not(:has(svg))
+  ) > .state {
+    gap: 0.9rem;
+    padding: 1.35rem;
+    border-radius: 1.4rem;
+  }
+
+  .site-shell > main.centered-page:has(
+    > .state > a.button[href="/"]:not(:has(svg))
+  ) > .state > h2 {
+    font-size: 1.65rem;
+  }
+
+  .site-shell > main.centered-page:has(
+    > .state > a.button[href="/"]:not(:has(svg))
+  ) > .state > .button {
+    width: 100%;
+  }
+}
+
+/* Redução de movimento */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell > main.centered-page:has(
+    > .state > a.button[href="/"]:not(:has(svg))
+  ) .button {
+    transition: none;
+  }
+}

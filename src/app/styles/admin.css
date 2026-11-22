@@ -1,0 +1,1137 @@
+@media screen {
+    .admin-shell--workspace,
+    .login-shell,
+    body:has(.admin-shell--workspace) > .dialog-content {
+        --brand: #c8450a;
+        --brand-hover: #a83706;
+        --brand-soft: #fff0e7;
+        --focus: #b53c08;
+        --background: #f6f7f8;
+        --surface: #fff;
+        --surface-muted: #f3f5f6;
+        --text: #202521;
+        --text-muted: #606863;
+        --border: #e5e9e6;
+        --table-header-bg: #f2f5f3;
+        --table-header-text: #46504a;
+        --admin-sidebar-bg: #151e15;
+        --admin-sidebar-border: #28362a;
+        font-family: var(--font-body);
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .admin-shell--workspace { background: var(--background); }
+    .admin-shell--workspace .admin-main { min-width: 0; padding: 0 0 calc(6rem + env(safe-area-inset-bottom)); }
+    .admin-shell--workspace .admin-main > main { width: min(100%, 90rem); min-width: 0; margin-inline: auto; padding: 1.5rem; }
+    .admin-shell--workspace .admin-main > main:has(> .catalog-workspace),
+    .admin-shell--workspace .admin-main > main:has(> .manual-order-workspace) { width: 100%; max-width: none; padding: 0; }
+    .admin-shell--workspace .admin-topbar { position: sticky; top: 0; z-index: 20; min-height: 4.5rem; margin: 0; padding: 0.75rem 1rem; gap: 1rem; border-bottom: 1px solid var(--border); background: #fff; backdrop-filter: none; }
+    .admin-shell--workspace .admin-topbar__context { min-width: 0; }
+    .admin-shell--workspace .admin-topbar__context small { color: var(--text-muted); font-size: 0.75rem; }
+    .admin-shell--workspace .admin-topbar__context strong { font-size: 1.125rem; }
+    .admin-header-search { display: none; align-items: center; gap: 0.6rem; width: min(100%, 30rem); padding-inline: 0.9rem 0.2rem; border: 1px solid var(--border); border-radius: 99px; background: #fff; color: var(--text-muted); }
+    .admin-header-search > svg { width: 1.1rem; flex-shrink: 0; }
+    .admin-header-search input { width: 100%; min-width: 0; min-height: 2.75rem; border: 0; background: transparent; color: var(--text); font-size: 0.9375rem; }
+    .admin-header-search button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; flex-shrink: 0; border: 0; border-radius: 50%; background: transparent; color: var(--text); cursor: pointer; }
+    .admin-header-search:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .admin-header-search input:focus { outline: none; }
+    .admin-topbar__account { display: flex; align-items: center; gap: 1rem; margin-left: auto; }
+    .admin-user { display: flex; align-items: center; gap: 0.75rem; min-width: 0; color: var(--text); text-decoration: none; }
+    .admin-user__avatar { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; flex-shrink: 0; border-radius: 50%; background: var(--brand-soft); color: var(--brand-hover); font-weight: 850; }
+    .admin-user > .admin-user__info { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); }
+    .admin-user strong, .admin-user small { display: block; overflow-wrap: anywhere; }
+    .admin-user strong { font-size: 0.875rem; }
+    .admin-user small { margin-top: 0.15rem; color: var(--text-muted); font-size: 0.75rem; }
+    .admin-shell--workspace .admin-bottom-nav { padding: 0.4rem 0.3rem calc(0.4rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: #fff; box-shadow: none; }
+    .admin-shell--workspace .admin-bottom-nav > :is(a, button) { min-height: 3.25rem; border-radius: 0.65rem; color: #4e5952; font-size: 0.75rem; font-weight: 750; }
+    .admin-shell--workspace .admin-bottom-nav > [aria-current="page"] { background: var(--brand-soft); color: var(--brand-hover); }
+    .admin-kicker { display: block; margin-bottom: 0.35rem; color: var(--text-muted); font-size: 0.75rem; font-weight: 750; letter-spacing: 0.02em; }
+    .admin-shell--workspace .page-header { align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .admin-shell--workspace .page-header h1 { font-size: clamp(1.65rem, 2.8vw, 2rem); line-height: 1.2; }
+    .admin-shell--workspace :is(.card, .data-card) { min-width: 0; border-radius: 0.75rem; border-color: var(--border); background: #fff; box-shadow: 0 2px 8px rgb(21 30 21 / 3%); }
+    .admin-shell--workspace .admin-card { padding: 1.25rem; }
+    .admin-shell--workspace .table-primary strong { font-size: 1rem; }
+    .admin-shell--workspace .table-primary small { color: var(--text-muted); font-size: 0.875rem; }
+    .admin-shell--workspace .resource-search.search-box .input { padding-inline: 2.75rem 3rem; }
+    .admin-shell--workspace .badge--success { color: #17603e; }
+    .catalog-workspace { display: grid; min-width: 0; }
+    .catalog-categories { min-width: 0; padding: 1.25rem 1rem; border-bottom: 1px solid var(--border); background: #fff; }
+    .catalog-categories__heading { margin-bottom: 1rem; }
+    .catalog-categories h2 { margin: 0; font-size: 1.25rem; font-weight: 850; }
+    .catalog-categories__options { display: flex; gap: 0.65rem; overflow-x: auto; padding: 0.2rem 0.2rem 0.6rem; scroll-padding-inline: 0.2rem; }
+    .catalog-category { position: relative; display: flex; align-items: center; gap: 0.65rem; flex: 0 0 auto; width: 10rem; min-height: 4.25rem; padding: 0.65rem; border: 1px solid var(--border); border-radius: 0.55rem; background: #fff; color: var(--text); text-align: left; cursor: pointer; }
+    .catalog-category[aria-pressed="true"] { border-color: var(--brand); background: #fffaf6; box-shadow: inset 0 0 0 1px var(--brand); }
+    .catalog-category__icon { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; flex-shrink: 0; border-radius: 0.5rem; background: #f4f5f3; color: #59665c; }
+    .catalog-category[aria-pressed="true"] .catalog-category__icon { background: var(--brand-soft); color: var(--brand); }
+    .catalog-category__icon svg { width: 1.2rem; }
+    .catalog-category > span:nth-child(2) { min-width: 0; }
+    .catalog-category strong { display: block; font-size: 0.875rem; font-weight: 850; overflow-wrap: anywhere; }
+    .catalog-category small { display: block; margin-top: 0.2rem; color: var(--text-muted); font-size: 0.75rem; overflow-wrap: anywhere; }
+    .catalog-category__check { position: absolute; top: 0.35rem; left: 2.35rem; width: 0.9rem; margin: 0; border-radius: 50%; background: #fff; color: var(--brand); pointer-events: none; }
+    .catalog-category-error { padding-top: 1rem; font-size: 0.875rem; }
+    .catalog-content { min-width: 0; padding: 1.5rem 1rem 2rem; }
+    .catalog-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+    .catalog-heading h1, .catalog-heading h2 { margin: 0; font-size: 1.75rem; font-weight: 850; line-height: 1.25; }
+    .catalog-heading p { margin: 0.5rem 0 0; color: var(--text-muted); font-size: 0.875rem; }
+    .catalog-filters { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0.75rem; }
+    .catalog-search { position: relative; display: block; grid-column: 1 / -1; }
+    .catalog-search > svg { position: absolute; left: 0.85rem; top: 50%; z-index: 1; width: 1.1rem; transform: translateY(-50%); color: var(--text-muted); }
+    .admin-shell--workspace .catalog-filters .catalog-search .input { padding-inline-start: 2.5rem; }
+    .catalog-filters .field { min-width: 0; }
+    .catalog-results { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-block: 1.25rem 1rem; }
+    .catalog-results p { margin: 0; color: var(--text-muted); font-size: 0.8125rem; }
+    .catalog-clear { display: flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; border: 0; background: transparent; color: var(--brand-hover); font-size: 0.8125rem; font-weight: 750; cursor: pointer; }
+    .catalog-clear svg { width: 1rem; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 0.75rem; }
+    .catalog-card { position: relative; min-width: 0; border: 1px solid var(--border); border-radius: 0.65rem; background: #fff; box-shadow: 0 3px 10px rgb(21 30 21 / 3%); }
+    .catalog-card[data-selected], .manual-catalog .catalog-card[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+    .catalog-card__open { display: flex; flex-direction: column; width: 100%; min-width: 0; padding: 0; border: 0; border-radius: 0.65rem; background: transparent; color: inherit; text-align: left; font-family: inherit; }
+    button.catalog-card__open { cursor: pointer; }
+    .catalog-photo { position: relative; display: block; width: calc(100% - 1.25rem); aspect-ratio: 1.2; margin: 0.625rem; border-radius: 0.45rem; background: #f1f3f2; }
+    .catalog-photo img { border-radius: inherit; object-fit: cover; }
+    .catalog-photo__empty { display: grid; align-content: center; justify-items: center; gap: 0.5rem; width: 100%; height: 100%; color: var(--text-muted); font-size: 0.75rem; }
+    .catalog-photo__empty svg { width: 1.75rem; height: 1.75rem; }
+    .catalog-card__info { display: grid; gap: 0.6rem; width: 100%; padding: 0.5rem 0.8rem 0.85rem; }
+    .catalog-card__name { color: var(--text); font-size: 1rem; font-weight: 850; line-height: 1.35; overflow-wrap: anywhere; }
+    .catalog-card__description { color: var(--text-muted); font-size: 0.8125rem; line-height: 1.55; overflow-wrap: anywhere; }
+    .catalog-card__price { color: var(--brand-hover); font-size: 1.125rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .catalog-card__edit { display: flex; align-items: center; gap: 0.35rem; min-height: 1.75rem; color: var(--brand-hover); font-size: 0.875rem; font-weight: 850; }
+    .catalog-card__edit svg { width: 1rem; height: 1rem; }
+    .catalog-card__edit svg:last-child { margin-left: auto; }
+    button.catalog-card__edit { padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; }
+    button.catalog-card__edit::after { position: absolute; inset: 0; z-index: 1; border-radius: 0.65rem; content: ""; }
+    button.catalog-card__edit:focus-visible::after { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .catalog-card__footer { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.7rem 0.8rem; border-top: 1px solid var(--border); }
+    .catalog-card__status { display: grid; justify-items: start; gap: 0.3rem; }
+    .catalog-card__status small { color: var(--text-muted); font-size: 0.75rem; }
+    .catalog-card .row-actions > summary { min-width: 2.75rem; min-height: 2.75rem; border-color: var(--border); border-radius: 0.5rem; }
+    .catalog-card .row-actions__menu { z-index: 25; }
+    .catalog-content .pagination { margin-top: 1.5rem; }
+    .catalog-guidance { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.65rem; background: #fff; color: var(--text-muted); font-size: 0.875rem; }
+    .catalog-guidance summary { min-height: 2.75rem; color: var(--text); font-weight: 750; cursor: pointer; }
+    .catalog-guidance p { margin-top: 0.75rem; line-height: 1.6; }
+    .catalog-editor { display: none; }
+    .catalog-editor__heading { display: flex; justify-content: space-between; align-items: start; gap: 0.5rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .catalog-editor__heading h2 { margin: 0; font-size: 1.125rem; font-weight: 850; line-height: 1.4; overflow-wrap: anywhere; }
+    .catalog-editor__heading h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+    .catalog-editor__body { min-height: 0; overflow-y: auto; padding: 1.25rem; }
+    .catalog-editor__body .form-grid { gap: 1.15rem; }
+    .catalog-editor__footer { display: flex; gap: 0.5rem; flex-shrink: 0; margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid var(--border); background: #fff; }
+    .catalog-editor__footer .button { flex: 1; }
+    .catalog-editor__empty { display: grid; justify-items: center; gap: 1rem; padding: 4rem 1.5rem 2rem; text-align: center; }
+    .catalog-editor__symbol { display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: 1rem; background: var(--brand-soft); color: var(--brand); }
+    .catalog-editor__symbol svg { width: 1.75rem; height: 1.75rem; }
+    .catalog-editor__empty h2 { margin: 0; font-size: 1.125rem; font-weight: 850; }
+    .catalog-editor__empty p { margin: 0; color: var(--text-muted); font-size: 0.875rem; line-height: 1.65; }
+    .manual-workspace { display: grid; align-items: start; min-width: 0; }
+    .manual-content { min-width: 0; padding: 1.5rem 1rem; }
+    .manual-workspace > .sticky-summary { position: static; margin: 0 1rem 1.5rem; padding: 1.25rem; }
+    .manual-workspace .manual-catalog { min-width: 0; }
+    .manual-catalog .catalog-heading :is(h1, h2) { font-size: 1.75rem; }
+    .manual-catalog .catalog-card__open { border: 1px solid var(--border); background: #fff; }
+    .manual-workspace .manual-items > div { align-items: start; }
+    .manual-workspace .manual-items small { display: block; margin-top: 0.5rem; line-height: 1.5; }
+    .admin-shell--workspace :is(.form-grid, .field, .field > div) { min-width: 0; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .button { min-height: 2.75rem; padding: 0.65rem 0.9rem; border-radius: 0.5rem; font-size: 0.9375rem; line-height: 1.4; box-shadow: none; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .button--primary { background: var(--brand); color: #fff; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .button--primary:hover { background: var(--brand-hover); }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .icon-button { width: 2.75rem; height: 2.75rem; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .input { min-height: 2.875rem; padding: 0.7rem 0.8rem; border: 1px solid #8a948d; border-radius: 0.5rem; background: #fff; color: var(--text); font-size: 1rem; scroll-margin-block: 7rem; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .input::placeholder { color: var(--text-muted); }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .field > label { font-size: 0.875rem; line-height: 1.5; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) :is(.field__hint, .field__error) { font-size: 0.8125rem; line-height: 1.5; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) :is(button, a, summary, .input):focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    :is(.admin-shell--workspace, .login-shell, body:has(.admin-shell--workspace) > .dialog-content) .choice { min-height: 2.75rem; }
+    body:has(.admin-shell--workspace) > .dialog-overlay { background: rgb(21 30 21 / 48%); animation: none; }
+    body:has(.admin-shell--workspace) > .dialog-content { border: 1px solid var(--border); border-radius: 0.875rem; background: #fff; animation: none; }
+    body:has(.admin-shell--workspace) .dialog-header { padding: 1.25rem; border-bottom: 1px solid var(--border); }
+    body:has(.admin-shell--workspace) .dialog-header h2 { font-size: 1.25rem; }
+    body:has(.admin-shell--workspace) .dialog-body { padding: 1.25rem; }
+    body:has(.admin-shell--workspace) .dialog-footer { gap: 0.65rem; padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: #fff; }
+    body:has(.admin-shell--workspace) .admin-more-nav a { min-height: 3rem; color: var(--text); font-size: 1rem; }
+    body:has(.admin-shell--workspace) .admin-more-nav a[aria-current="page"] { background: var(--brand-soft); color: var(--brand-hover); }
+    .login-shell { background: #f6f7f8; background-image: none; }
+    .login-card { border: 1px solid var(--border); border-radius: 1rem; background: #fff; box-shadow: 0 12px 40px rgb(21 30 21 / 6%); }
+}
+
+@media screen and (min-width: 48rem) {
+    .admin-header-search { display: flex; }
+    .admin-shell--workspace .admin-topbar { min-height: 6rem; padding-inline: 1.75rem; }
+    .admin-user > .admin-user__info { position: static; width: auto; height: auto; max-width: 11rem; clip-path: none; }
+    .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 1.25rem; }
+    .catalog-content { padding: 1.75rem; }
+    .catalog-filters { grid-template-columns: minmax(0, 1fr) 8rem 2.75rem; }
+    .catalog-filters > .button { width: 2.75rem; padding-inline: 0; }
+    .catalog-filters > .button span { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); }
+    .catalog-search { grid-column: auto; }
+    .catalog-photo { margin: 0.75rem; width: calc(100% - 1.5rem); }
+    .catalog-card__info { padding-inline: 1rem; }
+    .catalog-card__footer { padding-inline: 1rem; }
+    .manual-content { padding: 1.75rem; }
+}
+
+@media screen and (min-width: 64rem) {
+    .admin-shell--workspace { display: grid; grid-template-columns: 5.75rem minmax(0, 1fr); }
+    .admin-shell--workspace .admin-main { padding-bottom: 0; }
+    .admin-shell--workspace .admin-sidebar { position: sticky; top: 0; height: 100dvh; display: flex; align-items: center; gap: 0.75rem; padding: 1rem 0.6rem; border-right: 1px solid var(--admin-sidebar-border); background: var(--admin-sidebar-bg); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #536451 var(--admin-sidebar-bg); }
+    .admin-shell--workspace .admin-sidebar .brand-mark { display: flex; justify-content: center; width: 100%; padding: 0; color: #fff; }
+    .admin-sidebar .brand-mark strong, .admin-sidebar .brand-mark small { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
+    .admin-shell--workspace .admin-sidebar .brand-mark__icon { width: 2.75rem; height: 2.75rem; border-radius: 0.65rem; background: #2a3728; box-shadow: none; }
+    .admin-shell--workspace .admin-nav { display: grid; gap: 0.125rem; width: 100%; margin-top: 0.5rem; }
+    .admin-shell--workspace .admin-nav a { position: relative; display: flex; justify-content: center; align-items: center; width: 3rem; min-height: 2.75rem; margin-inline: auto; padding: 0.65rem; border-radius: 0.6rem; color: #e0e8de; }
+    .admin-shell--workspace .admin-nav a svg { width: 1.15rem; height: 1.15rem; }
+    .admin-shell--workspace .admin-nav a[aria-current="page"] { background: #fb5a0a; color: #fff; box-shadow: none; }
+    .admin-nav__label { position: fixed; left: 5rem; z-index: 60; width: max-content; max-width: 16rem; padding: 0.55rem 0.8rem; border: 1px solid #3c4d38; border-radius: 0.4rem; background: #151e15; color: #fff; font-size: 0.875rem; font-weight: 750; opacity: 0; pointer-events: none; }
+    .admin-nav a:is(:hover, :focus-visible) .admin-nav__label { opacity: 1; }
+    .admin-shell--workspace .admin-nav a:hover { background: #2c3c27; color: #fff; }
+    .admin-shell--workspace .admin-nav a[aria-current="page"]:hover { background: #c8450a; }
+    .admin-shell--workspace .admin-sidebar__profile { display: grid; place-items: center; width: 2.75rem; min-height: 2.75rem; flex-shrink: 0; margin-top: auto; border: 1px solid #41513c; border-radius: 50%; color: #e0e8de; }
+    .admin-shell--workspace .admin-sidebar a:focus-visible { outline-color: #ffb18a; }
+    .catalog-workspace { grid-template-columns: 12.5rem minmax(0, 1fr); align-items: start; }
+    .catalog-categories { position: sticky; top: 6rem; min-height: calc(100dvh - 6rem); max-height: calc(100dvh - 6rem); padding: 1.75rem 0.85rem; border-right: 1px solid var(--border); border-bottom: 0; overflow-y: auto; }
+    .catalog-categories__heading { padding-inline: 0.35rem; }
+    .catalog-categories__options { display: grid; gap: 0.75rem; padding: 0.15rem 0.15rem 0.5rem; overflow: visible; }
+    .catalog-category { width: 100%; }
+    .manual-workspace { grid-template-columns: 12.5rem minmax(0, 1fr); }
+    .manual-workspace > .catalog-categories { grid-row: 1 / span 2; }
+    .manual-workspace > .sticky-summary { grid-column: 2; }
+}
+
+@media screen and (min-width: 75rem) {
+    .catalog-workspace { grid-template-columns: 12.5rem minmax(0, 1fr) 18.75rem; }
+    .catalog-editor { position: sticky; top: 6rem; display: flex; flex-direction: column; min-width: 0; min-height: calc(100dvh - 6rem); max-height: calc(100dvh - 6rem); border-left: 1px solid var(--border); background: #fff; }
+    .catalog-content { padding-inline: 1.5rem; }
+    .manual-workspace { grid-template-columns: 12.5rem minmax(0, 1fr) 18.75rem; }
+    .manual-workspace > .sticky-summary { position: sticky; top: 6rem; grid-column: 3; grid-row: 1; min-height: calc(100dvh - 6rem); margin: 0; padding: 1.75rem 1.25rem; border: 0; border-left: 1px solid var(--border); border-radius: 0; box-shadow: none; }
+    .manual-content { padding: 1.75rem 1.5rem; }
+    .manual-content .form-grid--2 { grid-template-columns: 1fr; }
+}
+
+@media screen and (max-width: 47.999rem) {
+    body:has(.admin-shell--workspace) .admin-more-nav { grid-template-columns: 1fr; }
+    .catalog-card__description { font-size: 0.8125rem; }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+    .admin-shell--workspace *, body:has(.admin-shell--workspace) > .dialog-content { animation: none; transition: none; scroll-behavior: auto; }
+}
+
+/* SHIRLEY-LOJA-ABAS-V1 */
+/* Abas exclusivas da seção Loja: preservam componentes e regras do painel. */
+.admin-shell--workspace .store-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 1.25rem;
+  padding: 0.4rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  background: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: #d6dcd7 transparent;
+}
+
+.admin-shell--workspace .store-tabs__tab {
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content;
+  min-height: 3rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.admin-shell--workspace .store-tabs__tab:hover:not([aria-selected="true"]) {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+.admin-shell--workspace .store-tabs__tab[aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--brand) 30%, #fff);
+  background: var(--brand-soft);
+  color: var(--brand-hover);
+  box-shadow: inset 0 -2px var(--brand);
+}
+
+.admin-shell--workspace .store-tabs__tab:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.admin-shell--workspace .store-tabs__panel {
+  min-width: 0;
+  animation: loja-tab-entrar 160ms ease-out;
+}
+
+.admin-shell--workspace .store-tabs__panel[hidden] {
+  display: none;
+}
+
+.admin-shell--workspace .store-tabs__panel > .admin-card {
+  margin: 0;
+}
+
+.admin-shell--workspace .store-tabs__panel > .store-status-card {
+  margin-top: 1rem;
+}
+
+.admin-shell--workspace .store-tabs__panels {
+  min-width: 0;
+}
+
+@keyframes loja-tab-entrar {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 47.999rem) {
+  .admin-shell--workspace .store-tabs {
+    gap: 0.25rem;
+    padding: 0.3rem;
+    scroll-snap-type: x proximity;
+  }
+  .admin-shell--workspace .store-tabs__tab {
+    flex: 0 0 auto;
+    min-height: 2.9rem;
+    padding-inline: 0.8rem;
+    scroll-snap-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell--workspace .store-tabs__tab { transition: none; }
+  .admin-shell--workspace .store-tabs__panel { animation: none; }
+}
+
+/* SHIRLEY: NOVO PEDIDO MANUAL V2 */
+/* =============================================================
+   Shirley Lanches — Pedido manual (modais + carrinho flutuante)
+   Anexar ao final de src/app/styles/admin.css.
+   Não há imports nem dependências adicionais.
+   ============================================================= */
+
+@media screen {
+  .manual-order-workspace,
+  .manual-order-workspace .manual-workspace,
+  .manual-order-workspace .manual-content {
+    min-width: 0;
+  }
+
+  /* Resumo lateral: colunas estáveis para o texto e o botão remover. */
+  .manual-order-workspace .manual-order-summary {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .manual-order-workspace .manual-order-summary > h2 {
+    flex: 0 0 auto;
+    margin-bottom: 1rem;
+  }
+
+  .manual-order-workspace .manual-order-summary > .button {
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: 1.1rem;
+  }
+
+  .manual-order-workspace .manual-items,
+  .manual-order-drawer .manual-items {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .manual-order-workspace .manual-items > .manual-order-line,
+  .manual-order-drawer .manual-items > .manual-order-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+    align-items: start;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0 0 0.8rem;
+    border-bottom: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-line__info {
+    display: grid;
+    min-width: 0;
+    gap: 0.3rem;
+    overflow-wrap: anywhere;
+  }
+
+  .manual-order-line__info strong {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .manual-order-line__info small {
+    display: block;
+    margin: 0;
+    color: var(--text-muted, #606863);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .manual-order-line__price {
+    color: var(--brand-hover, #a83706);
+    font-size: 0.9rem;
+    font-weight: 850;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-shell--workspace .manual-items .manual-order-remove,
+  .manual-order-drawer .manual-items .manual-order-remove {
+    display: grid;
+    place-items: center;
+    justify-self: end;
+    align-self: start;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border, #e5e9e6);
+    border-radius: 0.65rem;
+    background: #fff;
+    color: var(--text-muted, #606863);
+  }
+
+  .manual-order-remove svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .manual-order-remove:hover {
+    border-color: var(--danger, #b42318);
+    color: var(--danger, #b42318);
+  }
+
+  .manual-order-totals {
+    display: grid;
+    gap: 0.65rem;
+    width: 100%;
+    min-width: 0;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-totals > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+    min-width: 0;
+    font-size: 0.875rem;
+  }
+
+  .manual-order-totals > div > strong {
+    flex-shrink: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-totals > .manual-order-totals__total {
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border, #e5e9e6);
+    color: var(--brand-hover, #a83706);
+    font-size: 1.08rem;
+    font-weight: 850;
+  }
+
+  .manual-order-totals > p {
+    margin: 0;
+    color: var(--text-muted, #606863);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  /* Modais Radix já presentes no frontend: clicou fora / X / Esc. */
+  body:has(.manual-order-workspace) > .dialog-content {
+    width: min(calc(100% - 1rem), 39rem);
+    max-height: min(91dvh, 53rem);
+    border-radius: 1rem;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content .dialog-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content .dialog-footer {
+    flex-shrink: 0;
+  }
+
+  .manual-order-config,
+  .manual-order-product-options,
+  .manual-order-checkout,
+  .manual-order-drawer {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .manual-order-config__name {
+    margin: 0;
+    color: var(--text, #202521);
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  .manual-order-config .manual-product-options {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .manual-order-qty {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.3rem;
+  }
+
+  .manual-order-qty > span {
+    font-weight: 750;
+  }
+
+  .manual-order-qty .cluster {
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .manual-order-checkout__section {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-checkout__section > h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 850;
+  }
+
+  .manual-order-checkout__section > .manual-fieldset {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .manual-order-checkout__section .form-grid--2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .manual-order-checkout__total {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem 0.75rem;
+    padding: 1rem;
+    border-radius: 0.85rem;
+    background: var(--surface-muted, #f3f5f6);
+    font-weight: 750;
+  }
+
+  .manual-order-checkout__total > strong {
+    color: var(--brand-hover, #a83706);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-checkout__total > small {
+    grid-column: 1 / -1;
+    color: var(--text-muted, #606863);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Até 1199px: o resumo lateral dá lugar ao carrinho sempre acessível. */
+@media screen and (max-width: 74.999rem) {
+  .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+  }
+
+  .manual-order-workspace .manual-workspace {
+    padding-bottom: 7.5rem;
+  }
+
+  .manual-order-workspace .manual-order-floating-cart {
+    position: fixed;
+    z-index: 75;
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(5.2rem + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: auto;
+    min-width: 0;
+    min-height: 3.7rem;
+    padding: 0.75rem 0.9rem;
+    border: 0;
+    border-radius: 1rem;
+    background: var(--brand, #c8450a);
+    color: #fff;
+    box-shadow: 0 8px 25px rgb(21 30 21 / 22%);
+    cursor: pointer;
+  }
+
+  .manual-order-floating-cart > svg {
+    flex: 0 0 1.3rem;
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .manual-order-floating-cart__count {
+    font-size: 0.8rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .manual-order-floating-cart > strong {
+    flex-shrink: 1;
+    min-width: 0;
+    margin-left: auto;
+    font-weight: 850;
+    font-size: 0.9rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-floating-cart__action {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.55rem;
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 16%);
+    font-size: 0.8rem;
+    font-weight: 850;
+  }
+}
+
+/* Tablet com menu lateral, mas sem navegação inferior. */
+@media screen and (min-width: 64rem) and (max-width: 74.999rem) {
+  .manual-order-workspace .manual-order-floating-cart {
+    left: auto;
+    right: 1.5rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: min(23rem, calc(100% - 3rem));
+  }
+}
+
+@media screen and (min-width: 75rem) {
+  .manual-order-workspace .manual-workspace > .manual-order-summary {
+    position: sticky;
+    top: 6rem;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 35.999rem) {
+  .manual-order-checkout__section .form-grid--2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .manual-order-workspace .manual-order-floating-cart {
+    left: 0.6rem;
+    right: 0.6rem;
+    gap: 0.45rem;
+    padding: 0.7rem;
+  }
+
+  .manual-order-floating-cart__action {
+    font-size: 0.75rem;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content {
+    max-height: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manual-order-floating-cart {
+    transition: none;
+  }
+}
+
+/* SHIRLEY-ADMIN-SIDEBAR-FIXO-MVP-V1
+   A barra de navegação administrativa não pode terminar no meio da
+   tela ao rolar a página ou abrir um modal.
+   O dialog continua acima dela porque seu overlay usa z-index: 800.
+*/
+@media screen and (min-width: 64rem) {
+  .admin-shell--workspace > .admin-sidebar {
+    position: fixed;
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    box-sizing: border-box;
+    width: 5.75rem;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  /* O menu fixo sai do fluxo do grid; mantém o conteúdo na coluna direita. */
+  .admin-shell--workspace > .admin-main {
+    grid-column: 2;
+    min-width: 0;
+  }
+}
+
+/* SHIRLEY_CARDS_ADMIN_UNIFORMES_INICIO */
+/* ================================================================
+   Shirley Lanches — cards uniformes no catálogo administrativo
+   Rotas: /admin/pedidos/novo e /admin/produtos
+
+   Cole este bloco ao FINAL de src/app/styles/admin.css.
+   Não afeta os cards do cardápio público.
+   ================================================================ */
+
+@media screen {
+  /* Cada linha da grade recebe a mesma altura; o maior card da grade
+     define a altura comum entre linhas, sem números fixos em pixels. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace) .catalog-grid {
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+
+  /* Funciona tanto com <button class="catalog-card catalog-card__open">
+     (novo pedido) como com <article class="catalog-card"> (produtos). */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid > .catalog-card {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* No cadastro de produtos existe uma div interna .catalog-card__open;
+     no pedido manual a própria raiz do card possui essa classe. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid > .catalog-card > .catalog-card__open {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+  }
+
+  /* Imagem fixa na proporção do projeto, sem esticar ou achatar. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-photo {
+    flex: 0 0 auto;
+    aspect-ratio: 6 / 5;
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Conteúdo ocupa todo o espaço vertical livre do card. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* Reserva espaço para até três linhas do nome, evitando cartões
+     com títulos em posições diferentes. O texto completo permanece no DOM. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__name {
+    display: -webkit-box;
+    min-height: 4.05em;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Limita visualmente descrições muito grandes sem deixá-las
+     aumentar todos os cards da grade. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__description {
+    display: -webkit-box;
+    min-height: 4.65em;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* O preço fica sempre no rodapé do conteúdo e o botão de ação
+     imediatamente abaixo dele, em ambos os tipos de card. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__price {
+    margin-top: auto;
+    padding-top: 0.2rem;
+  }
+
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__edit {
+    flex: 0 0 auto;
+    margin-top: 0.15rem;
+  }
+
+  /* Rodapé só existe na tela de gerenciamento de produtos. */
+  .admin-shell--workspace .catalog-workspace
+    .catalog-grid .catalog-card__footer {
+    flex: 0 0 auto;
+    min-height: 4.5rem;
+    margin-top: auto;
+  }
+}
+
+/* Menos espaçamento em telas estreitas para não comprimir os itens. */
+@media screen and (max-width: 47.999rem) {
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__info {
+    gap: 0.4rem;
+  }
+
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__name {
+    min-height: 4.05em;
+  }
+}
+/* SHIRLEY_CARDS_ADMIN_UNIFORMES_FIM */
+
+/* SHIRLEY MANUAL ORDER RESPONSIVE START */
+/* =============================================================
+   SHIRLEY LANCHES — /admin/pedidos/novo
+   Grid responsiva ao ESPACO DISPONIVEL (sidebar aberta ou fechada)
+   Cole ao FINAL de src/app/styles/admin.css.
+   Nao altera /admin/produtos nem o CSS da Home.
+   ============================================================= */
+
+@media screen {
+  /* Evita que largura intrinseca do formulario force o shell a crescer. */
+  .admin-shell--workspace .admin-main,
+  .admin-shell--workspace .admin-main > main:has(> .manual-order-workspace) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell--workspace .manual-order-workspace {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    container: manual-order-area / inline-size;
+  }
+
+  /* Layout inicial: um fluxo compacto. Container queries abaixo
+     trocam as colunas conforme a area real apos a sidebar. */
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    display: grid;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: start;
+    gap: 0;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .catalog-categories {
+    display: block;
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    overflow: visible;
+    visibility: visible;
+    opacity: 1;
+    z-index: 2;
+    background: #fff;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-content {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+
+  /* O resumo so ocupa a terceira coluna quando ela cabe. */
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Categorias viram trilho horizontal em area estreita. */
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options {
+    display: flex;
+    gap: 0.65rem;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options > .catalog-category {
+    width: 10rem;
+    min-width: 10rem;
+    flex: 0 0 10rem;
+    scroll-snap-align: start;
+  }
+
+  /* Impede que o cardapio force uma largura maior que a coluna. */
+  .admin-shell--workspace .manual-order-workspace .manual-catalog,
+  .admin-shell--workspace .manual-order-workspace .catalog-heading,
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    align-items: stretch;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-grid > .catalog-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* O carrinho continua acessivel se a coluna do resumo nao cabe. */
+  .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Area de trabalho disponivel a partir de 64rem: sidebar de
+   categorias na esquerda e conteudo flexivel no centro. */
+@container manual-order-area (min-width: 64rem) {
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .catalog-categories {
+    position: sticky;
+    top: 6rem;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    max-height: calc(100dvh - 6rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-right: 1px solid var(--border, #e5e9e6);
+    border-bottom: 0;
+    z-index: 3;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-content {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options {
+    display: grid;
+    gap: 0.75rem;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options > .catalog-category {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* 80rem de area util: cabem categorias + produtos + resumo.
+   A largura e a do conteudo, nao a largura total do navegador. */
+@container manual-order-area (min-width: 80rem) {
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    grid-template-columns: 12.5rem minmax(0, 1fr) 18.75rem;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: flex;
+    position: sticky;
+    top: 6rem;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    margin: 0;
+    border-left: 1px solid var(--border, #e5e9e6);
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Espaco insuficiente para resumo lateral: carrinho flutuante.
+   Funciona tambem em desktop com sidebar expandida. */
+@container manual-order-area (max-width: 79.999rem) {
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    padding-bottom: 7rem;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    z-index: 75;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(5.25rem + env(safe-area-inset-bottom));
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+/* Sem barra inferior do admin: carrinho fica no canto inferior direito. */
+@media screen and (min-width: 64rem) {
+  @container manual-order-area (max-width: 79.999rem) {
+    .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+      left: auto;
+      right: 1.25rem;
+      bottom: calc(1.25rem + env(safe-area-inset-bottom));
+      width: min(23rem, calc(100vw - 2.5rem));
+    }
+  }
+}
+
+/* Faixa intermediaria: cards nao ficam esmagados. */
+@container manual-order-area (max-width: 47.999rem) {
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-content {
+    padding: 1rem;
+  }
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+}
+
+@container manual-order-area (max-width: 24rem) {
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* SHIRLEY MANUAL ORDER RESPONSIVE END */
+
+
+/* ============================================
+   SHIRLEY LANCHES — BUSCAS ADMINISTRATIVAS
+   /admin/usuarios
+   /admin/convites
+   /admin/relatorios
+   /admin/pedidos
+   ============================================ */
+
+/* Contêiner dos campos de busca */
+
+.admin-shell--workspace .toolbar .search-box,
+.admin-shell--workspace
+.report-catalog-toolbar .report-search {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+/* Posicionamento correto da lupa */
+
+.admin-shell--workspace .toolbar .search-box > svg,
+.admin-shell--workspace
+.report-catalog-toolbar .report-search > svg {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0.95rem;
+
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+
+  color: var(--text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Espaçamento reservado para a lupa */
+
+.admin-shell--workspace
+.toolbar .search-box > .input,
+.admin-shell--workspace
+.report-catalog-toolbar .report-search > .input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+
+  padding-inline-start: 2.8rem;
+  padding-inline-end: 0.95rem;
+}
+
+/* Destaque ao selecionar o campo */
+
+.admin-shell--workspace
+.toolbar .search-box:focus-within > svg,
+.admin-shell--workspace
+.report-catalog-toolbar
+.report-search:focus-within > svg {
+  color: var(--brand);
+}
+

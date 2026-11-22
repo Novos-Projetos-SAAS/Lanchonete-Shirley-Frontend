@@ -1,0 +1,58 @@
+{
+  "branch": "feature/infinitepay-checkout-mvp",
+  "url": "http://localhost:3000/admin/produtos",
+  "checks": [
+    {
+      "command": "rtk proxy npm run check",
+      "before": "PASS",
+      "after": "PASS",
+      "details": "ESLint, TypeScript, 23 arquivos Vitest / 122 testes, build Next.js 16.4.6 Webpack."
+    },
+    {
+      "command": "rtk proxy npm run build",
+      "result": "PASS",
+      "details": "Build final após a última correção de acessibilidade."
+    },
+    {
+      "command": "Playwright app.spec.ts com configuração externa work/admin-layout/e2e.config.cjs e Chrome instalado",
+      "result": "PASS",
+      "adminTests": 13,
+      "publicFlowTests": 1
+    },
+    {
+      "command": "node work/admin-layout/prod-validate.cjs",
+      "result": "PASS",
+      "layouts": 94,
+      "axeAudits": 10,
+      "widths": [
+        360,
+        390,
+        768,
+        1024,
+        1440
+      ],
+      "publicStylesAfterAdminNavigation": "Iguais em 390 e 1440px"
+    },
+    {
+      "command": "rtk proxy git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Navegador Chrome headless e API simulada; capturas são da aplicação real renderizada com dados de teste.",
+    "Sem testes em aparelho físico, impressora, pedidos reais ou pagamentos reais.",
+    "Mocks de horários e status Android foram corrigidos no harness externo para respeitar os contratos; nenhum código desses módulos ou do backend foi alterado."
+  ],
+  "preserved": [
+    "next.config.ts integralmente",
+    "src/app/(public)",
+    "serviços e contratos de API",
+    "autenticação e permissões",
+    "mutações e validações de produtos",
+    "montagem e envio do pedido manual"
+  ],
+  "staging": false,
+  "commit": false,
+  "push": false,
+  "deploy": false
+}

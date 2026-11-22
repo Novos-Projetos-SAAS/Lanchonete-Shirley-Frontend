@@ -1,12 +1,23 @@
-const CACHE = "shirley-static-v1";
+const CACHE = "shirley-static-v2";
+const CACHE_STATIC = !new URL(self.location.href).searchParams.has("development");
 const STATIC_ASSETS = ["/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable-512.png", "/offline.html"];
-self.addEventListener("install", (event) => { event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(STATIC_ASSETS)).then(() => self.skipWaiting())); });
-self.addEventListener("activate", (event) => { event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim())); });
+self.addEventListener("install", (event) => { event.waitUntil((CACHE_STATIC ? caches.open(CACHE).then((cache) => cache.addAll(STATIC_ASSETS)) : Promise.resolve()).then(() => self.skipWaiting())); });
+self.addEventListener("activate", (event) => { event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith("shirley-static-") && (!CACHE_STATIC || key !== CACHE)).map((key) => caches.delete(key)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", (event) => {
+  if (!CACHE_STATIC) return;
   const request = event.request; if (request.method !== "GET") return; const url = new URL(request.url);
   if (url.origin !== self.location.origin || url.pathname.startsWith("/api/") || url.pathname.startsWith("/admin")) return;
   const isStatic = url.pathname.startsWith("/_next/static/") || /\.(?:png|svg|ico|woff2|css|js)$/.test(url.pathname); if (!isStatic) return;
-  event.respondWith(caches.match(request).then((cached) => cached || fetch(request).then((response) => { if (response.ok && response.type === "basic") caches.open(CACHE).then((cache) => cache.put(request, response.clone())); return response; })));
+  let cacheWrite = Promise.resolve();
+  const response = caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+    if (response.ok && response.type === "basic") {
+      const copy = response.clone();
+      cacheWrite = caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => undefined);
+    }
+    return response;
+  }));
+  event.respondWith(response);
+  event.waitUntil(response.then(() => cacheWrite).catch(() => undefined));
 });
 self.addEventListener("push", (event) => {
   let payload = { title: "Lanchonete Shirley", body: "Há uma atualização na operação.", url: "/admin/notificacoes", event_id: undefined };

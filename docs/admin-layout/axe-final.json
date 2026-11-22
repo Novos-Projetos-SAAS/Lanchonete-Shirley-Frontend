@@ -1,0 +1,22 @@
+[
+  {
+    "width": 390,
+    "route": "/admin/produtos",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "route": "/admin/pedidos/novo",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "route": "/admin/produtos",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "route": "/admin/pedidos/novo",
+    "violations": []
+  }
+]

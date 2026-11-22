@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { Clock3, MapPin, RefreshCw, Search, ShoppingBag, Store, X } from "lucide-react";
 import { Button, Card, CurrencyText, EmptyState, ErrorState, Input, Skeleton } from "@/components/ui";
 import { ProductImage } from "@/components/shared/product-image";
+import { CategoryImage } from "@/components/shared/category-image";
 import { buildMenuReturnPath, consumeMenuPosition, menuContextFromSearch } from "@/lib/menu-context";
 import { centsToMoney } from "@/lib/money";
 import { resolveProductImage } from "@/lib/product-images";
@@ -36,9 +38,7 @@ export function MenuPage() {
   const cartItems = useCartStore((state) => state.items);
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
   const cartTotal = cartTotalCents(cartItems);
-  const returnPath = buildMenuReturnPath({ search, category });
-  const categoryPreview = (menu.data || []).flatMap((item) => item.produtos || []).find((product) => resolveProductImage(product));
-
+  const returnPath = buildMenuReturnPath({ search, category });
   useEffect(() => {
     const context = menuContextFromSearch(window.location.search);
     // A URL só existe no cliente; estes estados são hidratados uma única vez a partir dela.
@@ -121,16 +121,15 @@ export function MenuPage() {
           <div className="menu-tools">
             <nav className="category-rail" aria-label="Categorias do cardápio">
               <button type="button" aria-current={category === "todos" ? "true" : undefined} onClick={() => selectCategory("todos")}>
-                <span className="category-item__image" aria-hidden="true">{categoryPreview ? <ProductImage product={categoryPreview} sizes="72px" /> : <Store />}</span>
+                <span className="category-item__image" aria-hidden="true"><Image src="/images/produtos/categorias/tudo.png" alt="" width={72} height={72} sizes="72px" /></span>
                 <span className="category-item__name">Todos</span>
               </button>
-              {(menu.data || []).map((item) => {
-                const preview = item.produtos?.find((product) => resolveProductImage(product)) || item.produtos?.[0];
-                return <button type="button" key={item.id} aria-current={category === item.id ? "true" : undefined} onClick={() => selectCategory(item.id)}>
-                  <span className="category-item__image" aria-hidden="true">{preview ? <ProductImage product={preview} sizes="72px" /> : <Store />}</span>
+              {(menu.data || []).map((item) => (
+                <button type="button" key={item.id} aria-current={category === item.id ? "true" : undefined} onClick={() => selectCategory(item.id)}>
+                  <span className="category-item__image" aria-hidden="true"><CategoryImage name={item.nome} sizes="72px" /></span>
                   <span className="category-item__name">{item.nome}</span>
-                </button>;
-              })}
+                </button>
+              ))}
             </nav>
           </div>
 

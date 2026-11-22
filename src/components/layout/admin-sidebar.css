@@ -1,0 +1,290 @@
+/*
+ * Shirley Lanches | sidebar do painel administrativo.
+ * Complemento escopado para admin.css. Não utiliza CSS Modules nem :global().
+ * Seleção do estado feita por data-sidebar-expanded no AdminShell.
+ */
+
+@media (min-width: 64rem) {
+  /* Fonte única da largura: a coluna da grade recebe o espaço e a sidebar o ocupa. */
+  .admin-shell.admin-shell--workspace[data-sidebar-expanded] {
+    display: grid;
+    grid-template-columns: 5.75rem minmax(0, 1fr);
+    min-width: 0;
+    transition: grid-template-columns 260ms cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .admin-shell.admin-shell--workspace[data-sidebar-expanded="true"] {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-main {
+    min-width: 0;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .65rem;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100dvh;
+    min-width: 0;
+    padding: 1rem .65rem;
+    overflow: hidden;
+    border-right: 1px solid var(--admin-sidebar-border, #28362a);
+    background: var(--admin-sidebar-bg, #151e15);
+    color: #edf3eb;
+  }
+
+  /* Marca e botão: na barra aberta ficam na mesma linha. */
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__brand-row {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: .55rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="false"] > .admin-sidebar .admin-sidebar__brand-row {
+    flex-direction: column;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__brand-row {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__brand-row > .brand-mark {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .65rem;
+    min-width: 0;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__brand-row .brand-mark__icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 2.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: .65rem;
+    background: #293a2a;
+    color: #fff;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="false"] > .admin-sidebar .admin-sidebar__brand-row .brand-mark > span:last-child {
+    display: none;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__brand-row .brand-mark > span:last-child {
+    display: block;
+    min-width: 0;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__brand-row .brand-mark strong,
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__brand-row .brand-mark small {
+    position: static;
+    display: block;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    white-space: nowrap;
+    clip-path: none;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__brand-row .brand-mark strong {
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__brand-row .brand-mark small {
+    color: #c5d0c2;
+    font-size: .66rem;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__toggle {
+    display: grid;
+    place-items: center;
+    flex: 0 0 2.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid #435742;
+    border-radius: .65rem;
+    background: #273629;
+    color: #f4f7f3;
+    cursor: pointer;
+    transition: background-color 160ms ease;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__toggle:hover {
+    background: #334834;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* A rolagem fica somente na lista, mantendo botão e perfil no lugar. */
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar > .admin-nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    flex: 1 1 auto;
+    gap: .15rem;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: .35rem 0 0;
+    padding: .2rem 0 .4rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #536451 transparent;
+  }
+
+  /* Neutraliza os links antigos de 3rem, centralizados no admin.css. */
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar > .admin-nav > a.admin-nav__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .8rem;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 2.85rem;
+    margin: 0;
+    padding: .7rem .85rem;
+    border: 0;
+    border-radius: .65rem;
+    background: transparent;
+    color: #e0e8de;
+    font-size: .875rem;
+    font-weight: 750;
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: none;
+    transition: background-color 140ms ease, color 140ms ease;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="false"] > .admin-sidebar > .admin-nav > a.admin-nav__link {
+    justify-content: center;
+    width: 3rem;
+    margin-inline: auto;
+    padding-inline: 0;
+    gap: 0;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar > .admin-nav > a.admin-nav__link {
+    justify-content: flex-start;
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-nav__link > svg,
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__profile > svg {
+    display: block;
+    flex: 0 0 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Nome à direita do ícone; quando recolhido, não ocupa espaço. */
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-nav__text,
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__profile-text {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: inherit;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-width 240ms ease, opacity 160ms ease, visibility 160ms;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-nav__text,
+  .admin-shell--workspace[data-sidebar-expanded="true"] > .admin-sidebar .admin-sidebar__profile-text {
+    max-width: 12rem;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar > .admin-nav > a.admin-nav__link:hover,
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__profile:hover {
+    background: #304231;
+    color: #fff;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar > .admin-nav > a.admin-nav__link[aria-current="page"],
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__profile[aria-current="page"] {
+    background: #c8450a;
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar .admin-sidebar__profile {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .8rem;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 2.85rem;
+    margin: auto 0 0;
+    padding: .65rem .85rem;
+    border: 1px solid #435742;
+    border-radius: .65rem;
+    background: transparent;
+    color: #e0e8de;
+    font-size: .875rem;
+    text-decoration: none;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded="false"] > .admin-sidebar .admin-sidebar__profile {
+    justify-content: center;
+    width: 2.85rem;
+    margin-inline: auto;
+    padding-inline: 0;
+    gap: 0;
+    border-radius: 50%;
+  }
+
+  .admin-shell--workspace[data-sidebar-expanded] > .admin-sidebar :is(a, button):focus-visible {
+    outline: 3px solid #ffb18a;
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell--workspace[data-sidebar-expanded],
+  .admin-shell--workspace[data-sidebar-expanded] .admin-nav__text,
+  .admin-shell--workspace[data-sidebar-expanded] .admin-sidebar__profile-text,
+  .admin-shell--workspace[data-sidebar-expanded] .admin-nav__link,
+  .admin-shell--workspace[data-sidebar-expanded] .admin-sidebar__toggle {
+    transition: none;
+  }
+}

@@ -147,6 +147,29 @@ export interface PaymentMethod {
     codigo: string;
     nome: string;
     ativo?: boolean;
+    online_habilitado?: boolean;
+}
+
+export interface PaymentReturn {
+    order_nsu: string;
+    transaction_nsu: string;
+    slug: string;
+}
+
+export interface OrderPayment {
+    fluxo: "TRADICIONAL" | "INFINITEPAY";
+    estado?: "AGUARDANDO_CRIACAO" | "CRIANDO" | "CRIACAO_INCERTA" | "AGUARDANDO_PAGAMENTO" | "PAGO_VERIFICADO" | "PAGO_EM_REVISAO" | "EXPIRADO";
+    checkout_url?: string | null;
+    valid_until?: string;
+    liberado_operacionalmente: boolean;
+    comprovante?: {
+        capture_method: string;
+        installments: number;
+        amount: number;
+        paid_amount: number;
+        verificado_em: string | null;
+        receipt_url: string | null;
+    } | null;
 }
 
 export interface AddressInput {
@@ -186,6 +209,7 @@ export interface OrderSummary {
     codigo?: string;
     status: OrderStatus;
     status_pagamento?: PaymentStatus;
+    pagamento?: OrderPayment;
     cliente_nome?: string;
     tipo_entrega?: DeliveryType;
     canal?: "WEB" | "PAINEL";

@@ -3,10 +3,32 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BarChart3, Bell, BookOpen, Boxes, ClipboardList, Home, MailPlus, MoreHorizontal, PlusCircle, ReceiptText, ScrollText, Settings, ShoppingBasket, Store, UserRound, UsersRound } from "lucide-react";
+import {
+  BarChart3,
+  Bell,
+  BookOpen,
+  Boxes,
+  ChevronRight,
+  ClipboardList,
+  Home,
+  MailPlus,
+  MoreHorizontal,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PlusCircle,
+  ReceiptText,
+  ScrollText,
+  Search,
+  Settings,
+  ShoppingBasket,
+  Store,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
 import { BrandMark } from "@/components/shared/brand-mark";
 import { useAuth } from "@/features/auth/auth-provider";
 import { Drawer, Skeleton } from "@/components/ui";
+import "./admin-sidebar.css";
 
 const nav = [
   { href: "/admin", label: "Início", icon: Home, permission: "dashboard.visualizar", exact: true },
@@ -26,32 +48,236 @@ const nav = [
   { href: "/admin/impressoes", label: "Impressões", icon: ReceiptText, permission: "impressoes.listar" },
   { href: "/admin/perfil", label: "Meu perfil", icon: UserRound },
 ];
+
 const mobilePrimaryHrefs = new Set([
   "/admin",
   "/admin/pedidos",
   "/admin/pedidos/novo",
   "/admin/impressoes",
 ]);
+
 const bottomPrimary = nav.filter((item) => mobilePrimaryHrefs.has(item.href));
 
-export function isAdminNavActive(pathname: string, item: { href: string; exact?: boolean }) {
+export function isAdminNavActive(
+  pathname: string,
+  item: { href: string; exact?: boolean },
+) {
   if (item.href === "/admin/pedidos/novo") return pathname === item.href;
-  if (item.href === "/admin/pedidos") return pathname === item.href || (pathname.startsWith(`${item.href}/`) && pathname !== "/admin/pedidos/novo");
-  return item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`);
+  if (item.href === "/admin/pedidos") {
+    return (
+      pathname === item.href ||
+      (pathname.startsWith(`${item.href}/`) && pathname !== "/admin/pedidos/novo")
+    );
+  }
+  return item.exact
+    ? pathname === item.href
+    : pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, hasPermission } = useAuth();
+
+  // Recolhida por padrão. O mesmo botão alterna entre os dois estados.
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  useEffect(() => { if (!loading && !user) router.replace(`/admin/login?retorno=${encodeURIComponent(pathname)}`); }, [loading, pathname, router, user]);
-  if (loading || !user) return <main className="container route-loading" aria-busy="true"><Skeleton className="skeleton--title" /><Skeleton className="skeleton--hero" /></main>;
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace(`/admin/login?retorno=${encodeURIComponent(pathname)}`);
+    }
+  }, [loading, pathname, router, user]);
+
+  if (loading || !user) {
+    return (
+      <main className="container route-loading" aria-busy="true">
+        <Skeleton className="skeleton--title" />
+        <Skeleton className="skeleton--hero" />
+      </main>
+    );
+  }
+
   const visible = nav.filter((item) => !item.permission || hasPermission(item.permission));
+  const sidebarItems = visible.filter((item) => item.href !== "/admin/perfil");
   const current = [...nav].reverse().find((item) => isAdminNavActive(pathname, item));
   const primaryHrefs = new Set(bottomPrimary.map((item) => item.href));
   const moreItems = visible.filter((item) => !primaryHrefs.has(item.href));
   const moreActive = moreItems.some((item) => isAdminNavActive(pathname, item));
-  return <div className="admin-shell"><aside className="admin-sidebar"><BrandMark href="/admin" /><nav className="admin-nav" aria-label="Módulos administrativos">{visible.map((item) => { const Icon = item.icon; return <Link href={item.href} key={item.href} aria-current={isAdminNavActive(pathname, item) ? "page" : undefined}><Icon aria-hidden />{item.label}</Link>; })}</nav><div className="admin-sidebar__footer"><strong>{user.nome}</strong><br />Operação da Shirley</div></aside><div className="admin-main"><header className="admin-topbar"><div className="admin-topbar__context"><small>Painel da Shirley</small><strong>{current?.label || "Operação"}</strong></div>{hasPermission("loja.visualizar") && <Link className="icon-button" aria-label="Configurações da loja" title="Configurações da loja" href="/admin/loja"><Settings aria-hidden /></Link>}</header><main id="conteudo-principal">{children}</main></div><nav className="admin-bottom-nav" aria-label="Navegação principal do painel">{bottomPrimary.filter((item) => !item.permission || hasPermission(item.permission)).map((item) => { const Icon = item.icon; return <Link href={item.href} key={item.href} aria-current={isAdminNavActive(pathname, item) ? "page" : undefined}><Icon aria-hidden />{item.label}</Link>; })}<Drawer open={moreOpen} onOpenChange={setMoreOpen} trigger={<button type="button" aria-current={moreActive ? "page" : undefined}><MoreHorizontal aria-hidden />Mais</button>} title="Mais opções" description="Acesse os demais módulos disponíveis para o seu perfil."><nav className="admin-more-nav" aria-label="Outros módulos administrativos">{moreItems.length ? moreItems.map((item) => { const Icon = item.icon; return <Link href={item.href} key={item.href} aria-current={isAdminNavActive(pathname, item) ? "page" : undefined} onClick={() => setMoreOpen(false)}><Icon aria-hidden /><span>{item.label}</span></Link>; }) : <p className="muted">Seu perfil não possui outros módulos disponíveis.</p>}</nav></Drawer></nav></div>;
-}
 
+  return (
+    <div
+      className="admin-shell admin-shell--workspace"
+      data-sidebar-expanded={sidebarExpanded ? "true" : "false"}
+    >
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar__brand-row">
+          <BrandMark href="/admin" />
+          <button
+            type="button"
+            className="admin-sidebar__toggle"
+            aria-label={sidebarExpanded ? "Recolher menu lateral" : "Expandir menu lateral"}
+            title={sidebarExpanded ? "Recolher menu lateral" : "Expandir menu lateral"}
+            aria-expanded={sidebarExpanded}
+            aria-controls="admin-sidebar-nav"
+            onClick={() => setSidebarExpanded((expanded) => !expanded)}
+          >
+            {sidebarExpanded ? <PanelLeftClose aria-hidden /> : <PanelLeftOpen aria-hidden />}
+          </button>
+        </div>
+
+        <nav
+          id="admin-sidebar-nav"
+          className="admin-nav"
+          aria-label="Módulos administrativos"
+        >
+          {sidebarItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                className="admin-nav__link"
+                href={item.href}
+                key={item.href}
+                aria-label={item.label}
+                title={sidebarExpanded ? undefined : item.label}
+                aria-current={isAdminNavActive(pathname, item) ? "page" : undefined}
+              >
+                <Icon aria-hidden />
+                <span className="admin-nav__text" aria-hidden={!sidebarExpanded}>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <Link
+          className="admin-sidebar__profile"
+          href="/admin/perfil"
+          aria-label={`Meu perfil: ${user.nome}`}
+          title={sidebarExpanded ? undefined : "Meu perfil"}
+          aria-current={pathname === "/admin/perfil" ? "page" : undefined}
+        >
+          <UserRound aria-hidden />
+          <span className="admin-sidebar__profile-text" aria-hidden={!sidebarExpanded}>Meu perfil</span>
+        </Link>
+      </aside>
+
+      <div className="admin-main">
+        <header className="admin-topbar">
+          <div className="admin-topbar__context">
+            <small>Shirley Lanches</small>
+            <strong>{current?.label || "Operação"}</strong>
+          </div>
+
+          {hasPermission("produtos.listar") && (
+            <form
+              className="admin-header-search"
+              action="/admin/produtos"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const value = String(
+                  new FormData(event.currentTarget).get("busca") || "",
+                ).trim();
+                router.push(
+                  `/admin/produtos${value ? `?busca=${encodeURIComponent(value)}` : ""}`,
+                );
+              }}
+            >
+              <label htmlFor="admin-header-search" className="sr-only">
+                Buscar no catálogo
+              </label>
+              <Search aria-hidden />
+              <input
+                id="admin-header-search"
+                name="busca"
+                type="search"
+                placeholder="Buscar no catálogo…"
+              />
+              <button type="submit" aria-label="Pesquisar produtos">
+                <ChevronRight aria-hidden />
+              </button>
+            </form>
+          )}
+
+          <div className="admin-topbar__account">
+            {hasPermission("loja.visualizar") && (
+              <Link
+                className="icon-button"
+                aria-label="Configurações da loja"
+                title="Configurações da loja"
+                href="/admin/loja"
+              >
+                <Settings aria-hidden />
+              </Link>
+            )}
+            <Link className="admin-user" href="/admin/perfil">
+              <span className="admin-user__avatar" aria-hidden>
+                {user.nome
+                  .trim()
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join("")}
+              </span>
+              <span className="admin-user__info">
+                <strong>{user.nome}</strong>
+                <small>Meu perfil</small>
+              </span>
+            </Link>
+          </div>
+        </header>
+        <main id="conteudo-principal">{children}</main>
+      </div>
+
+      <nav className="admin-bottom-nav" aria-label="Navegação principal do painel">
+        {bottomPrimary
+          .filter((item) => !item.permission || hasPermission(item.permission))
+          .map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                href={item.href}
+                key={item.href}
+                aria-current={isAdminNavActive(pathname, item) ? "page" : undefined}
+              >
+                <Icon aria-hidden />
+                {item.label}
+              </Link>
+            );
+          })}
+        <Drawer
+          open={moreOpen}
+          onOpenChange={setMoreOpen}
+          trigger={
+            <button type="button" aria-current={moreActive ? "page" : undefined}>
+              <MoreHorizontal aria-hidden />
+              Mais
+            </button>
+          }
+          title="Mais opções"
+          description="Acesse os demais módulos disponíveis para o seu perfil."
+        >
+          <nav className="admin-more-nav" aria-label="Outros módulos administrativos">
+            {moreItems.length ? (
+              moreItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    href={item.href}
+                    key={item.href}
+                    aria-current={isAdminNavActive(pathname, item) ? "page" : undefined}
+                    onClick={() => setMoreOpen(false)}
+                  >
+                    <Icon aria-hidden />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })
+            ) : (
+              <p className="muted">Seu perfil não possui outros módulos disponíveis.</p>
+            )}
+          </nav>
+        </Drawer>
+      </nav>
+    </div>
+  );
+}

@@ -245,12 +245,12 @@ test("pedido permite salto direto e pagamento sem justificativa", async ({ page 
   await capture(page, "docs/screenshots/etapa-8-pedido-salto-430.png", false);
 });
 
-test("catálogo administrativo vazio e responsivo", async ({ page }) => { const pageErrors: string[] = []; page.on("pageerror", (error) => pageErrors.push(error.stack || error.message)); page.on("console", (message) => { if (message.type() === "error") pageErrors.push(message.text()); }); await mockApi(page); await page.setViewportSize({ width: 1024, height: 768 }); await page.goto("/admin/produtos"); await page.waitForTimeout(800); expect(pageErrors).toEqual([]); await expect(page.getByText(/nenhum cadastro em produtos/i)).toBeVisible(); await capture(page, "docs/screenshots/catalogo-admin-1024.png"); });
+test("catálogo administrativo vazio e responsivo", async ({ page }) => { const pageErrors: string[] = []; page.on("pageerror", (error) => pageErrors.push(error.stack || error.message)); page.on("console", (message) => { if (message.type() === "error") pageErrors.push(message.text()); }); await mockApi(page); await page.setViewportSize({ width: 1024, height: 768 }); await page.goto("/admin/produtos"); await page.waitForTimeout(800); expect(pageErrors).toEqual([]); await expect(page.getByText(/nenhum produto encontrado/i)).toBeVisible(); await capture(page, "docs/screenshots/catalogo-admin-1024.png"); });
 
 test("editor de produto carrega vínculos atuais antes de permitir substituição", async ({ page }) => {
   await mockApi(page, { adminCatalog: true });
   await page.goto("/admin/produtos");
-  const desktopTable = page.locator(".responsive-table__desktop");
+  const desktopTable = page.locator(".catalog-grid");
   await expect(desktopTable.getByText("X-Bacon")).toBeVisible();
   await desktopTable.getByLabel("Ações de X-Bacon").click();
   await desktopTable.getByRole("button", { name: "Opções" }).click();
@@ -270,12 +270,12 @@ test("produtos combinam categoria, busca e estados com ações reversíveis", as
   await mockApi(page, { adminCatalog: true });
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/admin/produtos");
-  await page.getByLabel("Categoria").selectOption("1");
+  await page.getByRole("group", { name: "Filtrar por categoria" }).getByRole("button", { name: "Lanches", exact: true }).click();
   await page.getByPlaceholder("Buscar em produtos").fill("bacon");
   await page.getByLabel("Estado").selectOption("inativos");
-  await expect(page.getByText("Inativo").first()).toBeVisible();
+  await expect(page.locator(".catalog-grid").getByText("Inativo", { exact: true })).toBeVisible();
   await expect.poll(() => listQueries.some((query) => query.includes("categoria_id=1") && query.includes("ativo=false") && query.includes("busca=bacon"))).toBe(true);
-  const table = page.locator(".responsive-table__desktop");
+  const table = page.locator(".catalog-grid");
   await table.getByLabel("Ações de X-Bacon").click();
   await table.getByRole("button", { name: "Reativar" }).click();
   await page.getByRole("button", { name: "Reativar", exact: true }).click();
@@ -292,9 +292,9 @@ test("ativação de produto sem preço preserva o formulário e direciona a corr
   await mockApi(page, { adminCatalog: true, productActivationError: true });
   await page.setViewportSize({ width: 375, height: 667 });
   await page.goto("/admin/produtos");
-  const mobileTable = page.locator(".responsive-table__mobile");
+  const mobileTable = page.locator(".catalog-grid");
   await mobileTable.getByLabel("Ações de X-Bacon").click();
-  await mobileTable.getByRole("button", { name: "Editar" }).click();
+  await mobileTable.getByRole("button", { name: "Editar", exact: true }).click();
   const price = page.getByLabel("Preço base");
   const dialog = page.getByRole("dialog");
   const cancelButton = dialog.getByRole("button", { name: "Cancelar" });
@@ -515,3 +515,110 @@ test("telas públicas e login sem violações axe WCAG A/AA detectáveis", async
   await assertAxe();
 });
 
+
+
+test("novo catálogo: categoria, paginação, edição lateral e cancelamento preservam contexto", async ({ page }) => {
+  await mockApi(page, { adminCatalog: true });
+  let records = [{ ...burger }, { ...soda }];
+  const queries: URLSearchParams[] = [];
+  let writes = 0;
+  let created: Record<string, unknown> | undefined;
+  await page.route("**/api/v1/admin/produtos**", async route => {
+    const url = new URL(route.request().url());
+    if (url.pathname.endsWith("/produtos") && route.request().method() === "POST") {
+      created = route.request().postDataJSON();
+      records.push({ ...burger, ...created, id: "30" });
+      return route.fulfill({ status: 201, json: ok(records.at(-1)) });
+    }
+    if (url.pathname.endsWith("/produtos/10") && route.request().method() === "PATCH") {
+      writes += 1;
+      records = records.map(record => record.id === "10" ? { ...record, ...route.request().postDataJSON() } : record);
+      return route.fulfill({ json: ok(records[0]) });
+    }
+    if (!url.pathname.endsWith("/produtos") || route.request().method() !== "GET") return route.fallback();
+    const params = url.searchParams; queries.push(params);
+    const filtered = records.filter(record => (!params.get("categoria_id") || params.get("categoria_id") === record.categoria_id) && (!params.get("busca") || record.nome.toLowerCase().includes(params.get("busca")!.toLowerCase())));
+    const current = Number(params.get("page") || 1);
+    return route.fulfill({ json: ok({ items: filtered.slice(current - 1, current), pagination: { page: current, limit: 1, total: filtered.length, total_pages: Math.max(1, filtered.length) } }) });
+  });
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/admin/produtos");
+  await page.getByRole("button", { name: "Próxima", exact: true }).click();
+  await expect.poll(() => queries.at(-1)?.get("page")).toBe("2");
+  await page.getByRole("group", { name: "Filtrar por categoria" }).getByRole("button", { name: "Lanches", exact: true }).click();
+  await expect.poll(() => `${queries.at(-1)?.get("categoria_id")}:${queries.at(-1)?.get("page")}`).toBe("1:1");
+  await expect(page.getByRole("button", { name: "Lanches", exact: true })).toHaveAttribute("aria-pressed", "true");
+  const product = page.getByRole("button", { name: "Editar X-Bacon", exact: true });
+  await product.click();
+  const editor = page.getByRole("complementary", { name: "Editor de produto" });
+  await expect(editor.getByLabel("Nome")).toHaveValue("X-Bacon");
+  await editor.getByLabel("Nome").fill("Sem gravar");
+  await editor.getByRole("button", { name: "Cancelar", exact: true }).click();
+  expect(writes).toBe(0);
+  await product.click();
+  await expect(editor.getByLabel("Nome")).toHaveValue("X-Bacon");
+  await editor.getByLabel("Nome").fill("X-Bacon revisado");
+  await editor.getByRole("button", { name: "Salvar", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Editar X-Bacon revisado", exact: true })).toBeVisible();
+  expect(writes).toBe(1);
+  await expect(page.getByRole("button", { name: "Lanches", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(editor.getByLabel("Nome")).toHaveCount(0);
+  await page.getByLabel("Ações de X-Bacon revisado").click();
+  await page.locator(".catalog-grid").getByRole("button", { name: "Opções", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(editor.getByLabel("Nome")).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await page.getByPlaceholder("Buscar em produtos").fill("revisado");
+  await expect.poll(() => queries.at(-1)?.get("busca")).toBe("revisado");
+  await page.goto("/admin/categorias");
+  await page.getByRole("link", { name: "Ver produtos", exact: true }).first().click();
+  await expect(page).toHaveURL(/\/admin\/produtos\?categoria_id=1$/);
+  await expect(page.getByRole("button", { name: "Lanches", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.locator(".catalog-content").getByRole("button", { name: "Novo produto", exact: true }).click();
+  await expect(editor.getByLabel("Categoria")).toHaveValue("1");
+  await editor.getByLabel("Nome").fill("Produto de teste");
+  await editor.getByLabel("Tipo", { exact: false }).selectOption("LANCHE");
+  await editor.getByLabel("Preço base").fill("21.50");
+  await editor.getByRole("button", { name: "Salvar", exact: true }).click();
+  await expect(page.getByText("Cadastro criado", { exact: true })).toBeVisible();
+  expect(created).toMatchObject({ categoria_id: "1", nome: "Produto de teste", tipo: "LANCHE", ativo: false });
+});
+
+test("novo catálogo: leitura sem gerenciamento mantém produtos sem ações de edição", async ({ page }) => {
+  await mockApi(page, { adminCatalog: true });
+  await page.route("**/api/v1/auth/me", route => route.fulfill({ json: ok({ ...session, nivel: "ATENDENTE", permissoes: ["produtos.listar", "categorias.listar"] }) }));
+  await page.route("**/api/v1/admin/categorias?**", route => { const current = Number(new URL(route.request().url()).searchParams.get("page") || 1); return route.fulfill({ json: ok({ items: [{ id: current === 1 ? "1" : "2", nome: current === 1 ? "Lanches" : "Bebidas", ativo: true }], pagination: { page: current, limit: 1, total: 2, total_pages: 2 } }) }); });
+  await page.goto("/admin/produtos");
+  await expect(page.locator(".catalog-grid").getByText("X-Bacon", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Editar X-Bacon/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Novo produto", exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Ações de X-Bacon")).toHaveCount(0);
+  await expect(page.getByLabel("Nome")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Bebidas", exact: true })).toBeVisible();
+});
+
+test("novo pedido: cartões e resumo reutilizam montagem e envio existente com API simulada", async ({ page }) => {
+  await mockApi(page, { adminCatalog: true });
+  let sent: Record<string, unknown> | undefined;
+  await page.route("**/api/v1/admin/pedidos", async route => {
+    if (route.request().method() !== "POST") return route.fallback();
+    sent = route.request().postDataJSON();
+    return route.fulfill({ status: 201, json: ok({ pedido_id: "101" }) });
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/admin/pedidos/novo");
+  await page.locator(".manual-catalog").getByRole("button", { name: /X-Bacon/ }).click();
+  await page.getByRole("button", { name: "Adicionar item", exact: true }).click();
+  await expect(page.locator("#manual-bread-error")).toHaveText("Escolha o pão do lanche.");
+  await page.getByLabel("Pão obrigatório").selectOption("2");
+  await page.getByRole("checkbox", { name: "Queijo extra" }).check();
+  await page.getByRole("button", { name: "Aumentar", exact: true }).click();
+  await page.getByRole("button", { name: "Adicionar item", exact: true }).click();
+  await expect(page.locator(".sticky-summary")).toContainText("2× X-Bacon");
+  await page.getByLabel("Nome", { exact: false }).fill("Cliente de teste");
+  await page.getByLabel("Telefone").fill("18999999999");
+  await page.getByLabel("Forma de pagamento").selectOption("2");
+  await page.getByRole("button", { name: "Criar pedido", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/pedidos\/101$/);
+  expect(sent).toMatchObject({ cliente: { nome: "Cliente de teste", telefone: "18999999999" }, tipo_entrega: "RETIRADA", metodo_pagamento_id: "2", itens: [{ produto_id: "10", quantidade: 2, tipo_pao_id: "2", adicionais: [{ adicional_id: "7", quantidade: 1 }] }] });
+});

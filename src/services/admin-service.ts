@@ -6,6 +6,27 @@ import type { AndroidPrintStatus, CreateOrderInput, Invitation, InvitationSecret
 // campos antes de renderizar ou enviar de volta à API.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AdminRecord = { id: string;[key: string]: any };
+export interface InfinitepayConfiguration {
+    versao: number;
+    ativo: boolean;
+    pix_habilitado: boolean;
+    credito_habilitado: boolean;
+    handle: string | null;
+    backend_public_url: string | null;
+    redirect_url: string | null;
+    has_api_key: boolean;
+    assured_installments: number;
+}
+export interface InfinitepayConfigurationPatch {
+    versao: number;
+    ativo: boolean;
+    pix_habilitado: boolean;
+    credito_habilitado: boolean;
+    handle?: string;
+    api_key?: string;
+    backend_public_url?: string;
+    redirect_url?: string;
+}
 export interface ProductLinks {
     produto_id: string;
     tipos_pao: Array<{ tipo_pao_id: string; ativo: boolean; codigo: string; nome: string; acrescimo: string | null }>;
@@ -40,6 +61,8 @@ function storeConfigBody(body: unknown) {
 }
 
 export const adminService = {
+    infinitepayConfiguration: () => apiRequest<InfinitepayConfiguration>("/admin/pagamentos/infinitepay/configuracao"),
+    updateInfinitepayConfiguration: (body: InfinitepayConfigurationPatch) => apiRequest<InfinitepayConfiguration>("/admin/pagamentos/infinitepay/configuracao", { method: "PATCH", body, csrf: true }),
     changePassword: (body: { senha_atual: string; nova_senha: string; confirmar_nova_senha: string }) => apiRequest("/auth/alterar-senha", { method: "POST", body, csrf: true }),
     listResource: <T extends AdminRecord>(resource: string, params: Record<string, string | number | boolean | undefined> = {}) => apiRequest<PaginatedData<T>>(`/admin/${resource}${search({ page: 1, limit: 10, ...params })}`),
     getResource: <T extends AdminRecord>(resource: string, id: string) => apiRequest<T>(`/admin/${resource}/${id}`),

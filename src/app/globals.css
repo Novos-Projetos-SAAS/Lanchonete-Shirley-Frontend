@@ -9,5 +9,9 @@
 @import "./(public)/acompanhar/[codigo]/acompanhamento.css";
 @import "./(public)/pedidos-compartilhado.css";
 @import "./(public)/finalizar/finalizar.css";
+@import "./styles/admin.css";
+@import "./styles/admin-tables.css";
 
-/* Entrada global: base comum e folhas organizadas nas pastas das telas. */
+@import "./styles/admin-mobile-actions.css";
+@import "./styles/admin-manual-sticky-mvp.css";
+/* Tabelas administrativas: visual claro e compacto, carregado por último. */

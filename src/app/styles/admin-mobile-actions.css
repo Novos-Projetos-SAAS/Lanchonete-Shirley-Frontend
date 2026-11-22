@@ -1,0 +1,84 @@
+/* Shirley Lanches — ações administrativas proporcionais no celular.
+   1 ação: 100%; 2: 50%; 3: 33,33%; 4: 25%... sem dropdown.
+   O grid distribui automaticamente cada botão em uma coluna igual. 
+   se for telas grandes, o layout padrão de ações em linha não é mantido, fica o dropdown.  */
+
+
+@media screen and (min-width: 768px) {
+  .admin-shell--workspace .row-actions--inline {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .admin-shell--workspace .row-actions--inline {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 0.375rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .admin-shell--workspace .row-actions--inline .button {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    width: 100%;
+    min-width: 0;
+    min-height: 3.5rem;
+    height: auto;
+    padding: 0.45rem 0.25rem;
+    border: 1px solid #e1e5e2;
+    border-radius: 0.6rem;
+    background: #fff;
+    color: #404c42;
+    box-shadow: none;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 650;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-shell--workspace .row-actions--inline .button > svg,
+  .admin-shell--workspace .row-actions--inline .button > :is(span, a) > svg {
+    display: block;
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    stroke-width: 1.9;
+  }
+
+  .admin-shell--workspace .row-actions--inline .button:is(:hover, :focus-visible) {
+    border-color: #a6c8a2;
+    background: #eff8ee;
+    color: #24582f;
+  }
+
+  .admin-shell--workspace .row-actions--inline .button:focus-visible {
+    outline: 3px solid var(--focus, #c8450a);
+    outline-offset: 2px;
+  }
+
+  .admin-shell--workspace .row-actions--inline .button:disabled {
+    opacity: 0.45;
+  }
+
+  .admin-shell--workspace .data-card__field:has(.row-actions--inline) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+
+  .admin-shell--workspace .data-card__field:has(.row-actions--inline) > div {
+    min-width: 0;
+    overflow: visible;
+  }
+}

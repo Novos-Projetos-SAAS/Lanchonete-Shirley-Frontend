@@ -1080,7 +1080,7 @@
     border-radius: 0.5rem;
     background: transparent;
     color: var(--text);
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 700;
     line-height: 1.25;
     white-space: normal;
@@ -1614,4 +1614,82 @@
 
 .public-menu .product-grid--menu .product-card__body {
   min-width: 0;
+}
+
+/* SHIRLEY-CATEGORIAS-STICKY-V1 */
+/* A barra permanece visível enquanto o cliente percorre o cardápio. */
+.public-menu .menu-tools {
+  position: sticky;
+  top: var(--header-height, 4rem);
+  z-index: 35;
+  isolation: isolate;
+  padding-block: 0.45rem;
+  background: var(--surface, #fff);
+  /* border-bottom: 1px solid var(--border, #ece7e2); */
+  /* box-shadow: 0 5px 14px rgb(36 30 22 / 6%); */
+}
+
+/* Os títulos não ficam escondidos atrás do cabeçalho e das categorias. */
+.public-menu .menu-category {
+  scroll-margin-top: calc(var(--header-height, 4rem) + 8.75rem);
+}
+
+@media (max-width: 35.999rem) {
+  .public-menu .menu-category {
+    scroll-margin-top: calc(var(--header-height, 4rem) + 8.25rem);
+  }
+}
+
+/* SHIRLEY-MENU-FULL-BLEED-V1
+   Barra sticky sem margens laterais; nao altera o grid de produtos. */
+@media screen {
+  .site-shell > .public-menu .public-menu__section > .container > .menu-tools {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    box-sizing: border-box;
+    width: 100vw;
+    min-width: 0;
+    max-width: none;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+  }
+
+  .site-shell > .public-menu .public-menu__section > .container > .menu-tools > .category-rail {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    border: 0;
+    border-radius: 0;
+    overflow-x: auto;
+  }
+}
+
+/* SHIRLEY-CATEGORIAS-RESPONSIVAS-V1
+   Mobile (< 768px): a regra anterior mantém o carrossel em 100vw.
+   Desktop/tablet (>= 768px): alinha-o ao contêiner do cardápio.
+   Preserva posição sticky, rolagem horizontal e layout dos produtos.
+*/
+@media screen and (min-width: 48rem) {
+  .site-shell > .public-menu .public-menu__section > .container > .menu-tools {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+    padding-inline: clamp(0.5rem, 1.5vw, 1rem);
+    border: 0;
+    border-radius: 0;
+  }
+
+  .site-shell > .public-menu .public-menu__section > .container > .menu-tools > .category-rail {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
 }
