@@ -7,6 +7,7 @@ import { Minus, Plus, Save, ShoppingBasket, Trash2 } from "lucide-react";
 import { clearFormFieldError, toFormError, type FormErrorFeedback } from "@/lib/api-errors";
 import { formatCurrency, moneyToCents, centsToMoney } from "@/lib/money";
 import { queryKeys } from "@/lib/query-keys";
+import { isValidBrazilianMobile, maskBrazilianMobile } from "@/lib/phone-mask";
 import { adminService } from "@/services/admin-service";
 import { publicService } from "@/services/public-service";
 import type { CreateOrderInput, OrderItemInput, Product } from "@/types/domain";
