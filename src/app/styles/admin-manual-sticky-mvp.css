@@ -1,0 +1,106 @@
+/* Shirley — pedido manual: laterais visiveis durante a rolagem.
+   Carregado por ultimo em globals.css. Nao afeta outras telas. */
+
+/* O modal fica acima de todo o painel, independentemente da rolagem. */
+body:has(.manual-order-workspace) > .dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+}
+
+body:has(.manual-order-workspace) > .dialog-content {
+  position: fixed;
+  z-index: 2010;
+}
+
+/* Na tela larga, a grade reserva as colunas laterais e o centro rola normalmente. */
+@media screen and (min-width: 75rem) {
+  .admin-shell--workspace .manual-workspace {
+    grid-template-columns: 12.5rem minmax(0, 1fr) 18.75rem;
+    min-width: 0;
+  }
+
+  .admin-shell--workspace .manual-workspace > .manual-content {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  /* Categorias sempre presentes, mesmo quando o pedido e editado la embaixo. */
+  .admin-shell--workspace .manual-workspace > .catalog-categories {
+    position: fixed;
+    z-index: 15;
+    top: 6rem;
+    bottom: 0;
+    left: 5.75rem;
+    width: 12.5rem;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  /* Barra da direita: fixa no viewport; somente a lista de itens rola. */
+  .admin-shell--workspace .manual-workspace > .sticky-summary {
+    position: fixed;
+    z-index: 15;
+    top: 6rem;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 18.75rem;
+    height: calc(100dvh - 6rem);
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    padding: 1.25rem 1rem;
+    overflow: hidden;
+    border-radius: 0;
+    box-shadow: none;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .admin-shell--workspace .manual-workspace > .sticky-summary > h2 {
+    flex: 0 0 auto;
+    margin-bottom: 0.3rem;
+  }
+
+  .admin-shell--workspace .manual-workspace > .sticky-summary > .manual-items {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    padding-right: 0.25rem;
+  }
+
+  /* Quando a lista estiver vazia, preserva o rodape no fim do painel. */
+  .admin-shell--workspace .manual-workspace > .sticky-summary > h2 + .muted {
+    flex: 1 1 auto;
+  }
+
+  /* Totais, avisos de preco e botao permanecem visiveis embaixo da lista. */
+  .admin-shell--workspace .manual-workspace > .sticky-summary > :not(.manual-items) {
+    flex-shrink: 0;
+  }
+
+  .admin-shell--workspace .manual-workspace > .sticky-summary > .button[type="submit"] {
+    width: 100%;
+    margin-top: 0.5rem;
+    flex-shrink: 0;
+  }
+}
+
+/* Teclados, leitores de tela e resolucoes mais estreitas mantem o layout usual. */
+@media screen and (max-width: 74.999rem) {
+  .admin-shell--workspace .manual-workspace > .sticky-summary {
+    overflow: visible;
+  }
+}

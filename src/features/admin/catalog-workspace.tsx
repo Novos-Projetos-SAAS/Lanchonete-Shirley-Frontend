@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Check, ChevronRight, Edit3, ImageOff, LayoutGrid, PackageOpen, Plus, RefreshCw, Search, UtensilsCrossed, X } from "lucide-react";
 import type { AdminRecord } from "@/services/admin-service";
 import { resolveProductImage } from "@/lib/product-images";
+import { CategoryImage } from "@/components/shared/category-image";
 import { Badge, Button, Dialog, EmptyState, ErrorState, Field, Input, Pagination, Select, Skeleton } from "@/components/ui";
 import { PermissionGate } from "@/components/shared/permission-gate";
 import { useAuth } from "@/features/auth/auth-provider";
@@ -20,7 +21,9 @@ export function AdminCategoryRail({ categories, value, onChange, loading, failed
     <div className="catalog-categories__heading"><span className="admin-kicker">Cardápio Shirley</span><h2>Categorias</h2></div>
     <div className="catalog-categories__options" role="group" aria-label="Filtrar por categoria">
       {[{ id: "", nome: "Todos", descricao: "Todos os produtos" }, ...categories].map(category => <button type="button" className="catalog-category" key={category.id} aria-pressed={value === category.id} onClick={() => onChange(category.id)}>
-        <span className="catalog-category__icon">{category.id ? <UtensilsCrossed aria-hidden /> : <LayoutGrid aria-hidden />}</span>
+        <span className="catalog-category__icon">
+          {category.id ? <CategoryImage name={String(category.nome)} sizes="36px" fallback={<UtensilsCrossed aria-hidden />} /> : <LayoutGrid aria-hidden />}
+        </span>
         <span><strong>{String(category.nome)}</strong>{category.ativo === false ? <small>Inativa</small> : category.descricao ? <small>{String(category.descricao)}</small> : null}</span>
         {value === category.id && <Check className="catalog-category__check" aria-hidden />}
       </button>)}

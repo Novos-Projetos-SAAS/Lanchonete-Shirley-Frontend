@@ -1,0 +1,489 @@
+/* ==========================================================
+   Shirley Lanches | /admin/impressoes
+   Arquivo exclusivo da página — não altera outras telas.
+   ========================================================== */
+
+.admin-shell--workspace .printing-page {
+  --print-radius: 16px;
+  --print-stroke: #e4e9e5;
+  --print-ink: #202521;
+  --print-muted: #646e67;
+  display: grid;
+  gap: clamp(1.25rem, 2.4vw, 1.8rem);
+  width: min(100%, 88rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-bottom: 2rem;
+  container: print-workspace / inline-size;
+}
+
+.admin-shell--workspace .printing-page > .page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin: 0;
+  padding-bottom: 0.25rem;
+}
+
+.admin-shell--workspace .printing-page > .page-header > div:first-child {
+  max-width: 46rem;
+  min-width: 0;
+}
+
+.admin-shell--workspace .printing-page > .page-header h1 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.85rem, 2.8vw, 2.45rem);
+  font-weight: 850;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+
+.admin-shell--workspace .printing-page > .page-header p:last-child {
+  max-width: 54ch;
+  margin-top: 0.45rem;
+  color: var(--print-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.admin-shell--workspace .printing-page__overview,
+.admin-shell--workspace .printing-page__panel {
+  min-width: 0;
+}
+
+.admin-shell--workspace .printing-page__section-intro,
+.admin-shell--workspace .printing-page__panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+
+.admin-shell--workspace .printing-page__section-intro {
+  margin-bottom: 0.85rem;
+}
+
+.admin-shell--workspace .printing-page__section-intro h2,
+.admin-shell--workspace .printing-page__panel-head h2 {
+  margin: 0;
+  color: var(--print-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.admin-shell--workspace .printing-page__eyebrow {
+  margin: 0 0 0.28rem;
+  color: var(--brand-hover);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+}
+
+.admin-shell--workspace .printing-page__refresh-note {
+  color: var(--print-muted);
+  font-size: 0.78rem;
+}
+
+/* Indicadores: iguais, compactos e independentes da sidebar. */
+.admin-shell--workspace .printing-page .print-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.admin-shell--workspace .printing-page .print-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
+  min-width: 0;
+  min-height: 9.4rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--print-stroke);
+  border-radius: var(--print-radius);
+  background: #fff;
+  box-shadow: 0 3px 12px rgb(22 38 27 / 3%);
+}
+
+.admin-shell--workspace .printing-page__stat-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.admin-shell--workspace .printing-page .print-stat small {
+  color: var(--print-muted);
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.admin-shell--workspace .printing-page__stat-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 2.4rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.75rem;
+  background: #fff1e7;
+  color: var(--brand-hover);
+}
+
+.admin-shell--workspace .printing-page__stat-icon svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.admin-shell--workspace .printing-page .printing-page__stat-value {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--print-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.38rem, 2vw, 1.85rem);
+  font-weight: 900;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.admin-shell--workspace .printing-page .print-stat > span:last-child {
+  color: var(--print-muted);
+  font-size: 0.79rem;
+  line-height: 1.4;
+}
+
+/* Painéis principais */
+.admin-shell--workspace .printing-page .printing-page__panel {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--print-stroke);
+  border-radius: var(--print-radius);
+  background: #fff;
+  box-shadow: 0 3px 12px rgb(22 38 27 / 3%);
+}
+
+.admin-shell--workspace .printing-page__panel-head {
+  align-items: center;
+  min-height: 6rem;
+  padding: 1.25rem 1.4rem;
+  border-bottom: 1px solid var(--print-stroke);
+}
+
+.admin-shell--workspace .printing-page__panel-head > div:first-child {
+  min-width: 0;
+  max-width: 38rem;
+}
+
+.admin-shell--workspace .printing-page__panel-head p:not(.printing-page__eyebrow) {
+  margin: 0.3rem 0 0;
+  color: var(--print-muted);
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+.admin-shell--workspace .printing-page__panel-body {
+  min-width: 0;
+  padding: 1.35rem 1.4rem;
+}
+
+.admin-shell--workspace .printing-page__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.admin-shell--workspace .printing-page__actions .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.admin-shell--workspace .printing-page__actions .button svg,
+.admin-shell--workspace .printing-page > .page-header .button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Cards Android */
+.admin-shell--workspace .printing-page .print-device-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.admin-shell--workspace .printing-page .print-device {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid var(--print-stroke);
+  border-radius: 0.85rem;
+  background: #fff;
+  box-shadow: none;
+}
+
+.admin-shell--workspace .printing-page .print-device__head {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.admin-shell--workspace .printing-page .print-device__identity {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.admin-shell--workspace .printing-page .print-device__identity h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.admin-shell--workspace .printing-page .print-device__identity p {
+  margin: 0.2rem 0 0;
+  color: var(--print-muted);
+  font-size: 0.8rem;
+}
+
+.admin-shell--workspace .printing-page__device-pill {
+  align-self: flex-start;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: #f1f3f2;
+  color: #516058;
+  font-size: 0.7rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.admin-shell--workspace .printing-page__device-pill--active {
+  background: #e8f5ed;
+  color: #17603e;
+}
+
+.admin-shell--workspace .printing-page .print-device dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.admin-shell--workspace .printing-page .print-device dl > div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.72fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  min-width: 0;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #edf0ee;
+}
+
+.admin-shell--workspace .printing-page .print-device dt,
+.admin-shell--workspace .printing-page .print-device dd {
+  min-width: 0;
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.admin-shell--workspace .printing-page .print-device dt {
+  color: var(--print-muted);
+}
+
+.admin-shell--workspace .printing-page .print-device dd {
+  color: var(--print-ink);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.admin-shell--workspace .printing-page__device-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.admin-shell--workspace .printing-page__device-footer .button {
+  font-size: 0.8rem;
+}
+
+/* Fila, filtro e tabela */
+.admin-shell--workspace .printing-page__filter {
+  flex: 0 1 18rem;
+  min-width: min(100%, 14rem);
+}
+
+.admin-shell--workspace .printing-page__filter .field {
+  min-width: 0;
+  margin: 0;
+}
+
+.admin-shell--workspace .printing-page__filter .input.print-filter {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-height: 2.75rem;
+  margin: 0;
+}
+
+.admin-shell--workspace .printing-page__queue-body {
+  padding: 0;
+}
+
+.admin-shell--workspace .printing-page__queue-body .responsive-table {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.admin-shell--workspace .printing-page__queue-body .responsive-table__desktop {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.admin-shell--workspace .printing-page__queue-body .responsive-table th {
+  white-space: nowrap;
+}
+
+.admin-shell--workspace .printing-page__queue-body .responsive-table :is(th, td) {
+  padding-block: 0.95rem;
+}
+
+.admin-shell--workspace .printing-page__queue-body .responsive-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-shell--workspace .printing-page__job-identity {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.admin-shell--workspace .printing-page__job-state {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+
+.admin-shell--workspace .printing-page__job-state .print-job-error {
+  display: block;
+  max-width: 25rem;
+  color: var(--danger);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.admin-shell--workspace .printing-page__queue-body > .pagination {
+  margin: 0;
+  padding: 1rem;
+  border-top: 1px solid var(--print-stroke);
+}
+
+.admin-shell--workspace .printing-page__queue-body > .state,
+.admin-shell--workspace .printing-page__queue-body > .stack,
+.admin-shell--workspace .printing-page__panel-body > .state,
+.admin-shell--workspace .printing-page__loading {
+  padding: 2rem 1.25rem;
+}
+
+.admin-shell--workspace .printing-page .print-alert {
+  margin: 0;
+  border-radius: 0.8rem;
+}
+
+.admin-shell--workspace .printing-page .print-device__error {
+  display: flex;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.admin-shell--workspace .printing-page .print-device__error svg {
+  flex: 0 0 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Adapta-se à largura do conteúdo, não apenas à largura da janela. */
+@container print-workspace (max-width: 52rem) {
+  .admin-shell--workspace .printing-page__panel-head {
+    align-items: stretch;
+  }
+
+  .admin-shell--workspace .printing-page__actions {
+    width: 100%;
+  }
+}
+
+@container print-workspace (max-width: 40rem) {
+  .admin-shell--workspace .printing-page .print-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container print-workspace (max-width: 37rem) {
+  .admin-shell--workspace .printing-page .print-status-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-shell--workspace .printing-page .print-stat {
+    min-height: 7.8rem;
+  }
+
+  .admin-shell--workspace .printing-page__panel-head {
+    padding: 1.1rem;
+  }
+
+  .admin-shell--workspace .printing-page__panel-body {
+    padding: 1rem;
+  }
+
+  .admin-shell--workspace .printing-page__queue-body {
+    padding: 0;
+  }
+
+  .admin-shell--workspace .printing-page__filter {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .admin-shell--workspace .printing-page__actions .button {
+    flex: 1 1 100%;
+  }
+
+  .admin-shell--workspace .printing-page .print-device dl > div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .admin-shell--workspace .printing-page .print-device dd {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell--workspace .printing-page *,
+  .admin-shell--workspace .printing-page *::before,
+  .admin-shell--workspace .printing-page *::after {
+    scroll-behavior: auto;
+    transition: none;
+    animation: none;
+  }
+}

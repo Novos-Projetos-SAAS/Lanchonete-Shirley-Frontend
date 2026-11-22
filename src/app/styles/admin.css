@@ -61,14 +61,14 @@
     .catalog-categories h2 { margin: 0; font-size: 1.25rem; font-weight: 850; }
     .catalog-categories__options { display: flex; gap: 0.65rem; overflow-x: auto; padding: 0.2rem 0.2rem 0.6rem; scroll-padding-inline: 0.2rem; }
     .catalog-category { position: relative; display: flex; align-items: center; gap: 0.65rem; flex: 0 0 auto; width: 10rem; min-height: 4.25rem; padding: 0.65rem; border: 1px solid var(--border); border-radius: 0.55rem; background: #fff; color: var(--text); text-align: left; cursor: pointer; }
-    .catalog-category[aria-pressed="true"] { border: 2px solid var(--brand); padding: calc(0.65rem - 1px); background: #fffaf6; }
+    .catalog-category[aria-pressed="true"] { border-color: var(--brand); background: #fffaf6; box-shadow: inset 0 0 0 1px var(--brand); }
     .catalog-category__icon { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; flex-shrink: 0; border-radius: 0.5rem; background: #f4f5f3; color: #59665c; }
     .catalog-category[aria-pressed="true"] .catalog-category__icon { background: var(--brand-soft); color: var(--brand); }
     .catalog-category__icon svg { width: 1.2rem; }
     .catalog-category > span:nth-child(2) { min-width: 0; }
     .catalog-category strong { display: block; font-size: 0.875rem; font-weight: 850; overflow-wrap: anywhere; }
     .catalog-category small { display: block; margin-top: 0.2rem; color: var(--text-muted); font-size: 0.75rem; overflow-wrap: anywhere; }
-    .catalog-category__check { width: 0.9rem; flex-shrink: 0; margin-left: auto; color: var(--brand); }
+    .catalog-category__check { position: absolute; top: 0.35rem; left: 2.35rem; width: 0.9rem; margin: 0; border-radius: 50%; background: #fff; color: var(--brand); pointer-events: none; }
     .catalog-category-error { padding-top: 1rem; font-size: 0.875rem; }
     .catalog-content { min-width: 0; padding: 1.5rem 1rem 2rem; }
     .catalog-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
@@ -216,3 +216,922 @@
 @media screen and (prefers-reduced-motion: reduce) {
     .admin-shell--workspace *, body:has(.admin-shell--workspace) > .dialog-content { animation: none; transition: none; scroll-behavior: auto; }
 }
+
+/* SHIRLEY-LOJA-ABAS-V1 */
+/* Abas exclusivas da seção Loja: preservam componentes e regras do painel. */
+.admin-shell--workspace .store-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 1.25rem;
+  padding: 0.4rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  background: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: #d6dcd7 transparent;
+}
+
+.admin-shell--workspace .store-tabs__tab {
+  display: inline-flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content;
+  min-height: 3rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.admin-shell--workspace .store-tabs__tab:hover:not([aria-selected="true"]) {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+.admin-shell--workspace .store-tabs__tab[aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--brand) 30%, #fff);
+  background: var(--brand-soft);
+  color: var(--brand-hover);
+  box-shadow: inset 0 -2px var(--brand);
+}
+
+.admin-shell--workspace .store-tabs__tab:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.admin-shell--workspace .store-tabs__panel {
+  min-width: 0;
+  animation: loja-tab-entrar 160ms ease-out;
+}
+
+.admin-shell--workspace .store-tabs__panel[hidden] {
+  display: none;
+}
+
+.admin-shell--workspace .store-tabs__panel > .admin-card {
+  margin: 0;
+}
+
+.admin-shell--workspace .store-tabs__panel > .store-status-card {
+  margin-top: 1rem;
+}
+
+.admin-shell--workspace .store-tabs__panels {
+  min-width: 0;
+}
+
+@keyframes loja-tab-entrar {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 47.999rem) {
+  .admin-shell--workspace .store-tabs {
+    gap: 0.25rem;
+    padding: 0.3rem;
+    scroll-snap-type: x proximity;
+  }
+  .admin-shell--workspace .store-tabs__tab {
+    flex: 0 0 auto;
+    min-height: 2.9rem;
+    padding-inline: 0.8rem;
+    scroll-snap-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell--workspace .store-tabs__tab { transition: none; }
+  .admin-shell--workspace .store-tabs__panel { animation: none; }
+}
+
+/* SHIRLEY: NOVO PEDIDO MANUAL V2 */
+/* =============================================================
+   Shirley Lanches — Pedido manual (modais + carrinho flutuante)
+   Anexar ao final de src/app/styles/admin.css.
+   Não há imports nem dependências adicionais.
+   ============================================================= */
+
+@media screen {
+  .manual-order-workspace,
+  .manual-order-workspace .manual-workspace,
+  .manual-order-workspace .manual-content {
+    min-width: 0;
+  }
+
+  /* Resumo lateral: colunas estáveis para o texto e o botão remover. */
+  .manual-order-workspace .manual-order-summary {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .manual-order-workspace .manual-order-summary > h2 {
+    flex: 0 0 auto;
+    margin-bottom: 1rem;
+  }
+
+  .manual-order-workspace .manual-order-summary > .button {
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: 1.1rem;
+  }
+
+  .manual-order-workspace .manual-items,
+  .manual-order-drawer .manual-items {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .manual-order-workspace .manual-items > .manual-order-line,
+  .manual-order-drawer .manual-items > .manual-order-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+    align-items: start;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0 0 0.8rem;
+    border-bottom: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-line__info {
+    display: grid;
+    min-width: 0;
+    gap: 0.3rem;
+    overflow-wrap: anywhere;
+  }
+
+  .manual-order-line__info strong {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .manual-order-line__info small {
+    display: block;
+    margin: 0;
+    color: var(--text-muted, #606863);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .manual-order-line__price {
+    color: var(--brand-hover, #a83706);
+    font-size: 0.9rem;
+    font-weight: 850;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-shell--workspace .manual-items .manual-order-remove,
+  .manual-order-drawer .manual-items .manual-order-remove {
+    display: grid;
+    place-items: center;
+    justify-self: end;
+    align-self: start;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border, #e5e9e6);
+    border-radius: 0.65rem;
+    background: #fff;
+    color: var(--text-muted, #606863);
+  }
+
+  .manual-order-remove svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .manual-order-remove:hover {
+    border-color: var(--danger, #b42318);
+    color: var(--danger, #b42318);
+  }
+
+  .manual-order-totals {
+    display: grid;
+    gap: 0.65rem;
+    width: 100%;
+    min-width: 0;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-totals > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+    min-width: 0;
+    font-size: 0.875rem;
+  }
+
+  .manual-order-totals > div > strong {
+    flex-shrink: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-totals > .manual-order-totals__total {
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border, #e5e9e6);
+    color: var(--brand-hover, #a83706);
+    font-size: 1.08rem;
+    font-weight: 850;
+  }
+
+  .manual-order-totals > p {
+    margin: 0;
+    color: var(--text-muted, #606863);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  /* Modais Radix já presentes no frontend: clicou fora / X / Esc. */
+  body:has(.manual-order-workspace) > .dialog-content {
+    width: min(calc(100% - 1rem), 39rem);
+    max-height: min(91dvh, 53rem);
+    border-radius: 1rem;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content .dialog-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content .dialog-footer {
+    flex-shrink: 0;
+  }
+
+  .manual-order-config,
+  .manual-order-product-options,
+  .manual-order-checkout,
+  .manual-order-drawer {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .manual-order-config__name {
+    margin: 0;
+    color: var(--text, #202521);
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  .manual-order-config .manual-product-options {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .manual-order-qty {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.3rem;
+  }
+
+  .manual-order-qty > span {
+    font-weight: 750;
+  }
+
+  .manual-order-qty .cluster {
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .manual-order-checkout__section {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-checkout__section > h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 850;
+  }
+
+  .manual-order-checkout__section > .manual-fieldset {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .manual-order-checkout__section .form-grid--2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .manual-order-checkout__total {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem 0.75rem;
+    padding: 1rem;
+    border-radius: 0.85rem;
+    background: var(--surface-muted, #f3f5f6);
+    font-weight: 750;
+  }
+
+  .manual-order-checkout__total > strong {
+    color: var(--brand-hover, #a83706);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-checkout__total > small {
+    grid-column: 1 / -1;
+    color: var(--text-muted, #606863);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Até 1199px: o resumo lateral dá lugar ao carrinho sempre acessível. */
+@media screen and (max-width: 74.999rem) {
+  .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+  }
+
+  .manual-order-workspace .manual-workspace {
+    padding-bottom: 7.5rem;
+  }
+
+  .manual-order-workspace .manual-order-floating-cart {
+    position: fixed;
+    z-index: 75;
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(5.2rem + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: auto;
+    min-width: 0;
+    min-height: 3.7rem;
+    padding: 0.75rem 0.9rem;
+    border: 0;
+    border-radius: 1rem;
+    background: var(--brand, #c8450a);
+    color: #fff;
+    box-shadow: 0 8px 25px rgb(21 30 21 / 22%);
+    cursor: pointer;
+  }
+
+  .manual-order-floating-cart > svg {
+    flex: 0 0 1.3rem;
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .manual-order-floating-cart__count {
+    font-size: 0.8rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .manual-order-floating-cart > strong {
+    flex-shrink: 1;
+    min-width: 0;
+    margin-left: auto;
+    font-weight: 850;
+    font-size: 0.9rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-floating-cart__action {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.55rem;
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 16%);
+    font-size: 0.8rem;
+    font-weight: 850;
+  }
+}
+
+/* Tablet com menu lateral, mas sem navegação inferior. */
+@media screen and (min-width: 64rem) and (max-width: 74.999rem) {
+  .manual-order-workspace .manual-order-floating-cart {
+    left: auto;
+    right: 1.5rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: min(23rem, calc(100% - 3rem));
+  }
+}
+
+@media screen and (min-width: 75rem) {
+  .manual-order-workspace .manual-workspace > .manual-order-summary {
+    position: sticky;
+    top: 6rem;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 35.999rem) {
+  .manual-order-checkout__section .form-grid--2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .manual-order-workspace .manual-order-floating-cart {
+    left: 0.6rem;
+    right: 0.6rem;
+    gap: 0.45rem;
+    padding: 0.7rem;
+  }
+
+  .manual-order-floating-cart__action {
+    font-size: 0.75rem;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content {
+    max-height: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manual-order-floating-cart {
+    transition: none;
+  }
+}
+
+/* SHIRLEY-ADMIN-SIDEBAR-FIXO-MVP-V1
+   A barra de navegação administrativa não pode terminar no meio da
+   tela ao rolar a página ou abrir um modal.
+   O dialog continua acima dela porque seu overlay usa z-index: 800.
+*/
+@media screen and (min-width: 64rem) {
+  .admin-shell--workspace > .admin-sidebar {
+    position: fixed;
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    box-sizing: border-box;
+    width: 5.75rem;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  /* O menu fixo sai do fluxo do grid; mantém o conteúdo na coluna direita. */
+  .admin-shell--workspace > .admin-main {
+    grid-column: 2;
+    min-width: 0;
+  }
+}
+
+/* SHIRLEY_CARDS_ADMIN_UNIFORMES_INICIO */
+/* ================================================================
+   Shirley Lanches — cards uniformes no catálogo administrativo
+   Rotas: /admin/pedidos/novo e /admin/produtos
+
+   Cole este bloco ao FINAL de src/app/styles/admin.css.
+   Não afeta os cards do cardápio público.
+   ================================================================ */
+
+@media screen {
+  /* Cada linha da grade recebe a mesma altura; o maior card da grade
+     define a altura comum entre linhas, sem números fixos em pixels. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace) .catalog-grid {
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+
+  /* Funciona tanto com <button class="catalog-card catalog-card__open">
+     (novo pedido) como com <article class="catalog-card"> (produtos). */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid > .catalog-card {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* No cadastro de produtos existe uma div interna .catalog-card__open;
+     no pedido manual a própria raiz do card possui essa classe. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid > .catalog-card > .catalog-card__open {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+  }
+
+  /* Imagem fixa na proporção do projeto, sem esticar ou achatar. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-photo {
+    flex: 0 0 auto;
+    aspect-ratio: 6 / 5;
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Conteúdo ocupa todo o espaço vertical livre do card. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* Reserva espaço para até três linhas do nome, evitando cartões
+     com títulos em posições diferentes. O texto completo permanece no DOM. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__name {
+    display: -webkit-box;
+    min-height: 4.05em;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Limita visualmente descrições muito grandes sem deixá-las
+     aumentar todos os cards da grade. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__description {
+    display: -webkit-box;
+    min-height: 4.65em;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* O preço fica sempre no rodapé do conteúdo e o botão de ação
+     imediatamente abaixo dele, em ambos os tipos de card. */
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__price {
+    margin-top: auto;
+    padding-top: 0.2rem;
+  }
+
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__edit {
+    flex: 0 0 auto;
+    margin-top: 0.15rem;
+  }
+
+  /* Rodapé só existe na tela de gerenciamento de produtos. */
+  .admin-shell--workspace .catalog-workspace
+    .catalog-grid .catalog-card__footer {
+    flex: 0 0 auto;
+    min-height: 4.5rem;
+    margin-top: auto;
+  }
+}
+
+/* Menos espaçamento em telas estreitas para não comprimir os itens. */
+@media screen and (max-width: 47.999rem) {
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__info {
+    gap: 0.4rem;
+  }
+
+  .admin-shell--workspace :is(.manual-order-workspace, .catalog-workspace)
+    .catalog-grid .catalog-card__name {
+    min-height: 4.05em;
+  }
+}
+/* SHIRLEY_CARDS_ADMIN_UNIFORMES_FIM */
+
+/* SHIRLEY MANUAL ORDER RESPONSIVE START */
+/* =============================================================
+   SHIRLEY LANCHES — /admin/pedidos/novo
+   Grid responsiva ao ESPACO DISPONIVEL (sidebar aberta ou fechada)
+   Cole ao FINAL de src/app/styles/admin.css.
+   Nao altera /admin/produtos nem o CSS da Home.
+   ============================================================= */
+
+@media screen {
+  /* Evita que largura intrinseca do formulario force o shell a crescer. */
+  .admin-shell--workspace .admin-main,
+  .admin-shell--workspace .admin-main > main:has(> .manual-order-workspace) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell--workspace .manual-order-workspace {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    container: manual-order-area / inline-size;
+  }
+
+  /* Layout inicial: um fluxo compacto. Container queries abaixo
+     trocam as colunas conforme a area real apos a sidebar. */
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    display: grid;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: start;
+    gap: 0;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .catalog-categories {
+    display: block;
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    overflow: visible;
+    visibility: visible;
+    opacity: 1;
+    z-index: 2;
+    background: #fff;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-content {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+
+  /* O resumo so ocupa a terceira coluna quando ela cabe. */
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Categorias viram trilho horizontal em area estreita. */
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options {
+    display: flex;
+    gap: 0.65rem;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options > .catalog-category {
+    width: 10rem;
+    min-width: 10rem;
+    flex: 0 0 10rem;
+    scroll-snap-align: start;
+  }
+
+  /* Impede que o cardapio force uma largura maior que a coluna. */
+  .admin-shell--workspace .manual-order-workspace .manual-catalog,
+  .admin-shell--workspace .manual-order-workspace .catalog-heading,
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    align-items: stretch;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-grid > .catalog-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* O carrinho continua acessivel se a coluna do resumo nao cabe. */
+  .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Area de trabalho disponivel a partir de 64rem: sidebar de
+   categorias na esquerda e conteudo flexivel no centro. */
+@container manual-order-area (min-width: 64rem) {
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .catalog-categories {
+    position: sticky;
+    top: 6rem;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    max-height: calc(100dvh - 6rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-right: 1px solid var(--border, #e5e9e6);
+    border-bottom: 0;
+    z-index: 3;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-content {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options {
+    display: grid;
+    gap: 0.75rem;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .catalog-categories__options > .catalog-category {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* 80rem de area util: cabem categorias + produtos + resumo.
+   A largura e a do conteudo, nao a largura total do navegador. */
+@container manual-order-area (min-width: 80rem) {
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    grid-template-columns: 12.5rem minmax(0, 1fr) 18.75rem;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: flex;
+    position: sticky;
+    top: 6rem;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    margin: 0;
+    border-left: 1px solid var(--border, #e5e9e6);
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Espaco insuficiente para resumo lateral: carrinho flutuante.
+   Funciona tambem em desktop com sidebar expandida. */
+@container manual-order-area (max-width: 79.999rem) {
+  .admin-shell--workspace .manual-order-workspace > .manual-workspace {
+    padding-bottom: 7rem;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+  }
+
+  .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    z-index: 75;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(5.25rem + env(safe-area-inset-bottom));
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+/* Sem barra inferior do admin: carrinho fica no canto inferior direito. */
+@media screen and (min-width: 64rem) {
+  @container manual-order-area (max-width: 79.999rem) {
+    .admin-shell--workspace .manual-order-workspace .manual-order-floating-cart {
+      left: auto;
+      right: 1.25rem;
+      bottom: calc(1.25rem + env(safe-area-inset-bottom));
+      width: min(23rem, calc(100vw - 2.5rem));
+    }
+  }
+}
+
+/* Faixa intermediaria: cards nao ficam esmagados. */
+@container manual-order-area (max-width: 47.999rem) {
+  .admin-shell--workspace .manual-order-workspace .manual-workspace > .manual-content {
+    padding: 1rem;
+  }
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+}
+
+@container manual-order-area (max-width: 24rem) {
+  .admin-shell--workspace .manual-order-workspace .catalog-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* SHIRLEY MANUAL ORDER RESPONSIVE END */
+
+
+/* ============================================
+   SHIRLEY LANCHES — BUSCAS ADMINISTRATIVAS
+   /admin/usuarios
+   /admin/convites
+   /admin/relatorios
+   /admin/pedidos
+   ============================================ */
+
+/* Contêiner dos campos de busca */
+
+.admin-shell--workspace .toolbar .search-box,
+.admin-shell--workspace
+.report-catalog-toolbar .report-search {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+/* Posicionamento correto da lupa */
+
+.admin-shell--workspace .toolbar .search-box > svg,
+.admin-shell--workspace
+.report-catalog-toolbar .report-search > svg {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0.95rem;
+
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+
+  color: var(--text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Espaçamento reservado para a lupa */
+
+.admin-shell--workspace
+.toolbar .search-box > .input,
+.admin-shell--workspace
+.report-catalog-toolbar .report-search > .input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+
+  padding-inline-start: 2.8rem;
+  padding-inline-end: 0.95rem;
+}
+
+/* Destaque ao selecionar o campo */
+
+.admin-shell--workspace
+.toolbar .search-box:focus-within > svg,
+.admin-shell--workspace
+.report-catalog-toolbar
+.report-search:focus-within > svg {
+  color: var(--brand);
+}
+

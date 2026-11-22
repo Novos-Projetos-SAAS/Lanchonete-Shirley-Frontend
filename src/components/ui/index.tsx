@@ -11,6 +11,7 @@ import {
   isValidElement,
   useEffect,
   useRef,
+  useState,
   type ButtonHTMLAttributes,
   type FieldsetHTMLAttributes,
   type HTMLAttributes,
@@ -262,6 +263,15 @@ export function Pagination({ page, totalPages, totalItems, onPageChange, label =
 export function RowActions({ label = "Ações do registro", children }: { label?: string; children: ReactNode }) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const actions = Children.toArray(children).filter(Boolean);
+  const [mobileActions, setMobileActions] = useState(false);
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setMobileActions(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   useEffect(() => {
     function closeFromOutside(event: PointerEvent) {
       const details = detailsRef.current;
@@ -281,6 +291,7 @@ export function RowActions({ label = "Ações do registro", children }: { label?
     };
   }, []);
   if (!actions.length) return <span className="muted">Sem ações</span>;
+  if (mobileActions) return <div className="row-actions row-actions--inline" role="group" aria-label={label}>{actions}</div>;
   return <details className="row-actions" ref={detailsRef}><summary role="button" aria-label={label} title={label}><MoreHorizontal aria-hidden /></summary><div className="row-actions__menu">{actions}</div></details>;
 }
 

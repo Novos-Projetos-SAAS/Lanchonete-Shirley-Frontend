@@ -1,0 +1,364 @@
+/* =============================================================
+   Shirley Lanches — Pedido manual (modais + carrinho flutuante)
+   Anexar ao final de src/app/styles/admin.css.
+   Não há imports nem dependências adicionais.
+   ============================================================= */
+
+@media screen {
+  .manual-order-workspace,
+  .manual-order-workspace .manual-workspace,
+  .manual-order-workspace .manual-content {
+    min-width: 0;
+  }
+
+  /* Resumo lateral: colunas estáveis para o texto e o botão remover. */
+  .manual-order-workspace .manual-order-summary {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .manual-order-workspace .manual-order-summary > h2 {
+    flex: 0 0 auto;
+    margin-bottom: 1rem;
+  }
+
+  .manual-order-workspace .manual-order-summary > .button {
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: 1.1rem;
+  }
+
+  .manual-order-workspace .manual-items,
+  .manual-order-drawer .manual-items {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .manual-order-workspace .manual-items > .manual-order-line,
+  .manual-order-drawer .manual-items > .manual-order-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+    align-items: start;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0 0 0.8rem;
+    border-bottom: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-line__info {
+    display: grid;
+    min-width: 0;
+    gap: 0.3rem;
+    overflow-wrap: anywhere;
+  }
+
+  .manual-order-line__info strong {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .manual-order-line__info small {
+    display: block;
+    margin: 0;
+    color: var(--text-muted, #606863);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .manual-order-line__price {
+    color: var(--brand-hover, #a83706);
+    font-size: 0.9rem;
+    font-weight: 850;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-shell--workspace .manual-items .manual-order-remove,
+  .manual-order-drawer .manual-items .manual-order-remove {
+    display: grid;
+    place-items: center;
+    justify-self: end;
+    align-self: start;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border, #e5e9e6);
+    border-radius: 0.65rem;
+    background: #fff;
+    color: var(--text-muted, #606863);
+  }
+
+  .manual-order-remove svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .manual-order-remove:hover {
+    border-color: var(--danger, #b42318);
+    color: var(--danger, #b42318);
+  }
+
+  .manual-order-totals {
+    display: grid;
+    gap: 0.65rem;
+    width: 100%;
+    min-width: 0;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-totals > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+    min-width: 0;
+    font-size: 0.875rem;
+  }
+
+  .manual-order-totals > div > strong {
+    flex-shrink: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-totals > .manual-order-totals__total {
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border, #e5e9e6);
+    color: var(--brand-hover, #a83706);
+    font-size: 1.08rem;
+    font-weight: 850;
+  }
+
+  .manual-order-totals > p {
+    margin: 0;
+    color: var(--text-muted, #606863);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  /* Modais Radix já presentes no frontend: clicou fora / X / Esc. */
+  body:has(.manual-order-workspace) > .dialog-content {
+    width: min(calc(100% - 1rem), 39rem);
+    max-height: min(91dvh, 53rem);
+    border-radius: 1rem;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content .dialog-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content .dialog-footer {
+    flex-shrink: 0;
+  }
+
+  .manual-order-config,
+  .manual-order-product-options,
+  .manual-order-checkout,
+  .manual-order-drawer {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .manual-order-config__name {
+    margin: 0;
+    color: var(--text, #202521);
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  .manual-order-config .manual-product-options {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .manual-order-qty {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.3rem;
+  }
+
+  .manual-order-qty > span {
+    font-weight: 750;
+  }
+
+  .manual-order-qty .cluster {
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .manual-order-checkout__section {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border, #e5e9e6);
+  }
+
+  .manual-order-checkout__section > h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 850;
+  }
+
+  .manual-order-checkout__section > .manual-fieldset {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .manual-order-checkout__section .form-grid--2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .manual-order-checkout__total {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem 0.75rem;
+    padding: 1rem;
+    border-radius: 0.85rem;
+    background: var(--surface-muted, #f3f5f6);
+    font-weight: 750;
+  }
+
+  .manual-order-checkout__total > strong {
+    color: var(--brand-hover, #a83706);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-checkout__total > small {
+    grid-column: 1 / -1;
+    color: var(--text-muted, #606863);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .manual-order-floating-cart {
+    display: none;
+  }
+}
+
+/* Até 1199px: o resumo lateral dá lugar ao carrinho sempre acessível. */
+@media screen and (max-width: 74.999rem) {
+  .manual-order-workspace .manual-workspace > .manual-order-summary {
+    display: none;
+  }
+
+  .manual-order-workspace .manual-workspace {
+    padding-bottom: 7.5rem;
+  }
+
+  .manual-order-workspace .manual-order-floating-cart {
+    position: fixed;
+    z-index: 75;
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(5.2rem + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: auto;
+    min-width: 0;
+    min-height: 3.7rem;
+    padding: 0.75rem 0.9rem;
+    border: 0;
+    border-radius: 1rem;
+    background: var(--brand, #c8450a);
+    color: #fff;
+    box-shadow: 0 8px 25px rgb(21 30 21 / 22%);
+    cursor: pointer;
+  }
+
+  .manual-order-floating-cart > svg {
+    flex: 0 0 1.3rem;
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .manual-order-floating-cart__count {
+    font-size: 0.8rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .manual-order-floating-cart > strong {
+    flex-shrink: 1;
+    min-width: 0;
+    margin-left: auto;
+    font-weight: 850;
+    font-size: 0.9rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manual-order-floating-cart__action {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.55rem;
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 16%);
+    font-size: 0.8rem;
+    font-weight: 850;
+  }
+}
+
+/* Tablet com menu lateral, mas sem navegação inferior. */
+@media screen and (min-width: 64rem) and (max-width: 74.999rem) {
+  .manual-order-workspace .manual-order-floating-cart {
+    left: auto;
+    right: 1.5rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: min(23rem, calc(100% - 3rem));
+  }
+}
+
+@media screen and (min-width: 75rem) {
+  .manual-order-workspace .manual-workspace > .manual-order-summary {
+    position: sticky;
+    top: 6rem;
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    min-height: calc(100dvh - 6rem);
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 35.999rem) {
+  .manual-order-checkout__section .form-grid--2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .manual-order-workspace .manual-order-floating-cart {
+    left: 0.6rem;
+    right: 0.6rem;
+    gap: 0.45rem;
+    padding: 0.7rem;
+  }
+
+  .manual-order-floating-cart__action {
+    font-size: 0.75rem;
+  }
+
+  body:has(.manual-order-workspace) > .dialog-content {
+    max-height: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manual-order-floating-cart {
+    transition: none;
+  }
+}

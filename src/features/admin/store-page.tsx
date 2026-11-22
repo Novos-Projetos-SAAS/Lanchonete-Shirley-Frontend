@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock3, Save, Store } from "lucide-react";
 import { PermissionGate } from "@/components/shared/permission-gate";
@@ -16,6 +16,15 @@ import type { StoreOperationMode } from "@/types/domain";
 
 
 const days = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+const storeTabs = [
+    { id: "funcionamento", label: "Controle de funcionamento" },
+    { id: "identidade", label: "Identidade e atendimento" },
+    { id: "horarios", label: "Horários semanais" },
+    { id: "impressao", label: "Impressão automática" },
+] as const;
+
+type StoreTabId = (typeof storeTabs)[number]["id"];
 
 interface Schedule {
     dia_semana: number;
@@ -48,6 +57,7 @@ export function StorePage() {
     const [values, setValues] = useState<Record<string, string | number | boolean | null>>({});
     const [schedules, setSchedules] = useState<Schedule[]>(emptySchedules);
     const [formError, setFormError] = useState<FormErrorFeedback | null>(null);
+    const [activeTab, setActiveTab] = useState<StoreTabId>("funcionamento");
 
     // Sincroniza o formulário editável quando os dados remotos chegam.
     useEffect(() => {
@@ -167,6 +177,22 @@ export function StorePage() {
     });
 
 
+    function handleStoreTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+        let nextIndex = index;
+        switch (event.key) {
+            case "ArrowRight": nextIndex = (index + 1) % storeTabs.length; break;
+            case "ArrowLeft": nextIndex = (index - 1 + storeTabs.length) % storeTabs.length; break;
+            case "Home": nextIndex = 0; break;
+            case "End": nextIndex = storeTabs.length - 1; break;
+            default: return;
+        }
+        event.preventDefault();
+        setActiveTab(storeTabs[nextIndex].id);
+        const buttons = event.currentTarget.parentElement
+            ?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+        buttons?.[nextIndex]?.focus();
+    }
+
     if (config.isError) {
         return <ErrorState title="Configuração indisponível" description="Confira sua permissão ou tente novamente." action={<Button onClick={() => void config.refetch()}>Tentar novamente</Button>} />;
     }
@@ -215,6 +241,33 @@ export function StorePage() {
                 }}
             />
 
+            <div className="store-tabs" role="tablist" aria-label="Configurações da loja">
+                {storeTabs.map((tab, index) => (
+                    <button
+                        key={tab.id}
+                        type="button"
+                        id={`store-tab-${tab.id}`}
+                        role="tab"
+                        className="store-tabs__tab"
+                        aria-selected={activeTab === tab.id}
+                        aria-controls={`store-panel-${tab.id}`}
+                        tabIndex={activeTab === tab.id ? 0 : -1}
+                        onClick={() => setActiveTab(tab.id)}
+                        onKeyDown={(event) => handleStoreTabKeyDown(event, index)}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            <section
+                id="store-panel-funcionamento"
+                className="store-tabs__panel"
+                role="tabpanel"
+                aria-labelledby="store-tab-funcionamento"
+                tabIndex={0}
+                hidden={activeTab !== "funcionamento"}
+            >
             {/* CONTROLE DE FUNCIONAMENTO */}
             <Card className="admin-card">
                 <h2>
@@ -334,8 +387,18 @@ export function StorePage() {
                 </div>
             </div>
 
-            <div className="stack-lg">
+            </section>
 
+            <div className="store-tabs__panels">
+
+                <section
+                    id="store-panel-identidade"
+                    className="store-tabs__panel"
+                    role="tabpanel"
+                    aria-labelledby="store-tab-identidade"
+                    tabIndex={0}
+                    hidden={activeTab !== "identidade"}
+                >
                 {/* IDENTIDADE E ATENDIMENTO */}
                 <Card className="admin-card">
                     <h2>Identidade e atendimento</h2>
@@ -485,6 +548,16 @@ export function StorePage() {
                     </fieldset>
                 </Card>
 
+                </section>
+
+                <section
+                    id="store-panel-horarios"
+                    className="store-tabs__panel"
+                    role="tabpanel"
+                    aria-labelledby="store-tab-horarios"
+                    tabIndex={0}
+                    hidden={activeTab !== "horarios"}
+                >
                 {/* HORÁRIOS SEMANAIS */}
                 <Card className="admin-card">
                     <h2>
@@ -578,6 +651,16 @@ export function StorePage() {
                     </fieldset>
                 </Card>
 
+                </section>
+
+                <section
+                    id="store-panel-impressao"
+                    className="store-tabs__panel"
+                    role="tabpanel"
+                    aria-labelledby="store-tab-impressao"
+                    tabIndex={0}
+                    hidden={activeTab !== "impressao"}
+                >
                 {/* IMPRESSÃO AUTOMÁTICA */}
                 <Card className="admin-card">
                     <h2>Impressão automática</h2>
@@ -676,6 +759,7 @@ export function StorePage() {
                         </PermissionGate>
                     </fieldset>
                 </Card>
+                </section>
             </div>
         </div>
     );
