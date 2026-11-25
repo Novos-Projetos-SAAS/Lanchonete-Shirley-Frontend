@@ -58,6 +58,7 @@ export function CheckoutPage() {
   const hydrated = useCartStore((state) => state.hydrated);
   const clearCart = useCartStore((state) => state.clear);
   const [submitError, setSubmitError] = useState<FormErrorFeedback | null>(null);
+  const [redirecting, setRedirecting] = useState(false);
   const status = useQuery({ queryKey: queryKeys.storeStatus, queryFn: publicService.status, refetchInterval: 30_000 });
   const payments = useQuery({ queryKey: queryKeys.payments, queryFn: publicService.paymentMethods, refetchInterval: 30_000 });
   const form = useForm<FormValues>({
@@ -88,8 +89,8 @@ export function CheckoutPage() {
     }
   }, [changeNeeded, form, isCashPayment]);
 
-  if (!hydrated) return <main className="container centered-page" id="conteudo-principal">Carregando…</main>;
-  if (!items.length) return <main className="container centered-page" id="conteudo-principal"><EmptyState title="Seu carrinho está vazio" description="Adicione pelo menos um item antes de finalizar." action={<Button asChild><Link href="/">Ver cardápio</Link></Button>} /></main>;
+  if (!hydrated || redirecting) return null;
+  if (!items.length) return <main className="container centered-page" id="conteudo-principal"><EmptyState title="Seu carrinho está vazio" description="Adicione pelo menos um item antes de finalizar." action={<Button asChild><Link href="/"><ArrowLeft aria-hidden /> Ver cardápio</Link></Button>} /></main>;
   if (status.data && !status.data.aberta) return <main className="container centered-page" id="conteudo-principal"><ErrorState title="A loja não está aceitando pedidos" description={status.data.mensagem || "Você pode consultar o cardápio e voltar quando a loja abrir."} action={<Button asChild><Link href="/"><ArrowLeft aria-hidden /> Voltar ao cardápio</Link></Button>} /></main>;
 
   async function submit(values: FormValues) {
@@ -125,6 +126,7 @@ export function CheckoutPage() {
       sessionStorage.setItem(CONFIRMATION_KEY, JSON.stringify(safeConfirmation));
       rememberRecentOrder(safeConfirmation);
       clearAttempt();
+      setRedirecting(true);
       clearCart();
       if (result.pagamento?.fluxo === "INFINITEPAY") {
         const checkout = checkoutUrl(result.pagamento.checkout_url);
@@ -197,8 +199,8 @@ export function CheckoutPage() {
 
           <FieldGroup className="checkout-card" title="Pagamento">
             {payments.isError ? <ErrorState compact title="Formas de pagamento indisponíveis" description="Tente carregar novamente antes de enviar." action={<Button type="button" variant="ghost" onClick={() => void payments.refetch()}><RefreshCw aria-hidden /> Tentar novamente</Button>} /> : <div className="form-grid">
-              <Field label="Forma de pagamento" htmlFor="metodo" required error={form.formState.errors.metodo_pagamento_id?.message}><Select id="metodo" {...form.register("metodo_pagamento_id")}><option value="">Selecione</option>{payments.data?.map((method) => <option value={method.id} key={method.id}>{method.nome}{method.online_habilitado ? " — online pela InfinitePay" : ""}</option>)}</Select></Field>
-              {isOnlinePayment && <p className="privacy-note" role="status">Você será direcionado ao checkout seguro da InfinitePay. O pedido só será preparado após a confirmação do pagamento.{onlinePaymentMethod?.codigo === "PIX" && " O checkout com Pix também oferece cartão de crédito."}</p>}
+              <Field label="Forma de pagamento" htmlFor="metodo" required error={form.formState.errors.metodo_pagamento_id?.message}><Select id="metodo" {...form.register("metodo_pagamento_id")}><option value="">Selecione</option>{payments.data?.map((method) => <option value={method.id} key={method.id}>{method.nome}{method.online_habilitado ? "" : ""}</option>)}</Select></Field>
+              {isOnlinePayment && <p className="privacy-note" role="status">Você será direcionado ao checkout seguro da InfinitePay. O pedido só será preparado após a confirmação do pagamento.{onlinePaymentMethod?.codigo === "PIX" && "  "}</p>}
               {isCashPayment && <Controller control={form.control} name="precisa_troco" render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange}>Preciso de troco</Checkbox>} />}
               {isCashPayment && changeNeeded && <Field label="Troco para" htmlFor="troco" required hint="Use ponto nos centavos. Ex.: 50.00" error={form.formState.errors.troco_para?.message}><Input id="troco" inputMode="decimal" placeholder="50.00" {...form.register("troco_para")} /></Field>}
             </div>}
@@ -208,7 +210,7 @@ export function CheckoutPage() {
 
         <Card className="sticky-summary checkout-summary">
           <h2>Resumo</h2>
-          <PriceBreakdown lines={[{ label: "Itens", value: centsToMoney(total) }, { label: deliveryType === "ENTREGA" ? "Entrega (a confirmar)" : "Retirada", value: "0.00" }, { label: "Estimativa", value: centsToMoney(total), emphasis: true }]} note="O servidor recalcula tudo com o cardápio atual." />
+          <PriceBreakdown lines={[{ label: "Itens", value: centsToMoney(total) }, { label: deliveryType === "ENTREGA" ? "Entrega (a confirmar)" : "Retirada", value: "0.00" }, { label: "Estimativa", value: centsToMoney(total), emphasis: true }]} note="" />
           <FormErrorSummary error={submitError} fieldIds={{ nome: "nome", telefone: "telefone", logradouro: "logradouro", numero: "numero", bairro: "bairro", cidade: "cidade", uf: "uf", metodo_pagamento_id: "metodo", troco_para: "troco" }} />
           <Button full size="lg" type="submit" loading={form.formState.isSubmitting} disabled={payments.isError || payments.isLoading || status.isLoading}><CheckCircle2 aria-hidden /> {isOnlinePayment ? "Ir para pagamento seguro" : "Confirmar pedido"}</Button>
           <Button full variant="ghost" asChild><Link href="/carrinho"><ArrowLeft aria-hidden /> Voltar ao carrinho</Link></Button>

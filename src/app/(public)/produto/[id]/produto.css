@@ -297,9 +297,9 @@
     padding: 0.55rem 0.75rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-pill);
-    background: rgb(255 255 255 / 94%);
+    background: rgba(255, 255, 255, 0.623);
     color: var(--brand-hover);
-    font-size: 0.75rem;
+    font-size: 0.5rem;
     line-height: 1.35;
     letter-spacing: 0.06em;
 }
