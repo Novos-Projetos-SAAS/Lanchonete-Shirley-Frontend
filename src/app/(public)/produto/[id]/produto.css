@@ -297,7 +297,7 @@
     padding: 0.55rem 0.75rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.623);
+    background: rgb(255 255 255 / 94%);
     color: var(--brand-hover);
     font-size: 0.5rem;
     line-height: 1.35;
